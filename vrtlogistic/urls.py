@@ -20,4 +20,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("xiaomi.urls")),
     path("", include("dashboard.urls")),
+    path("", include("alcatel.urls")),
+    path("", include("cat.urls")),
 ]

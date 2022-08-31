@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<table class="table mb-0 table-hover">
+    <thead>
+        <th>Delivery</th>
+        <th>Status</th>
+        <th>Date</th>         
+    </thead>
+    <tbody>
+        {% for xiao in xiaomi %}
+        <tr>
+            <td>{{xiao.delivery}}</td>
+            <td>{{xiao.status}}</td>
+            <td>{{xiao.date}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

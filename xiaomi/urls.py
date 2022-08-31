@@ -3,9 +3,10 @@ from . import views
 
 urlpatterns = [
     path("xiaomi/", views.xiaomi, name="xiaomi"),
-    path("xiaomi/delivery/", views.delivery, name="delivery"),
-    path("xiaomi/deliveries/", views.deliveries, name="deliveries"),
-    path("xiaomi/parts/", views.parts, name="parts"),
-    path("xiaomi/claims/", views.claims, name="claims"),
-    path("xiaomi/waiting/", views.waiting, name="waiting"),
+    path("xiaomi/delivery/", views.delivery, name="xiaomi-delivery"),
+    path("xiaomi/deliveries", views.deliveries, name="xiaomi-deliveries"),
+    path("xiaomi/parts/", views.parts, name="xiaomi-parts"),
+    path("xiaomi/claims", views.claims, name="xiaomi-claims"),
+    path("xiaomi/waiting", views.waiting, name="xiaomi-waiting"),
+    path("xiaomi/prices", views.prices, name="xiaomi-prices"),
 ]

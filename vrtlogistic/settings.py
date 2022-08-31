@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "xiaomi",
     "dashboard",
+    "alcatel",
+    "cat",
 ]
 
 MIDDLEWARE = [
