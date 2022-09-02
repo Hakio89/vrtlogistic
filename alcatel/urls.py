@@ -4,10 +4,10 @@ from . import views
 
 urlpatterns = [
     path("alcatel/", views.alcatel, name="alcatel"),
-    path("alcatel/delivery/", views.delivery, name="alcatel-delivery"),
-    path("alcatel/deliveries/", views.deliveries, name="alcatel-deliveries"),
-    path("alcatel/parts/", views.parts, name="alcatel-parts"),
-    path("alcatel/claims/", views.claims, name="alcatel-claims"),
-    path("alcatel/waiting/", views.waiting, name="alcatel-waiting"),
-    path("alcatel/prices/", views.prices, name="alcatel-prices"),
+    path("alcatel/delivery/", views.delivery, name="alcatel_delivery"),
+    path("alcatel/deliveries/", views.deliveries, name="alcatel_deliveries"),
+    path("alcatel/parts/", views.parts, name="alcatel_parts"),
+    path("alcatel/claims/", views.claims, name="alcatel_claims"),
+    path("alcatel/waiting/", views.waiting, name="alcatel_waiting"),
+    path("alcatel/prices/", views.prices, name="alcatel_prices"),
   ]
