@@ -22,5 +22,5 @@ urlpatterns = [
     path("", include("dashboard.urls")),
     path("", include("alcatel.urls")),
     path("", include("cat.urls")),
-    path("", include("cat.urls")),
+    path("", include("users.urls")),
 ]
