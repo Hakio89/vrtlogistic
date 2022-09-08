@@ -9,9 +9,21 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("username", "email", "password")
+    
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class' : 'form-control'})
         
 class UserProfileForm(forms.ModelForm):   
      
     class Meta:
         model = Profile
-        fields = ("workplace", "occupation", "profile_image")
+        fields = ("workplace", "occupation", "supervisor", "profile_image")
+        
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class' : 'form-control'})
