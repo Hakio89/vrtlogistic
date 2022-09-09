@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from xiaomi.models import Xiaomi
+from .models import Xiaomi
+from .forms import XiaomiAdd
 # Create your views here.
 
 @login_required
@@ -49,3 +50,24 @@ def prices(request):
     title = "Xiaomi Prices"
     ctx = {"title" : title}
     return render(request, "xiaomi/xiaomi-prices.html", ctx)
+
+@login_required
+def add(request):
+    title = "Xiaomi Add"
+    user = request.user
+    form = XiaomiAdd()
+    
+    if request.method == "POST":
+        form = XiaomiAdd(request.POST, request.FILES)
+        
+        if form.is_valid():
+            delivery = form.save(commit=False)
+            delivery.creator = user
+            delivery.save()
+            return redirect('xiaomi_deliveries')
+    
+    ctx = {
+        "title" : title,
+        "form" : form,
+           }
+    return render(request, "xiaomi/xiaomi-add.html", ctx)
