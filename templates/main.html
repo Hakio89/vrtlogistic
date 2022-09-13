@@ -13,12 +13,12 @@
 	<link href="{% static '/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
 	<link href="{% static '/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
 	<link href="{% static '/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
 	<!-- loader-->
 	<link href="{% static '/css/pace.min.css" rel="stylesheet' %}" />
 	<script src="{% static '/js/pace.min.js' %}"></script>
 	<!-- Bootstrap CSS -->
 	<link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
-	<link href="{% static '/css/bootstrap-extended.css' %}" rel="stylesheet">
 	<link href="{% static '/css/bootstrap-extended.css' %}" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 	<link href="{% static '/css/app.css' %}" rel="stylesheet">
@@ -53,7 +53,9 @@
 		<!--start page wrapper -->
 		<div class="page-wrapper">
 			<div class="page-content">
+				<!--breadcrumb-->
 				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">Tables</div>
 					<div class="ps-3">
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb mb-0 p-0">
@@ -63,10 +65,22 @@
 							</ol>
 						</nav>
 					</div>
+					<!--
+					<div class="ms-auto">
+												<div class="btn-group">
+							<button type="button" class="btn btn-light">Settings</button>
+							<button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
+							</button>
+							<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	<a class="dropdown-item" href="javascript:;">Action</a>
+								<a class="dropdown-item" href="javascript:;">Another action</a>
+								<a class="dropdown-item" href="javascript:;">Something else here</a>
+								<div class="dropdown-divider"></div>	<a class="dropdown-item" href="javascript:;">Separated link</a>
+							</div>
+						</div>						
+					</div>
+					-->
 				</div>
-				<!--breadcrumb-->
-				
-				
+				<!-- place for settings-->
 				<!--end breadcrumb-->
 				<div class="container mb-3">
 					<div class="main-body">
@@ -134,12 +148,68 @@
 	<script src="{% static '/plugins/sparkline-charts/jquery.sparkline.min.js' %}"></script>
 	<script src="{% static '/plugins/jquery-knob/excanvas.js' %}"></script>
 	<script src="{% static '/plugins/jquery-knob/jquery.knob.js' %}"></script>
-	  <script>
-		  $(function() {
-			  $(".knob").knob();
-		  });
-	  </script>
-	  <script src="{% static '/js/index.js' %}"></script>
+	<!-- Data Table-->
+	<script src="{% static 'plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+	<script>
+		$(function() {
+			$(".knob").knob();
+		});
+	</script>
+	<script>
+	  
+		$(document).ready(function() {
+		$('#example').DataTable()
+	  });
+		
+	</script>
+	<script>
+		$(document).ready(function() {
+			var table = $('#example2').DataTable( {
+				lengthChange: false,
+				buttons: [ 'copy', 'excel', 'pdf', 'print']
+			} );
+		 
+			table.buttons().container()
+				.appendTo( '#example2_wrapper .col-md-6:eq(0)' );
+		} );
+	</script>	
+	<script>
+		$(document).ready(function() {
+			var table = $('#example3').DataTable( {
+				lengthChange: false,
+				buttons: [ 'copy', 'excel', 'pdf', 'print']
+			} );
+		 
+			table.buttons().container()
+				.appendTo( '#example3_wrapper .col-md-6:eq(0)' );
+		} );
+	</script>
+	<script>
+		$(document).ready(function() {
+			var table = $('#example4').DataTable( {
+				lengthChange: false,
+				buttons: [ 'copy', 'excel', 'pdf', 'print']
+			} );
+		 
+			table.buttons().container()
+				.appendTo( '#example4_wrapper .col-md-6:eq(0)' );
+		} );
+	</script>
+	<script>
+		$(document).ready(function() {
+			var table = $('#example5').DataTable( {
+				lengthChange: false,
+				buttons: [ 'copy', 'excel', 'pdf', 'print']
+			} );
+		 
+			table.buttons().container()
+				.appendTo( '#example5_wrapper .col-md-6:eq(0)' );
+		} );
+	</script>
+	<!--
+	<script src="{% static '/js/index.js' %}"></script>
+	-->
 	<!--app JS-->
 	<script src="{% static 'js/app.js' %}"></script>
 </body>

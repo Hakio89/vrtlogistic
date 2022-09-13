@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Xiaomi
-from .forms import XiaomiAdd
+
+from .models import *
+from .forms import XiaomiNew
+from .utils.tables import Table
 # Create your views here.
 
 @login_required
@@ -13,9 +15,19 @@ def xiaomi(request):
     return render(request, "xiaomi/xiaomi.html", ctx)
 
 @login_required
-def delivery(request):
-    title = "Xiaomi Delivery"
-    ctx = {"title" : title}
+def delivery(request, pk):
+    single_delivery = Xiaomi.objects.get(delivery=pk)
+    parts = XiaomiPartsCatalog.objects.get()
+    claim = XiaomiClaimParts.objects.all()
+    waiting = XiaomiWaitingParts.objects.get()
+    
+    table = Table(single_delivery.file, parts=parts.file, claim=claim,
+                  waiting=waiting.file)
+    
+    ctx = {"title" : "Xiaomi Delivery",
+           "delivery" : single_delivery,
+           "table" : table,
+        }
     return render(request, "xiaomi/xiaomi-delivery.html", ctx)
 
 @login_required
@@ -52,13 +64,13 @@ def prices(request):
     return render(request, "xiaomi/xiaomi-prices.html", ctx)
 
 @login_required
-def add(request):
-    title = "Xiaomi Add"
+def new(request):
+    title = "Xiaomi New"
     user = request.user
-    form = XiaomiAdd()
+    form = XiaomiNew()
     
     if request.method == "POST":
-        form = XiaomiAdd(request.POST, request.FILES)
+        form = XiaomiNew(request.POST, request.FILES)
         
         if form.is_valid():
             delivery = form.save(commit=False)
@@ -70,4 +82,4 @@ def add(request):
         "title" : title,
         "form" : form,
            }
-    return render(request, "xiaomi/xiaomi-add.html", ctx)
+    return render(request, "xiaomi/xiaomi-new.html", ctx)
