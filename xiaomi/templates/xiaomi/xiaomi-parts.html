@@ -1,4 +1,10 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<p align="right">
+    <a href="{%url 'xiaomi_parts_update'%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
+</p>
+<h6 class="mb-0 text-uppercase">Parts Catalog</h6>
+<hr/>
+{{parts|safe}}
 {% endblock %}

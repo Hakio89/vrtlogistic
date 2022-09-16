@@ -11,7 +11,8 @@
         <div class="table-responsive">
             <table id="example2" class="table table-striped table-bordered">
                 <thead>
-                    <th>Delivery</th>
+                    <th>Delivery no</th>
+                    <th>Reckoning no</th>
                     <th>Status</th>
                     <th>View</th>
                     <th>Date</th>
@@ -21,9 +22,14 @@
                     {% for xiao in xiaomi %}
                     <tr>
                         <td>{{xiao.delivery}}</td>
+                        {%if xiao.reckoning != None%}
+                        <td>{{xiao.reckoning}}</td>
+                        {%else%}
+                        <td></td>
+                        {%endif%}
                         <td>{{xiao.status}}</td>
                         <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}">Link</a></td>
-                        <td>{{xiao.date}}</td>
+                        <td>{{xiao.date|date:"Y-m-d"}}, {{xiao.date|time:"H:i"}}</td>
                         <td>{{xiao.creator|capfirst}}</td>
                     </tr>
                     {% endfor %}

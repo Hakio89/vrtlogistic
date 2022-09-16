@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import XiaomiNew
 from .utils.tables import Table
+
 # Create your views here.
 
 @login_required
@@ -21,12 +22,21 @@ def delivery(request, pk):
     claim = XiaomiClaimParts.objects.all()
     waiting = XiaomiWaitingParts.objects.get()
     
-    table = Table(single_delivery.file, parts=parts.file, claim=claim,
+    table = Table(delivery=single_delivery.file, 
+                  parts=parts.file, claim=claim,
                   waiting=waiting.file)
+    pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html \
+        = table.delivery_joining()
+    
     
     ctx = {"title" : "Xiaomi Delivery",
            "delivery" : single_delivery,
-           "table" : table,
+           "pmgp_to_html" : pmgp_html,
+            "pmgh_to_html" : pmgh_html,
+            "pmgp_len" : pmgp_len,
+            "pmgh_len" : pmgh_len,
+           "pmgp_sum" : pmgp_sum,
+            "pmgh_sum" : pmgh_sum,
         }
     return render(request, "xiaomi/xiaomi-delivery.html", ctx)
 
@@ -41,20 +51,33 @@ def deliveries(request):
 
 @login_required
 def parts(request):
-    title = "Xiaomi Parts"
-    ctx = {"title" : title}
+    parts = XiaomiPartsCatalog.objects.get()
+    table = Table(parts=parts.file)
+    parts_table = table.parts_to_html()
+    
+    ctx = {"title" : "Xiaomi Parts",
+           "parts" : parts_table,          
+           }
     return render(request, "xiaomi/xiaomi-parts.html", ctx)
 
 @login_required
 def claims(request):
-    title = "Xiaomi Claims"
-    ctx = {"title" : title}
+    claims = XiaomiClaimParts.objects.all()
+    table = Table(claim=claims)
+    claim_table = table.claim_to_html()
+    ctx = {"title" : "Xiaomi Claims",
+           "claim" : claim_table,
+           }
     return render(request, "xiaomi/xiaomi-claims.html", ctx)
 
 @login_required
 def waiting(request):
-    title = "Xiaomi Waiting"
-    ctx = {"title" : title}
+    waiting  = XiaomiWaitingParts.objects.get()
+    table = Table(waiting=waiting.file)
+    waiting_table = table.waiting_to_html()
+    ctx = {"title" : "Xiaomi Waiting",
+           "waiting" : waiting_table,
+           }
     return render(request, "xiaomi/xiaomi-waiting.html", ctx)
 
 @login_required
@@ -83,3 +106,18 @@ def new(request):
         "form" : form,
            }
     return render(request, "xiaomi/xiaomi-new.html", ctx)
+
+@login_required
+def xiaomi_claims_new(request):
+    ctx = {"title" : "Xiaomi Claims New"}
+    return render(request, "xiaomi/xiaomi-claims-new.html", ctx)
+
+@login_required
+def xiaomi_waiting_update(request):
+    ctx = {"title" : "Xiaomi Waiting Update"}
+    return render(request, "xiaomi/xiaomi-waiting-update.html", ctx)
+
+@login_required
+def xiaomi_parts_update(request):
+    ctx = {"title" : "Xiaomi Parts Update"}
+    return render(request, "xiaomi/xiaomi-parts-update.html", ctx)

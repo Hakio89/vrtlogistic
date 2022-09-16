@@ -1,40 +1,38 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<h6 class="mb-0 text-uppercase">PMGP and PMGH</h6>
+{% if pmgp_len != 0 %}
+<h6 class="mb-0 text-uppercase">PMGP</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">            
-            {{ table.delivery_to_html|safe}}            
+            {{pmgp_to_html|safe}}            
         </div>
     </div>
 </div>
-<h6 class="mb-0 text-uppercase">Parts Catalog</h6>
+<p>Delivery no: <b>{{delivery.delivery}}</b></p>
+{%if delivery.reckoning%}
+<p>Reckoning no: <b>{{delivery.reckoning}}</b></p>
+{%endif%}
+<p>PN:<b>{{pmgp_len}}</b></p>
+<p>Sum: <b>{{pmgp_sum}}</b></p>
+{%endif%}
+{% if pmgh_len != 0 %}
+<h6 class="mb-0 text-uppercase">PMGH</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">            
-            {{ table.parts_to_html|safe}}            
+            {{ pmgh_to_html|safe}}            
         </div>
     </div>
 </div>
-<h6 class="mb-0 text-uppercase">Waiting Parts</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">            
-            {{ table.waiting_to_html|safe}}            
-        </div>
-    </div>
-</div>
-<h6 class="mb-0 text-uppercase">Claim Parts</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">            
-            {{ table.claim_to_html|safe}}            
-        </div>
-    </div>
-</div>
+<p>Delivery no: <b>{{delivery.delivery}}</b></p>
+{%if delivery.reckoning%}
+<p>Reckoning no: <b>{{delivery.reckoning}}</b></p>
+{%endif%}
+<p>PN: <b>{{pmgh_len}}</b></p>
+<p>Sum: <b>{{pmgh_sum}}</b></p>
+{%endif%}
 {% endblock %}
