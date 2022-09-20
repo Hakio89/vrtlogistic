@@ -2,9 +2,17 @@
 
 {% block content %}
 <p align="right">
-    <a href="{%url 'xiaomi_waiting_update'%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
+    {%for wait in waiting_all%}
+    <a href="{%url 'xiaomi_waiting_update' wait.id%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
+    {%endfor%}
 </p>
 <h6 class="mb-0 text-uppercase">Waiting Parts</h6>
 <hr/>
-{{waiting|safe}}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            {{waiting|safe}}
+        </div>
+    </div>
+</form>
 {% endblock %}

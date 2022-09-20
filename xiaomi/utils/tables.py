@@ -1,6 +1,7 @@
 from django_pandas.io import read_frame
 
 import pandas as pd
+from datetime import datetime
 
 class Table:
     
@@ -74,6 +75,7 @@ class Table:
         return html.to_html(index=False, table_id="example2", classes="table table-striped table-bordered")
     
     def delivery_joining(self):
+        """Opens file needed to be joined and join then in one delivery. Pars which has no descriptions are displays as Lack of Parts"""
         delivery = self.read_delivery_file()
         parts = self.read_parts_file()
         waiting = self.read_waiting_file()
@@ -99,9 +101,13 @@ class Table:
         
         warehouse_pmgp = delivery['Warehouse'] == 'PMGP'
         pmgp = delivery[warehouse_pmgp]
-        
         warehouse_pmgh = delivery['Warehouse'] == 'PMGH'
-        pmgh = delivery[warehouse_pmgh]
+        pmgh = delivery[warehouse_pmgh]     
+        warehouse_pmgp_nan = delivery['Warehouse'] != 'PMGP'
+        warehouse_pmgh_nan = delivery['Warehouse'] != 'PMGH'
+        warehouse_nan = warehouse_pmgp_nan & warehouse_pmgh_nan
+        
+        del_empty = delivery[warehouse_nan].empty
         
         pmgp_len = len(pmgp)
         pmgh_len = len(pmgh)
@@ -111,7 +117,8 @@ class Table:
         
         pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered")
         pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered")
-        return pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html
+        del_nan = delivery[warehouse_nan].to_html(index=False, table_id="example4", classes="table table-striped table-bordered")
+        return pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html, del_nan, del_empty
             
         
 

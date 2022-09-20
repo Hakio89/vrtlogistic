@@ -14,7 +14,13 @@
                     <th>Delivery no</th>
                     <th>Reckoning no</th>
                     <th>Status</th>
+                    <th>ZZ PMGP</th>
+                    <th>Status PMGP</th>
+                    <th>ZZ PMGH</th>
+                    <th>Status PMGH</th>
                     <th>View</th>
+                    <th>Data</th>
+                    <th>File</th>
                     <th>Date</th>
                     <th>Creator</th>         
                 </thead>
@@ -28,8 +34,22 @@
                         <td></td>
                         {%endif%}
                         <td>{{xiao.status}}</td>
-                        <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}">Link</a></td>
-                        <td>{{xiao.date|date:"Y-m-d"}}, {{xiao.date|time:"H:i"}}</td>
+                        <td>{{xiao.zz_pmgp}}</td>
+                        {%if xiao.status_pmgp != None%}
+                        <td>{{xiao.status_pmgp}}</td>
+                        {%else%}
+                        <td></td>
+                        {%endif%}
+                        <td>{{xiao.zz_pmgh}}</td>
+                        {%if xiao.status_pmgh != None%}
+                        <td>{{xiao.status_pmgh}}</td>
+                        {%else%}
+                        <td></td>
+                        {%endif%}
+                        <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}"><i class="bx bx-file-blank"></i></a></td>
+                        <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="bx bx-file-blank"></i></a></td>
+                        <td><a href="{% url 'xiaomi_delivery_file_update' xiao.delivery%}"><i class="bx bx-file-blank"></i></a></td>
+                        <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
                         <td>{{xiao.creator|capfirst}}</td>
                     </tr>
                     {% endfor %}

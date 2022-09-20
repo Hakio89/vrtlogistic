@@ -2,7 +2,8 @@
 
 {% block content %}
 {% if pmgp_len != 0 %}
-<h6 class="mb-0 text-uppercase">PMGP</h6>
+<hr/>
+<h6 class="mb-0 text-uppercase">PMGP WAREHOUSE</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
@@ -11,15 +12,40 @@
         </div>
     </div>
 </div>
-<p>Delivery no: <b>{{delivery.delivery}}</b></p>
-{%if delivery.reckoning%}
-<p>Reckoning no: <b>{{delivery.reckoning}}</b></p>
-{%endif%}
-<p>PN:<b>{{pmgp_len}}</b></p>
-<p>Sum: <b>{{pmgp_sum}}</b></p>
+<table class="table mb-0">
+    <thead>
+        <th>Delivery no:</th>
+        {%if delivery.reckoning%}
+        <th>Reckoning no:</th>
+        {%endif%}
+        <th>PN:</th>
+        <th>Sum:</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{delivery.delivery}}</td>
+            {%if delivery.reckoning%}
+            <td>{{delivery.reckoning}}</td>
+            {%endif%}
+            <td>{{pmgp_len}}</td>
+            <td>{{pmgp_sum}}</td>
+        </tr>
+    </tbody>
+</table>
+<hr/>
+<form class="row g-3" method="POST">
+    {{form_pmgp.as_p}}
+    {% csrf_token %}
+    <div class="col-12">
+        <div class="d-grid">
+            <button type="submit" class="btn btn-light" name="pmgp"><i class="bx bxs-save"></i>Save</button>
+        </div>
+    </div>
+</form>
 {%endif%}
 {% if pmgh_len != 0 %}
-<h6 class="mb-0 text-uppercase">PMGH</h6>
+<hr/>
+<h6 class="mb-0 text-uppercase">PMGH WAREHOUSE</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
@@ -28,11 +54,47 @@
         </div>
     </div>
 </div>
-<p>Delivery no: <b>{{delivery.delivery}}</b></p>
-{%if delivery.reckoning%}
-<p>Reckoning no: <b>{{delivery.reckoning}}</b></p>
+<table class="table mb-0">
+    <thead>
+        <th>Delivery no:</th>
+        {%if delivery.reckoning%}
+        <th>Reckoning no:</th>
+        {%endif%}
+        <th>PN:</th>
+        <th>Sum:</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{delivery.delivery}}</td>
+            {%if delivery.reckoning%}
+            <td>{{delivery.reckoning}}</td>
+            {%endif%}
+            <td>{{pmgh_len}}</td>
+            <td>{{pmgh_sum}}</td>
+        </tr>
+    </tbody>
+</table>
+<hr/>
+<form class="row g-3" method="POST">
+    {{form_pmgh.as_p}}
+    {% csrf_token %}
+    <div class="col-12">
+        <div class="d-grid">
+            <button type="submit" class="btn btn-light" name="pmgh"><i class="bx bxs-save"></i>Save</button>
+        </div>
+    </div>
+</form>
 {%endif%}
-<p>PN: <b>{{pmgh_len}}</b></p>
-<p>Sum: <b>{{pmgh_sum}}</b></p>
+{%if del_empty == False%}
+<hr/>
+<h6 class="mb-0 text-uppercase">Lack of Parts</h6>
+<hr/>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">            
+            {{del_nan|safe}}            
+        </div>
+    </div>
+</div>
 {%endif%}
 {% endblock %}

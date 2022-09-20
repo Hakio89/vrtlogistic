@@ -13,6 +13,12 @@ class Xiaomi(models.Model):
     creator = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     date = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey("Status", on_delete=models.CASCADE)
+    zz_pmgp = models.CharField(max_length=50, blank=True, null=True)
+    lpr_pmgp = models.CharField(max_length=100, blank=True, null=True)
+    status_pmgp = models.ForeignKey("StatusPmgp", on_delete=models.CASCADE, blank=True, null=True)
+    zz_pmgh = models.CharField(max_length=50, blank=True, null=True)
+    lpr_pmgh = models.CharField(max_length=100, blank=True, null=True)
+    status_pmgh = models.ForeignKey("StatusPmgh", on_delete=models.CASCADE, blank=True, null=True)
     file = models.FileField(upload_to="xiaomi/deliveries/", blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, 
                           editable=False)
@@ -27,10 +33,24 @@ class Status(models.Model):
     def __str__(self):
         return str(self.status)
     
+class StatusPmgp(models.Model):
+    
+    status_pmgp = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return str(self.status_pmgp)
+    
+class StatusPmgh(models.Model):
+    
+    status_pmgh = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return str(self.status_pmgh)
+    
 class XiaomiPartsCatalog(models.Model):
 
     parts_catalog = models.CharField(max_length=50, unique=False, default="Parts Catalog")
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now=True)
     file = models.FileField(upload_to="xiaomi/parts-catalog/", blank=True, null=True,)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, 
                           editable=False)
