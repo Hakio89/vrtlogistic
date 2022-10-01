@@ -64,10 +64,19 @@ class Table:
         """Read a claim file only"""
         claim = self.claim
         
-        claim = read_frame(claim, fieldnames=['claim_part', 'qty'])
+        claim = read_frame(claim, fieldnames=['claim_part', 'qty', 'status'])
         claim = claim.rename(columns={'claim_part' : 'Parts Number',
-                                    'qty' : 'Claims'
+                                    'qty' : 'Claims',
+                                    'status' : 'Claim Status',
                                     })
+        #filter
+        waiting_claim = claim['Claim Status'] == "Waiting"
+        
+        claim = claim[waiting_claim]
+        claim = claim.pivot_table(index=["Parts Number"],
+                                    values='Claims', aggfunc='sum')            
+        claim = claim.reset_index()
+        
         return claim
     
     def claim_to_html(self):
@@ -115,8 +124,8 @@ class Table:
         pmgp_sum = pmgp['Qty'].sum()
         pmgh_sum = pmgp['Qty'].sum()
         
-        pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered")
-        pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered")
+        pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport")
+        pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered TearDown")
         del_nan = delivery[warehouse_nan].to_html(index=False, table_id="example4", classes="table table-striped table-bordered")
         return pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html, del_nan, del_empty
             

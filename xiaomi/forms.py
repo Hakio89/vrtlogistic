@@ -83,4 +83,18 @@ class PmghDeliveryForm(forms.ModelForm):
         
         for name, field in self.fields.items():
             field.widget.attrs.update({'class' : 'form-control'})
+            
+class XiaomiClaimForm(forms.ModelForm):
+    class Meta:
+        model = XiaomiClaimParts
+        fields = ['claim_part', 'qty', 'status']
+        labels = {'claim_part':'Give the PN of claim part:',
+                  'qty':'Qy of claim part:',
+                  'status':'Choose current status:'}
+        
+    def __init__(self, *args, **kwargs):
+        super(XiaomiClaimForm, self).__init__(*args, **kwargs)
+        
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class' : 'form-control'})
     

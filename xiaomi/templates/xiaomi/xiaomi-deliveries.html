@@ -2,9 +2,10 @@
 
 {% block content %}
 <p align="right">
-    <a href="{% url 'xiaomi_new' %}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-add-to-queue mr-1"></i>New</button></a>
+    <a href="{% url 'xiaomi_delivery_new' %}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-add-to-queue mr-1"></i>New</button></a>
 </p>
-<h6 class="mb-0 text-uppercase">All deliveries</h6>
+<hr/>
+<h6 class="mb-0 text-uppercase">All Deliveries</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
@@ -22,7 +23,8 @@
                     <th>Data</th>
                     <th>File</th>
                     <th>Date</th>
-                    <th>Creator</th>         
+                    <th>Owner</th>
+                    <th>Delete</th>          
                 </thead>
                 <tbody>
                     {% for xiao in xiaomi %}
@@ -33,24 +35,33 @@
                         {%else%}
                         <td></td>
                         {%endif%}
-                        <td>{{xiao.status}}</td>
+                        <td><span class="badge {{xiao.status}}">{{xiao.status}}</span></td>
+                        {%if xiao.zz_pmgp != None%}
                         <td>{{xiao.zz_pmgp}}</td>
+                        {%else%}
+                        <td></td>
+                        {%endif%}
                         {%if xiao.status_pmgp != None%}
                         <td>{{xiao.status_pmgp}}</td>
                         {%else%}
                         <td></td>
                         {%endif%}
+                        {%if xiao.zz_pmgh != None%}
                         <td>{{xiao.zz_pmgh}}</td>
+                        {%else%}
+                        <td></td>
+                        {%endif%}
                         {%if xiao.status_pmgh != None%}
                         <td>{{xiao.status_pmgh}}</td>
                         {%else%}
                         <td></td>
                         {%endif%}
-                        <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}"><i class="bx bx-file-blank"></i></a></td>
-                        <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="bx bx-file-blank"></i></a></td>
-                        <td><a href="{% url 'xiaomi_delivery_file_update' xiao.delivery%}"><i class="bx bx-file-blank"></i></a></td>
+                        <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}"><i class="lni lni-popup"></i></a></td>
+                        <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="lni lni-database"></i></a></td>
+                        <td><a href="{% url 'xiaomi_delivery_file_update' xiao.delivery%}"><i class="lni lni-empty-file"></i></a></td>
                         <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
                         <td>{{xiao.creator|capfirst}}</td>
+                        <td><a href="{% url 'xiaomi_delivery_delete' xiao.delivery%}"><i class="lni lni-trash"></i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

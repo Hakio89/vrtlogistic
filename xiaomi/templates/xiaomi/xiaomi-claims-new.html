@@ -3,6 +3,16 @@
 
 
 {% block content %}
+<hr/>
 <h6 class="mb-0 text-uppercase">New Claim</h6>
 <hr/>
+<form class="row g-3" method="POST">
+    {{form.as_p}}
+    {% csrf_token %}
+    <div class="col-12">
+        <div class="d-grid">
+            <button type="submit" class="btn btn-light"><i class="bx bxs-save"></i>Save</button>
+        </div>
+    </div>
+</form>
 {% endblock %}

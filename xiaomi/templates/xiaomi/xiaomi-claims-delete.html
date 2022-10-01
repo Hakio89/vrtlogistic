@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{%load static %}
+
+
+{% block content %}
+<hr/>
+<h6 class="mb-0 text-uppercase" align="center">Do you really want to delete claim for part {{claim.claim_part}}???</h6>
+<hr/>
+<form class="row g-3" method="POST">
+    {% csrf_token %}
+    <div class="col" align="center">
+        <a href="{%url 'xiaomi_claims'%}"><button type="button" class="btn btn-success px-5">Go back</button></a>
+        <button type="submit" class="btn btn-danger px-5">Delete</button>
+    </div>
+</form>
+{% endblock %}

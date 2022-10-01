@@ -34,7 +34,7 @@ def xiaomi_delivery_new(request):
         "title" : title,
         "form" : form,
            }
-    return render(request, "xiaomi/xiaomi-new.html", ctx)
+    return render(request, "xiaomi/xiaomi-delivery-new.html", ctx)
 
 @login_required
 def xiaomi_delivery_update(request, pk):
@@ -49,7 +49,8 @@ def xiaomi_delivery_update(request, pk):
             return redirect('xiaomi_deliveries')
     
     ctx = {
-        'form' : form,
+        'form' : form,        
+        'xiaomi' : delivery_update,
     }
     
     return render(request, "xiaomi/xiaomi-delivery-update.html", ctx)
@@ -69,6 +70,7 @@ def xiaomi_delivery_file_update(request, pk):
     
     ctx = {
         'form' : form,
+        'xiaomi' : delivery_update,
     }
     
     return render(request, "xiaomi/xiaomi-delivery-file-update.html", ctx)
@@ -119,6 +121,24 @@ def xiaomi_delivery(request, pk):
     return render(request, "xiaomi/xiaomi-delivery.html", ctx)
 
 @login_required
+def xiaomi_delivery_delete(request, pk):
+    single_delivery = Xiaomi.objects.get(delivery=pk)
+    single_delivery_file = single_delivery.file
+    
+    if request.method == 'POST':
+        single_delivery_file.delete()
+        if request.method == 'POST':
+            single_delivery.delete()
+            return redirect('xiaomi_deliveries')
+    
+    
+    ctx = {
+        "delivery" : single_delivery,
+    }
+        
+    return render(request, "xiaomi/xiaomi-delivery-delete.html", ctx)
+
+@login_required
 def xiaomi_deliveries(request):
     xiaomi_deliveriers_all = Xiaomi.objects.all()
     title = "Xiaomi Deliveries"
@@ -130,12 +150,57 @@ def xiaomi_deliveries(request):
 @login_required
 def xiaomi_claims(request):
     claims = XiaomiClaimParts.objects.all()
-    table = Table(claim=claims)
-    claim_table = table.claim_to_html()
     ctx = {"title" : "Xiaomi Claims",
-           "claim" : claim_table,
+           "claims" : claims,
            }
     return render(request, "xiaomi/xiaomi-claims.html", ctx)
+
+@login_required
+def xiaomi_claims_new(request):
+    form = XiaomiClaimForm()
+    
+    if request.method == "POST":
+        form = XiaomiClaimForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            return redirect('xiaomi_claims')
+    
+    ctx = {"title" : "Xiaomi Claims New",
+           "form" : form,
+           }
+    return render(request, "xiaomi/xiaomi-claims-new.html", ctx)
+
+@login_required
+def xiaomi_claims_update(request, pk):
+    claim = XiaomiClaimParts.objects.get(id=pk)
+    form = XiaomiClaimForm(instance=claim)
+    
+    if request.method == "POST":
+        form = XiaomiClaimForm(request.POST, instance=claim)
+        
+        if form.is_valid():
+            form.save()
+            return redirect('xiaomi_claims')
+    
+    ctx = {"title" : "Xiaomi Claims Update",
+           "form" : form,
+           "claim" : claim,
+           }
+    return render(request, "xiaomi/xiaomi-claims-update.html", ctx)
+
+@login_required
+def xiaomi_claims_delete(request, pk):
+    claim = XiaomiClaimParts.objects.get(id=pk)
+    
+    if request.method == "POST":
+        claim.delete()
+        return redirect('xiaomi_claims')
+    
+    ctx = {"title" : "Xiaomi Claims Update",
+           "claim" : claim,
+           }
+    return render(request, "xiaomi/xiaomi-claims-delete.html", ctx)
 
 @login_required
 def xiaomi_waiting(request):
@@ -155,12 +220,6 @@ def xiaomi_prices(request):
     ctx = {"title" : title}
     return render(request, "xiaomi/xiaomi-prices.html", ctx)
 
-
-
-@login_required
-def xiaomi_claims_new(request):
-    ctx = {"title" : "Xiaomi Claims New"}
-    return render(request, "xiaomi/xiaomi-claims-new.html", ctx)
 
 @login_required
 def xiaomi_waiting_update(request, pk):
