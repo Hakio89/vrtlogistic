@@ -9,10 +9,13 @@ from .utils.tables import Table
 
 @login_required
 def xiaomi(request):
-    xiao = "XIAOMI"
-    title = "Xiaomi Default"
-    ctx = {"page_name" : xiao,
-           "title" : title}
+    deliveries = Xiaomi.objects.all()
+    claims = XiaomiClaimParts.objects.all()
+    
+    ctx = {"title" : "Xiaomi Default",
+           "xiaomi" : deliveries,
+           "claims" : claims,
+           }
     return render(request, "xiaomi/xiaomi.html", ctx)
 
 @login_required

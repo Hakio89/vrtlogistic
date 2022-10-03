@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import UserForm, UserProfileForm
+from .forms import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -67,5 +67,29 @@ def user_registration(request):
     return render(request, "users/registration.html", ctx)
 
 @login_required
-def user_profile(request):
-    return render(request, "users/profile.html")
+def user_profile(request, pk):
+    user = User.objects.get(username=pk)
+    user_profile = Profile.objects.get(owner=user)
+    profile_update_form = UserProfileUpdateForm(instance=user_profile)
+    profile_image_form = UserProfileImageUpdateForm(instance=user_profile)
+    
+    if request.method == "POST":
+        profile_image_form = UserProfileImageUpdateForm(request.POST, request.FILES, instance=user_profile)
+        profile_update_form = UserProfileUpdateForm(request.POST, instance=user_profile)
+        
+        if "image_update" in request.POST:
+            user_profile.profile_image.delete()
+            if profile_image_form.is_valid():
+                profile_image_form.save()
+                return redirect('user_profile', pk )
+            
+        if "data_update" in request.POST:
+            if profile_update_form.is_valid():
+                profile_update_form.save()            
+                return redirect('user_profile', pk )
+    ctx = {
+        "user" : user,
+        "profile_update_form" : profile_update_form,
+        "profile_image_form" : profile_image_form,
+    }
+    return render(request, "users/profile.html", ctx)

@@ -5,7 +5,7 @@
     <a href="{% url 'xiaomi_delivery_new' %}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-add-to-queue mr-1"></i>New</button></a>
 </p>
 <hr/>
-<h6 class="mb-0 text-uppercase">All Deliveries</h6>
+<h6 align="center" class="mb-0 text-uppercase">All Deliveries</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
@@ -20,7 +20,7 @@
                     <th>ZZ PMGH</th>
                     <th>Status PMGH</th>
                     <th>View</th>
-                    <th>Data</th>
+                    <th>Update</th>
                     <th>File</th>
                     <th>Date</th>
                     <th>Owner</th>
@@ -57,7 +57,7 @@
                         <td></td>
                         {%endif%}
                         <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}"><i class="lni lni-popup"></i></a></td>
-                        <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="lni lni-database"></i></a></td>
+                        <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="lni lni-exit-up"></i></a></td>
                         <td><a href="{% url 'xiaomi_delivery_file_update' xiao.delivery%}"><i class="lni lni-empty-file"></i></a></td>
                         <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
                         <td>{{xiao.creator|capfirst}}</td>
