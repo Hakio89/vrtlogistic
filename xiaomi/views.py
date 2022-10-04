@@ -13,8 +13,6 @@ def xiaomi(request):
     deliveries = Xiaomi.objects.all()
     claims = XiaomiClaimParts.objects.all()
     
-    messages.info(request, 'Login is incorrect')
-    
     ctx = {"title" : "Xiaomi Default",
            "xiaomi" : deliveries,
            "claims" : claims,
@@ -23,21 +21,24 @@ def xiaomi(request):
 
 @login_required
 def xiaomi_delivery_new(request):
-    title = "Xiaomi New"
     user = request.user
-    form = XiaomiNewForm()
+    form = XiaomiNewForm()    
+    
     
     if request.method == "POST":
         form = XiaomiNewForm(request.POST, request.FILES)
         
         if form.is_valid():
             delivery = form.save(commit=False)
-            delivery.creator = user
-            delivery.save()
-            return redirect('xiaomi_deliveries')
+            if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                delivery.creator = user
+                delivery.save()
+                return redirect('xiaomi_deliveries')
+            else:
+                messages.warning(request, 'You are trying o add the wrong file format')
     
     ctx = {
-        "title" : title,
+        "title" : "Xiaomi New Delivery",
         "form" : form,
            }
     return render(request, "xiaomi/xiaomi-delivery-new.html", ctx)
@@ -55,6 +56,7 @@ def xiaomi_delivery_update(request, pk):
             return redirect('xiaomi_deliveries')
     
     ctx = {
+        'title' : "Xiaomi Delivery Update",
         'form' : form,        
         'xiaomi' : delivery_update,
     }
@@ -71,10 +73,16 @@ def xiaomi_delivery_file_update(request, pk):
         form = XiaomiDeliveryFileForm(request.POST, request.FILES, instance=delivery_update)
         
         if form.is_valid():
-            form.save()
-            return redirect('xiaomi_deliveries')
+            delivery = form.save(commit=False)
+            if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                delivery.save()
+                return redirect('xiaomi_deliveries')
+            else:
+                messages.warning(request, 'You are trying o add the wrong file format')
+            
     
     ctx = {
+        'title' : "Xiaomi Delivery File Update",
         'form' : form,
         'xiaomi' : delivery_update,
     }
@@ -84,34 +92,43 @@ def xiaomi_delivery_file_update(request, pk):
 
 @login_required
 def xiaomi_delivery(request, pk):
-    single_delivery = Xiaomi.objects.get(delivery=pk)
-    parts = XiaomiPartsCatalog.objects.get()
-    claim = XiaomiClaimParts.objects.all()
-    waiting = XiaomiWaitingParts.objects.get()
-    form_pmgp = PmgpDeliveryForm(instance=single_delivery)
-    form_pmgh = PmghDeliveryForm(instance=single_delivery)
+    try:
+        single_delivery = Xiaomi.objects.get(delivery=pk)
+        parts = XiaomiPartsCatalog.objects.get()
+        claim = XiaomiClaimParts.objects.all()
+        waiting = XiaomiWaitingParts.objects.get()
+        form_pmgp = PmgpDeliveryForm(instance=single_delivery)
+        form_pmgh = PmghDeliveryForm(instance=single_delivery)
     
-    table = Table(delivery=single_delivery.file, 
-                  parts=parts.file, claim=claim,
-                  waiting=waiting.file)
-    pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html,\
-        del_nan, del_empty = table.delivery_joining()
     
-    if request.method == "POST":
-        form_p = PmgpDeliveryForm(request.POST, instance=single_delivery)
-        form_h = PmghDeliveryForm(request.POST, instance=single_delivery)
+        table = Table(delivery=single_delivery.file, 
+                    parts=parts.file, claim=claim,
+                    waiting=waiting.file)
+        pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html,\
+            del_nan, del_empty = table.delivery_joining()
         
-        if "pmgp" in request.POST:       
-            if form_p.is_valid():
-                form_p.save()
+        if request.method == "POST":
+            form_p = PmgpDeliveryForm(request.POST, instance=single_delivery)
+            form_h = PmghDeliveryForm(request.POST, instance=single_delivery)
             
-        if "pmgh" in request.POST:
-            if form_h.is_valid():
-                form_h.save()
-            
+            if "pmgp" in request.POST:       
+                if form_p.is_valid():
+                    form_p.save()
+                
+            if "pmgh" in request.POST:
+                if form_h.is_valid():
+                    form_h.save()
+                    
+    except TypeError:    
+        messages.error(request, 'Make sure your file has no float values. Please change your excel data into general data or contact with the administrator')
+        return redirect('xiaomi_deliveries')
+    
+    except:
+        messages.error(request, 'There no data. Please make sure you add parts catalog or contact with the administrator')
+        return redirect('xiaomi_deliveries')
             
     
-    ctx = {"title" : "Xiaomi Delivery",
+    ctx = {
            "delivery" : single_delivery,
            "pmgp_to_html" : pmgp_html,
             "pmgh_to_html" : pmgh_html,
@@ -210,10 +227,15 @@ def xiaomi_claims_delete(request, pk):
 
 @login_required
 def xiaomi_waiting(request):
-    waiting  = XiaomiWaitingParts.objects.get()
-    waiting_all = XiaomiWaitingParts.objects.all()
-    table = Table(waiting=waiting.file)
-    waiting_table = table.waiting_to_html()
+    try:
+        waiting  = XiaomiWaitingParts.objects.get()
+        waiting_all = XiaomiWaitingParts.objects.all()
+        table = Table(waiting=waiting.file)
+        waiting_table = table.waiting_to_html()
+    except:
+        messages.error(request, 'Please check your excel file or contact with the administrator')
+        return redirect('xiaomi_deliveries')
+    
     ctx = {"title" : "Xiaomi Waiting",
            "waiting" : waiting_table,
            "waiting_all" : waiting_all,
@@ -238,8 +260,11 @@ def xiaomi_waiting_update(request, pk):
         
         if form.is_valid():
             waiting_file = form.save(commit=False)
-            waiting_file.save()
-            return redirect('xiaomi_waiting')
+            if waiting_file.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                waiting_file.save()
+                return redirect('xiaomi_waiting')
+            else:
+                messages.warning(request, 'You are trying o add the wrong file format')
         
     ctx = {"title" : "Xiaomi Waiting Update",
            "form" : form,
@@ -248,10 +273,14 @@ def xiaomi_waiting_update(request, pk):
 
 @login_required
 def xiaomi_parts(request):
-    parts = XiaomiPartsCatalog.objects.get()
-    parts_all = XiaomiPartsCatalog.objects.all()
-    table = Table(parts=parts.file)
-    parts_table = table.parts_to_html()
+    try:
+        parts = XiaomiPartsCatalog.objects.get()
+        parts_all = XiaomiPartsCatalog.objects.all()
+        table = Table(parts=parts.file)
+        parts_table = table.parts_to_html()
+    except:
+        messages.error(request, 'Please check your excel file or contact with the administrator')
+        return redirect('xiaomi_deliveries')
     
     ctx = {"title" : "Xiaomi Parts",
            "parts" : parts_table,  
@@ -270,8 +299,11 @@ def xiaomi_parts_update(request, pk):
         
         if form.is_valid():
             parts_file = form.save(commit=False)
-            parts_file.save()
-            return redirect('xiaomi_parts')
+            if parts_file.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                parts_file.save()
+                return redirect('xiaomi_parts')
+            else:
+                messages.error(request, 'Your file has float values. Please change your excel data into general data')
     
     ctx = {"title" : "Xiaomi Parts Update",           
         "form" : form,}
