@@ -24,7 +24,7 @@ function warning_noti() {
 		continueDelayOnInactiveTab: false,
 		position: 'top right',
 		icon: 'bx bx-error',
-		msg: 'Lorem ipsum dolor sit amet hears farmer indemnity inherent.'
+		msg: '{{message}}'
 	});
 }
 

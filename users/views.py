@@ -3,6 +3,7 @@ from .forms import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Create your views here.
 
 def user_login(request):
@@ -10,14 +11,19 @@ def user_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
-        user = User.objects.get(username=username)
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.warning(request, 'Login is incorrect')
         
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
             login(request, user)
             return redirect('dashboard')
+        else:
+            messages.warning(request, 'Password is incorrect')
+        
         
     return render(request, "users/login.html")
 

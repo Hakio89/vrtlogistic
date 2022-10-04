@@ -28,8 +28,8 @@
 				<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-2">
 					<div class="col mx-auto">
 						<div class="my-4 text-center">
-							<h5>Virtual Logistic</h5>
-							<img src="{% static 'images/logo-VL.png' %}" width="180" alt="" />							
+							<img src="{% static 'images/logo-VL.png' %}" width="180" alt="" />	
+							<p align="center"><h6>Virtual Logistic</h6></p>							
 						</div>
 						<div class="card">
 							<div class="card-body">
@@ -38,9 +38,6 @@
 										<h3 class="">Sign Up</h3>
 										<p>Already have an account? <a href="{% url 'user_login'%}">Sign in here</a>
 										</p>
-									</div>
-									<div class="login-separater text-center mb-4"> <span>OR SIGN UP WITH EMAIL</span>
-										<hr/>
 									</div>
 									<div class="form-body">
 										{% if registered %}
@@ -223,6 +220,21 @@
 	  $('body').attr('class', 'bg-theme bg-theme15');
 	}
 	</script>
+	{% if messages %}
+		{% for message in messages %}
+		<script type="text/javascript">
+			$(document).ready(function {{message.tags}}_noti() {
+				Lobibox.notify('{{message.tags}}', {
+					pauseDelayOnHover: true,
+					continueDelayOnInactiveTab: false,
+					position: 'top right',
+					icon: 'bx bx-error',
+					msg: '{{message}}'
+				});
+			});
+		</script>
+		{% endfor %}
+    {% endif %}
 </body>
 
 </html>

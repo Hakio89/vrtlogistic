@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import *
 from .forms import *
@@ -11,6 +12,8 @@ from .utils.tables import Table
 def xiaomi(request):
     deliveries = Xiaomi.objects.all()
     claims = XiaomiClaimParts.objects.all()
+    
+    messages.info(request, 'Login is incorrect')
     
     ctx = {"title" : "Xiaomi Default",
            "xiaomi" : deliveries,
