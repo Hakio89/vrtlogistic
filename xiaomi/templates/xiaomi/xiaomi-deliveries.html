@@ -39,22 +39,22 @@
                         {%if xiao.zz_pmgp != None%}
                         <td>{{xiao.zz_pmgp}}</td>
                         {%else%}
-                        <td></td>
+                        <td>&mdash;</td>
                         {%endif%}
                         {%if xiao.status_pmgp != None%}
                         <td>{{xiao.status_pmgp}}</td>
                         {%else%}
-                        <td></td>
+                        <td>&mdash;</td>
                         {%endif%}
                         {%if xiao.zz_pmgh != None%}
                         <td>{{xiao.zz_pmgh}}</td>
                         {%else%}
-                        <td></td>
+                        <td>&mdash;</td>
                         {%endif%}
                         {%if xiao.status_pmgh != None%}
                         <td>{{xiao.status_pmgh}}</td>
                         {%else%}
-                        <td></td>
+                        <td>&mdash;</td>
                         {%endif%}
                         <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}"><i class="lni lni-popup"></i></a></td>
                         <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="lni lni-exit-up"></i></a></td>
