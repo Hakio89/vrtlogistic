@@ -86,5 +86,12 @@ class XiaomiClaimParts(models.Model):
     
     def __str__(self):
         return str(self.claim_part)
+    
+class MailReportReceivers(models.Model):
+    
+    email = models.EmailField()
+    
+    def __str__(self):
+        return str(self.email)
 
     

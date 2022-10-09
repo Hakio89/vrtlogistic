@@ -15,11 +15,14 @@ from .utils.tables import Table
 @login_required
 def xiaomi(request):
     claims = XiaomiClaimParts.objects.all()
-    parts = XiaomiPartsCatalog.objects.all()
-    waiting = XiaomiWaitingParts.objects.all()
+    parts_all = XiaomiPartsCatalog.objects.all()
+    waiting_all = XiaomiWaitingParts.objects.all()
     deliveries = Xiaomi.objects.all()
     
+    emails = MailReportReceivers.objects.all()
+    print(list(emails))
     if request.method == "POST":
+        emails = MailReportReceivers.objects.all()
         deliveries = Xiaomi.objects.all()
         parts = XiaomiPartsCatalog.objects.get()
         waiting = XiaomiWaitingParts.objects.get()
@@ -41,15 +44,15 @@ def xiaomi(request):
             subject,
             message,
             settings.EMAIL_HOST_USER,
-            ['pawel89@windowslive.com'],
+            list(emails),
         )
         msg.content_subtype ="html"# Main content is now text/html
         msg.send()
     
     ctx = {"title" : "Xiaomi Default",
            "claims" : claims,
-           "parts" : parts,
-           "waiting" : waiting,
+           "parts" : parts_all,
+           "waiting" : waiting_all,
            "deliveries" : deliveries,
            }
     return render(request, "xiaomi/xiaomi.html", ctx)
