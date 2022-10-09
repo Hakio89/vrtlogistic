@@ -10,4 +10,4 @@ def dashboard(request):
         "title" : "Dashboard",
         "deliveries" : deliveries,
         }
-    return render(request, "dashboard\dashboard.html", ctx)
+    return render(request, "dashboard.html", ctx)
