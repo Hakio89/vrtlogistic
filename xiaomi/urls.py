@@ -16,6 +16,8 @@ urlpatterns = [
          name="xiaomi_delivery_file_update"),
     path("xiaomi/delivery/delete/<str:pk>/", views.xiaomi_delivery_delete,
          name="xiaomi_delivery_delete"),
+    path("xiaomi/deliveries/report/", views.xiaomi_delivery_report,
+         name="xiaomi_delivery_report"),
     
     path("xiaomi/parts/", views.xiaomi_parts,
          name="xiaomi_parts"),

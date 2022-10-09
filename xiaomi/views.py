@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+from vrtlogistic.settings import EMAIL_HOST_USER
+from django.conf import settings
 
 from .models import *
 from .forms import *
@@ -10,11 +14,36 @@ from .utils.tables import Table
 
 @login_required
 def xiaomi(request):
-    deliveries = Xiaomi.objects.all()
     claims = XiaomiClaimParts.objects.all()
     
+    if request.method == "POST":
+        deliveries = Xiaomi.objects.all()
+        parts = XiaomiPartsCatalog.objects.get()
+        waiting = XiaomiWaitingParts.objects.get()
+        
+        table = Table(
+                        delivery=deliveries, 
+                        parts=parts,
+                        waiting=waiting,
+                    )
+        
+        report = table.mail_report()
+        
+        ctx = {
+            'report' : report
+        }
+        subject = 'XIAOMI - Aktualny raport oczekujących dostaw'
+        message = get_template('xiaomi/xiaomi-delivery-report.html').render(ctx)
+        msg = EmailMessage(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            ['pawel89@windowslive.com'],
+        )
+        msg.content_subtype ="html"# Main content is now text/html
+        msg.send()
+    
     ctx = {"title" : "Xiaomi Default",
-           "xiaomi" : deliveries,
            "claims" : claims,
            }
     return render(request, "xiaomi/xiaomi.html", ctx)
@@ -99,11 +128,11 @@ def xiaomi_delivery(request, pk):
         waiting = XiaomiWaitingParts.objects.get()
         form_pmgp = PmgpDeliveryForm(instance=single_delivery)
         form_pmgh = PmghDeliveryForm(instance=single_delivery)
-    
-    
-        table = Table(delivery=single_delivery.file, 
-                    parts=parts.file, claim=claim,
-                    waiting=waiting.file)
+
+
+        table = Table(delivery=single_delivery, 
+                    parts=parts, claim=claim,
+                    waiting=waiting)
         pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html,\
             del_nan, del_empty = table.delivery_joining()
         
@@ -118,7 +147,7 @@ def xiaomi_delivery(request, pk):
             if "pmgh" in request.POST:
                 if form_h.is_valid():
                     form_h.save()
-                    
+                
     except TypeError:    
         messages.error(request, 'Make sure your file has no float values. Please change your excel data into general data or contact with the administrator')
         return redirect('xiaomi_deliveries')
@@ -255,7 +284,6 @@ def xiaomi_waiting_update(request, pk):
     form = XiaomiWaitingForm(instance=waiting)
     
     if request.method == "POST":
-        waiting.file.delete()
         form = XiaomiWaitingForm(request.POST, request.FILES, instance=waiting)       
         
         if form.is_valid():
@@ -308,3 +336,21 @@ def xiaomi_parts_update(request, pk):
     ctx = {"title" : "Xiaomi Parts Update",           
         "form" : form,}
     return render(request, "xiaomi/xiaomi-parts-update.html", ctx)
+
+def xiaomi_delivery_report(request):
+    deliveries = Xiaomi.objects.all()
+    parts = XiaomiPartsCatalog.objects.get()
+    waiting = XiaomiWaitingParts.objects.get()
+    
+    table = Table(
+                    delivery=deliveries, 
+                    parts=parts,
+                    waiting=waiting,
+                )
+    
+    report = table.mail_report()
+    ctx = {
+        "title" : "Xiaomi Deliveries Report",
+        "report" : report,
+    }
+    return render(request, "xiaomi/xiaomi-delivery-report.html", ctx)
