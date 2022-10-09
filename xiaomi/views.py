@@ -15,6 +15,9 @@ from .utils.tables import Table
 @login_required
 def xiaomi(request):
     claims = XiaomiClaimParts.objects.all()
+    parts = XiaomiPartsCatalog.objects.all()
+    waiting = XiaomiWaitingParts.objects.all()
+    deliveries = Xiaomi.objects.all()
     
     if request.method == "POST":
         deliveries = Xiaomi.objects.all()
@@ -45,6 +48,9 @@ def xiaomi(request):
     
     ctx = {"title" : "Xiaomi Default",
            "claims" : claims,
+           "parts" : parts,
+           "waiting" : waiting,
+           "deliveries" : deliveries,
            }
     return render(request, "xiaomi/xiaomi.html", ctx)
 
@@ -284,6 +290,7 @@ def xiaomi_waiting_update(request, pk):
     form = XiaomiWaitingForm(instance=waiting)
     
     if request.method == "POST":
+        waiting.file.delete()
         form = XiaomiWaitingForm(request.POST, request.FILES, instance=waiting)       
         
         if form.is_valid():

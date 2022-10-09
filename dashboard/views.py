@@ -1,6 +1,13 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
+
+from xiaomi.models import Xiaomi
 
 # Create your views here.
 def dashboard(request):
-    ctx = {"title" : "Dashboard"}
+    deliveries = Xiaomi.objects.all()
+    
+    ctx = {
+        "title" : "Dashboard",
+        "deliveries" : deliveries,
+        }
     return render(request, "dashboard\dashboard.html", ctx)
