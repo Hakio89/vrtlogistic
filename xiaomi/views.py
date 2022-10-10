@@ -19,8 +19,6 @@ def xiaomi(request):
     waiting_all = XiaomiWaitingParts.objects.all()
     deliveries = Xiaomi.objects.all()
     
-    emails = MailReportReceivers.objects.all()
-    print(list(emails))
     if request.method == "POST":
         emails = MailReportReceivers.objects.all()
         deliveries = Xiaomi.objects.all()
@@ -48,7 +46,8 @@ def xiaomi(request):
         )
         msg.content_subtype ="html"# Main content is now text/html
         msg.send()
-    
+        messages.success(request, 'report successfully send')
+        
     ctx = {"title" : "Xiaomi Default",
            "claims" : claims,
            "parts" : parts_all,
@@ -71,6 +70,7 @@ def xiaomi_delivery_new(request):
             if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
                 delivery.creator = user
                 delivery.save()
+                messages.success(request, 'new delivery successfully created')
                 return redirect('xiaomi_deliveries')
             else:
                 messages.warning(request, 'You are trying o add the wrong file format')
@@ -91,6 +91,7 @@ def xiaomi_delivery_update(request, pk):
         
         if form.is_valid():
             form.save()
+            messages.success(request, 'delivery successfully updated')
             return redirect('xiaomi_deliveries')
     
     ctx = {
@@ -114,6 +115,7 @@ def xiaomi_delivery_file_update(request, pk):
             delivery = form.save(commit=False)
             if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
                 delivery.save()
+                messages.success(request, 'file successfully updated')
                 return redirect('xiaomi_deliveries')
             else:
                 messages.warning(request, 'You are trying o add the wrong file format')
@@ -190,6 +192,7 @@ def xiaomi_delivery_delete(request, pk):
         single_delivery_file.delete()
         if request.method == 'POST':
             single_delivery.delete()
+            messages.success(request, 'delivery successfully removed')
             return redirect('xiaomi_deliveries')
     
     
@@ -225,6 +228,7 @@ def xiaomi_claims_new(request):
         
         if form.is_valid():
             form.save()
+            messages.success(request, 'claim successfully created')
             return redirect('xiaomi_claims')
     
     ctx = {"title" : "Xiaomi Claims New",
@@ -242,6 +246,7 @@ def xiaomi_claims_update(request, pk):
         
         if form.is_valid():
             form.save()
+            messages.success(request, 'claim successfully updated')
             return redirect('xiaomi_claims')
     
     ctx = {"title" : "Xiaomi Claims Update",
@@ -256,6 +261,7 @@ def xiaomi_claims_delete(request, pk):
     
     if request.method == "POST":
         claim.delete()
+        messages.success(request, 'claim successfully removed')
         return redirect('xiaomi_claims')
     
     ctx = {"title" : "Xiaomi Claims Update",
@@ -300,6 +306,7 @@ def xiaomi_waiting_update(request, pk):
             waiting_file = form.save(commit=False)
             if waiting_file.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
                 waiting_file.save()
+                messages.success(request, 'file successfully updated')
                 return redirect('xiaomi_waiting')
             else:
                 messages.warning(request, 'You are trying o add the wrong file format')
@@ -339,6 +346,7 @@ def xiaomi_parts_update(request, pk):
             parts_file = form.save(commit=False)
             if parts_file.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
                 parts_file.save()
+                messages.success(request, 'file successfully updated')
                 return redirect('xiaomi_parts')
             else:
                 messages.error(request, 'Your file has float values. Please change your excel data into general data')

@@ -20,6 +20,7 @@ def user_login(request):
         
         if user is not None:
             login(request, user)
+            messages.success(request, 'successfully logged in')
             return redirect('dashboard')
         else:
             messages.warning(request, 'Password is incorrect')
@@ -29,6 +30,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
+    messages.success(request, 'successfully logged out')
     return redirect('user_login')
 
 def user_registration(request):
@@ -53,7 +55,7 @@ def user_registration(request):
                 profile.profile_image = request.FILES['profile_image']
             
             profile.save()
-            
+            messages.success(request, 'successfully registered')
             registered = True
             
         else:
@@ -62,8 +64,6 @@ def user_registration(request):
         user_form = UserForm()
         profile_form = UserProfileForm
     
-    
-            
         print("Wysłano formularz")
     
     ctx = {"user_form" : user_form,
@@ -87,11 +87,13 @@ def user_profile(request, pk):
             user_profile.profile_image.delete()
             if profile_image_form.is_valid():
                 profile_image_form.save()
+                messages.success(request, 'image successfully updated')
                 return redirect('user_profile', pk )
             
         if "data_update" in request.POST:
             if profile_update_form.is_valid():
-                profile_update_form.save()            
+                profile_update_form.save()     
+                messages.success(request, 'successfully updated')       
                 return redirect('user_profile', pk )
     ctx = {
         "user" : user,
