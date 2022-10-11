@@ -27,7 +27,7 @@ class Xiaomi(models.Model):
         return str(self.delivery)
     
     class Meta:
-        ordering = ['-created']
+        ordering = ['-date']
     
 class Status(models.Model):
     
