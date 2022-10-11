@@ -26,6 +26,9 @@ class Xiaomi(models.Model):
     def __str__(self):
         return str(self.delivery)
     
+    class Meta:
+        ordering = ['-created']
+    
 class Status(models.Model):
     
     status = models.CharField(max_length=50)
@@ -86,6 +89,7 @@ class XiaomiClaimParts(models.Model):
     
     def __str__(self):
         return str(self.claim_part)
+    
     
 class MailReportReceivers(models.Model):
     
