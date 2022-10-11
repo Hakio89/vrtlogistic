@@ -100,8 +100,16 @@
                     <img src="{{request.user.profile.profile_image.url}}" class="user-img" alt="user avatar">
                     <div align="center" class="user-info ps-3">
                         <p class="user-name mb-0">{{request.user.username|capfirst}}</p>
+                        {%if request.user.profile.occupation == None%}
+                        <p class="designattion mb-0"></p>   
+                        {%else%} 
                         <p class="designattion mb-0">{{request.user.profile.occupation}}</p>
+                        {%endif%}
+                        {%if request.user.profile.workplace == None%}
+                        <p class="designattion mb-0"></p>   
+                        {%else%}
                         <p class="designattion mb-0">{{request.user.profile.workplace}}</p>
+                        {%endif%}
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">

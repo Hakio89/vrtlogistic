@@ -100,14 +100,14 @@ class Table:
             waiting.set_index('Parts Number')], lsuffix="", rsuffix="")
         
         delivery = delivery.reset_index()
-        delivery = delivery.fillna(int(0))        
+        delivery = delivery.fillna(int(0))     
         
         delivery['Waiting'] = delivery['Waiting'].astype(dtype=int)
         delivery['Claims'] = delivery['Claims'].astype(dtype=int)
         delivery['Parts Number'] = delivery['Parts Number'].astype(dtype=str)
         delivery['Parts Desciption'] = delivery['Parts Desciption'].astype(dtype=str)
         delivery['Qty'] = delivery['Qty'].astype(dtype=int)
-        delivery['Parts Desciption PL'] = delivery['Parts Desciption PL'].astype(dtype=str)
+        delivery['Parts Desciption PL'] = delivery['Parts Desciption PL'].astype(dtype=str).str.replace('\n', '') 
         delivery['Warehouse'] = delivery['Warehouse'].astype(dtype=str)
         
         warehouse_pmgp = delivery['Warehouse'] == 'PMGP'
@@ -124,7 +124,7 @@ class Table:
         pmgh_len = len(pmgh)
         
         pmgp_sum = pmgp['Qty'].sum()
-        pmgh_sum = pmgp['Qty'].sum()
+        pmgh_sum = pmgh['Qty'].sum()
         
         pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport")
         pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered TearDown")
@@ -192,7 +192,7 @@ class Table:
                 mail_detail['PMGP PN'] = int(len(pmgp['Qty']))
                 mail_detail['PMGH QTY'] = int(pmgh['Qty'].sum())
                 mail_detail['PMGH PN'] = int(len(pmgh['Qty']))
-                mail_detail['Ilość'] = int(pmgp['Qty'].sum()) +  int(pmgh['Qty'].sum())
+                mail_detail['Ilość'] = int(pmgp['Qty'].sum()) +  int(pmgh['Qty'].sum()) + int(nan['Qty'].sum())
                 mail_detail['CZEKA PMGP'] = int(pmgp['Waiting'].sum())
                 mail_detail['CZEKA PMGH'] = int(pmgh['Waiting'].sum())
                 mail_detail['CZEKA'] = int(pmgh['Waiting'].sum()) + int(pmgp['Waiting'].sum())

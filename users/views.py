@@ -46,6 +46,7 @@ def user_registration(request):
             user = user_form.save()
             user.set_password(user.password)
             user.save()
+            messages.success(request, 'successfully registered')
             
             profile = profile_form.save(commit=False)
             profile.owner = user
@@ -55,8 +56,8 @@ def user_registration(request):
                 profile.profile_image = request.FILES['profile_image']
             
             profile.save()
-            messages.success(request, 'successfully registered')
-            registered = True
+            registered = True            
+            
             
         else:
             print(user_form.errors, profile_form.errors)

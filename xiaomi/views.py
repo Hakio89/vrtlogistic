@@ -154,11 +154,13 @@ def xiaomi_delivery(request, pk):
             if "pmgp" in request.POST:       
                 if form_p.is_valid():
                     form_p.save()
+                    return redirect(request.path)
                 
             if "pmgh" in request.POST:
                 if form_h.is_valid():
                     form_h.save()
-                
+                    return redirect(request.path)
+            
     except TypeError:    
         messages.error(request, 'Make sure your file has no float values. Please change your excel data into general data or contact with the administrator')
         return redirect('xiaomi_deliveries')
