@@ -1,9 +1,13 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<p align="right">
+    <a href="{% url 'xiaomi_delivery_update' delivery.delivery%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
+</p>
 {% if pmgp_len != 0 %}
 <hr/>
 <h6 align="center" class="mb-0 text-uppercase Transport">PMGP WAREHOUSE</h6>
+
 <hr/>
 <div class="card">
     <div class="card-body">

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<<p align="right">
+<p align="right">
     {%for part in parts_all%}
     <a href="{%url 'xiaomi_parts_update' part.id%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
     {%endfor%}

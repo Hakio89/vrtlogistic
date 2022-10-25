@@ -150,7 +150,7 @@ def xiaomi_delivery(request, pk):
         if request.method == "POST":
             form_p = PmgpDeliveryForm(request.POST, instance=single_delivery)
             form_h = PmghDeliveryForm(request.POST, instance=single_delivery)
-            
+                            
             if "pmgp" in request.POST:       
                 if form_p.is_valid():
                     form_p.save()
