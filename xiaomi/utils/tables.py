@@ -40,11 +40,6 @@ class Table:
                                     'Domyślny magazyn serwisu' : 'Warehouse'})      
             return parts
     
-    def parts_to_html(self):
-        
-        html = self.read_parts_file()
-        return html.to_html(index=False, table_id="example2", classes="table table-striped table-bordered")
-        
     def read_waiting_file(self):
         """Read a waiting file only"""
         waiting = self.waiting.file
@@ -57,15 +52,10 @@ class Table:
                                     values='Waiting', aggfunc='sum')
             waiting = waiting.reset_index()
             return waiting
-    
-    def waiting_to_html(self):
-        html = self.read_waiting_file()
-        return html.to_html(index=False, table_id="example2", classes="table table-striped table-bordered")
-        
+  
     def read_claim_file(self):
         """Read a claim file only"""
-        claim = self.claim
-        
+        claim = self.claim        
         claim = read_frame(claim, fieldnames=['claim_part', 'qty', 'status'])
         claim = claim.rename(columns={'claim_part' : 'Parts Number',
                                     'qty' : 'Claims',
@@ -77,16 +67,11 @@ class Table:
         claim = claim[waiting_claim]
         claim = claim.pivot_table(index=["Parts Number"],
                                     values='Claims', aggfunc='sum')            
-        claim = claim.reset_index()
-        
+        claim = claim.reset_index()        
         return claim
-    
-    def claim_to_html(self):
-        html = self.read_claim_file()
-        return html.to_html(index=False, table_id="example2", classes="table table-striped table-bordered")
-    
+  
     def delivery_joining(self):
-        """Opens file needed to be joined and join then in one delivery. Pars which has no descriptions are displays as Lack of Parts"""
+        """Open files needed to be joined and join them in one delivery. Parts which has no descriptions are displays as Lack of Parts"""
         delivery = self.read_delivery_file()
         parts = self.read_parts_file()
         waiting = self.read_waiting_file()
@@ -116,18 +101,21 @@ class Table:
         return delivery
     
     def pmgp_delivery(self, del_data):
+        """Returns data for PMGP warehouse only"""
         delivery = del_data        
         warehouse_pmgp = delivery['Warehouse'] == 'PMGP'
         pmgp = delivery[warehouse_pmgp]
         return pmgp
     
     def pmgh_delivery(self, del_data):
+        """Returns data for PMGH warehouse only"""
         delivery = del_data        
         warehouse_pmgh = delivery['Warehouse'] == 'PMGH'
         pmgh = delivery[warehouse_pmgh] 
         return pmgh
     
     def nan_delivery(self, del_data):
+        """Returns data for parts which are not included in PMGP and PMGH warehouse"""
         delivery = del_data        
         warehouse_pmgp_nan = delivery['Warehouse'] != 'PMGP'
         warehouse_pmgh_nan = delivery['Warehouse'] != 'PMGH'
@@ -137,19 +125,19 @@ class Table:
     
             
     def read_base(self):
+        """Returns data as a dataframe from datatbase"""
         file = self.delivery
         data_base = read_frame(file, fieldnames=['delivery', 'status'], )
         data_base = data_base.rename(columns={
             'delivery': 'Numer SO',
             'status': 'Status',
         })
-        data_base = data_base.set_index('Numer SO')
-        
+        data_base = data_base.set_index('Numer SO')        
         return data_base
         
     def __next__(self):
-        all_deliveries = self.delivery
-        
+        """Generator that creates data to be included in email message"""
+        all_deliveries = self.delivery        
     
         for delivery in all_deliveries:
             if delivery.status.status != "Transport":
@@ -211,6 +199,7 @@ class Table:
         
     #Connect all needed tables to mail report and adds sumup
     def mail_report(self):
+        """Creates email report"""
         mail_detail = self.__next__()
         report = pd.concat(mail_detail, axis=0)
         sumdel = report['Ilość'].sum()
@@ -238,6 +227,5 @@ class Table:
         }
         report = report.append(sumup, ignore_index=True)
         report = report.fillna(str(""))
-        report = report.to_html(index=False, table_id="customers")
-        
+        report = report.to_html(index=False, table_id="customers")        
         return report
