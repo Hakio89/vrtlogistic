@@ -93,43 +93,48 @@ class Table:
         claim = self.read_claim_file()
         
         delivery = delivery.set_index('Parts Number')
-        
-        delivery = delivery.join([
-            parts.set_index('Parts Number'), 
-            claim.set_index('Parts Number'), 
-            waiting.set_index('Parts Number')], lsuffix="", rsuffix="")
+        if parts.empty == False:
+            delivery = delivery.join(parts.set_index('Parts Number'))
+        if claim.empty == False:
+            delivery = delivery.join(claim.set_index('Parts Number'))
+        if waiting.empty == False:
+            delivery = delivery.join(waiting.set_index('Parts Number'))
         
         delivery = delivery.reset_index()
-        delivery = delivery.fillna(int(0))     
+        delivery = delivery.fillna(int(0))   
         
-        delivery['Waiting'] = delivery['Waiting'].astype(dtype=int)
-        delivery['Claims'] = delivery['Claims'].astype(dtype=int)
+        if waiting.empty == False:
+            delivery['Waiting'] = delivery['Waiting'].astype(dtype=int)
+        if claim.empty == False:
+            delivery['Claims'] = delivery['Claims'].astype(dtype=int)
         delivery['Parts Number'] = delivery['Parts Number'].astype(dtype=str)
         delivery['Parts Desciption'] = delivery['Parts Desciption'].astype(dtype=str)
         delivery['Qty'] = delivery['Qty'].astype(dtype=int)
-        delivery['Parts Desciption PL'] = delivery['Parts Desciption PL'].astype(dtype=str).str.replace('\n', '') 
-        delivery['Warehouse'] = delivery['Warehouse'].astype(dtype=str)
-        
+        if parts.empty == False:
+            delivery['Parts Desciption PL'] = delivery['Parts Desciption PL'].astype(dtype=str).str.replace('\n', '') 
+            delivery['Warehouse'] = delivery['Warehouse'].astype(dtype=str)
+        return delivery
+    
+    def pmgp_delivery(self, del_data):
+        delivery = del_data        
         warehouse_pmgp = delivery['Warehouse'] == 'PMGP'
         pmgp = delivery[warehouse_pmgp]
+        return pmgp
+    
+    def pmgh_delivery(self, del_data):
+        delivery = del_data        
         warehouse_pmgh = delivery['Warehouse'] == 'PMGH'
-        pmgh = delivery[warehouse_pmgh]     
+        pmgh = delivery[warehouse_pmgh] 
+        return pmgh
+    
+    def nan_delivery(self, del_data):
+        delivery = del_data        
         warehouse_pmgp_nan = delivery['Warehouse'] != 'PMGP'
         warehouse_pmgh_nan = delivery['Warehouse'] != 'PMGH'
         warehouse_nan = warehouse_pmgp_nan & warehouse_pmgh_nan
-        
-        del_empty = delivery[warehouse_nan].empty
-        
-        pmgp_len = len(pmgp)
-        pmgh_len = len(pmgh)
-        
-        pmgp_sum = pmgp['Qty'].sum()
-        pmgh_sum = pmgh['Qty'].sum()
-        
-        pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport")
-        pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered TearDown")
-        del_nan = delivery[warehouse_nan].to_html(index=False, table_id="example4", classes="table table-striped table-bordered")
-        return pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html, del_nan, del_empty
+        return delivery[warehouse_nan]
+    
+    
             
     def read_base(self):
         file = self.delivery

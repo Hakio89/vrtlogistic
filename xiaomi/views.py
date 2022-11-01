@@ -159,8 +159,18 @@ def xiaomi_delivery(request, pk):
         table = Table(delivery=single_delivery, 
                     parts=parts, claim=claim,
                     waiting=waiting)
-        pmgp_len, pmgh_len, pmgp_sum, pmgh_sum, pmgp_html, pmgh_html,\
-            del_nan, del_empty = table.delivery_joining()
+        del_data = table.delivery_joining()
+        pmgp = table.pmgp_delivery(del_data)
+        pmgh = table.pmgh_delivery(del_data)
+        nan = table.nan_delivery(del_data)
+        pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport")  
+        pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered TearDown")
+        pmgp_len = len(pmgp)
+        pmgh_len = len(pmgh)
+        pmgp_sum = pmgp['Qty'].sum()
+        pmgh_sum = pmgh['Qty'].sum()
+        del_nan = nan.to_html(index=False, table_id="example4", classes="table table-striped table-bordered")
+        del_empty = nan.empty
         
         if request.method == "POST":
             form_p = PmgpDeliveryForm(request.POST, instance=single_delivery)
@@ -175,7 +185,7 @@ def xiaomi_delivery(request, pk):
                 if form_h.is_valid():
                     form_h.save()
                     return redirect(request.path)
-            
+         
     except TypeError:    
         messages.error(request, 'Make sure your file has no float values. Please change your excel data into general data or contact with the administrator')
         return redirect('xiaomi_deliveries')
@@ -184,7 +194,6 @@ def xiaomi_delivery(request, pk):
         messages.error(request, 'There no data. Please make sure you add parts catalog or contact with the administrator')
         return redirect('xiaomi_deliveries')
             
-    
     ctx = {
            "delivery" : single_delivery,
            "pmgp_to_html" : pmgp_html,
