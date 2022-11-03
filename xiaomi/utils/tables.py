@@ -39,6 +39,10 @@ class Table:
                                     'Opis dla serwisu' : 'Parts Desciption PL',
                                     'Domyślny magazyn serwisu' : 'Warehouse'})      
             return parts
+        
+    def parts_to_html(self):
+        parts = self.read_parts_file()
+        return parts.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport") 
     
     def read_waiting_file(self):
         """Read a waiting file only"""
@@ -52,7 +56,11 @@ class Table:
                                     values='Waiting', aggfunc='sum')
             waiting = waiting.reset_index()
             return waiting
-  
+        
+    def waiting_to_html(self):
+        waiting = self.read_waiting_file()
+        return waiting.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport") 
+    
     def read_claim_file(self):
         """Read a claim file only"""
         claim = self.claim        
