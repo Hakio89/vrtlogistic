@@ -42,7 +42,7 @@ class Table:
         
     def parts_to_html(self):
         parts = self.read_parts_file()
-        return parts.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport") 
+        return parts.to_html(index=False, table_id="example2", classes="table table-striped table-bordered") 
     
     def read_waiting_file(self):
         """Read a waiting file only"""
@@ -59,7 +59,7 @@ class Table:
         
     def waiting_to_html(self):
         waiting = self.read_waiting_file()
-        return waiting.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport") 
+        return waiting.to_html(index=False, table_id="example2", classes="table table-striped table-bordered") 
     
     def read_claim_file(self):
         """Read a claim file only"""
