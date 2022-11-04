@@ -47,7 +47,7 @@ def xiaomi(request):
             )
             msg.content_subtype ="html"# Main content is now text/html
             msg.send()
-            messages.success(request, 'report successfully send')
+            messages.success(request, 'report successfully sent')
         except:
             messages.warning(request, 'Something went wrong. Please contact admin')
 
