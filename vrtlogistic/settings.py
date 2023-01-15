@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "alcatel",
     "cat",
     "users",
+    "reports",
 ]
 
 MIDDLEWARE = [
