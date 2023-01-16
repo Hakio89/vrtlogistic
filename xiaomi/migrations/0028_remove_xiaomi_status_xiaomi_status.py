@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='xiaomi',
             name='status',
-            field=models.ForeignKey(default='Transport', on_delete=django.db.models.deletion.CASCADE, to='xiaomi.status'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='xiaomi.status'),
         ),
     ]
