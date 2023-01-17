@@ -25,6 +25,7 @@ urlpatterns = [
     path("", include("alcatel.urls")),
     path("", include("cat.urls")),
     path("", include("users.urls")),
+    path("", include("reports.urls")),
 ]
 
 
