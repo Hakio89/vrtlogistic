@@ -106,7 +106,7 @@ DATABASES = {
     'HOST': 'localhost',
     'PORT': '5432',
     },
-    'dvdrental': {
+    'rental': {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'dvdrental',
     'USER': 'postgres',
