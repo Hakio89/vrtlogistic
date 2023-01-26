@@ -14,14 +14,14 @@
                     <th>Date</th>
                 </thead>
                 <tbody>
-                    {%for delivery in deliveries%}
+                    {% for delivery in deliveries %}
                     <tr>
                         <td>{{delivery.delivery}}</td>
                         <td>{{delivery.reckoning}}</td>
                         <td><span class="badge {{delivery.status}}">{{delivery.status}}</span></td>
                         <td>{{delivery.date|date:"Y-m-d"}}&nbsp;{{delivery.date|time:"H:i"}}</td>
                     </tr>
-                    {%endfor%}
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

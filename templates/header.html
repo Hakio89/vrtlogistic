@@ -95,6 +95,7 @@
                     </li>
                 </ul>
             </div>
+            {% if request.user.is_authenticated %}
             <div class="user-box dropdown">
                 <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{{request.user.profile.profile_image.url}}" class="user-img" alt="user avatar">
@@ -128,6 +129,7 @@
                     </li>
                 </ul>
             </div>
+            {% endif %}
         </nav>
     </div>
 </header>
