@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView
 from django.contrib import messages
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
@@ -12,53 +15,56 @@ from .utils.tables import Table
 
 # Create your views here.
 
-@login_required
-def xiaomi(request):    
-    claims = XiaomiClaimParts.objects.all()
-    parts_all = XiaomiPartsCatalog.objects.all()
-    waiting_all = XiaomiWaitingParts.objects.all()
-    deliveries = Xiaomi.objects.all()
+@method_decorator(login_required, name='dispatch')
+class XiaomiView(ListView):
+    model = Xiaomi
+    template_name =  "xiaomi/xiaomi.html"
     
-    if request.method == "POST":
-        try:        
-            emails = MailReportReceivers.objects.all()
-            deliveries = Xiaomi.objects.all()
-            parts = XiaomiPartsCatalog.objects.get()
-            waiting = XiaomiWaitingParts.objects.get()
-            
-            table = Table(
-                            delivery=deliveries, 
-                            parts=parts,
-                            waiting=waiting,
-                        )
-            
-            report = table.mail_report()
-            
-            ctx = {
-                'report' : report
-            }
-            subject = 'XIAOMI - Aktualny raport oczekujących dostaw'
-            message = get_template('xiaomi/xiaomi-delivery-report.html').render(ctx)
-            msg = EmailMessage(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                list(emails),
-            )
-            msg.content_subtype ="html"# Main content is now text/html
-            msg.send()
-            messages.success(request, 'report successfully sent')
-        except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Xiaomi Default"
+        context["claims"] = XiaomiClaimParts.objects.all()
+        context["parts"] = XiaomiPartsCatalog.objects.all()
+        context["waiting"] = XiaomiWaitingParts.objects.all()
+        context["deliveries"] = Xiaomi.objects.all()
+        return context
+        
+    def post(self, request, *args, **kwargs):        
+        if self.request.POST:
+            try:        
+                emails = MailReportReceivers.objects.all()
+                deliveries = Xiaomi.objects.all()
+                parts = XiaomiPartsCatalog.objects.get()
+                waiting = XiaomiWaitingParts.objects.get()
+                
+                table = Table(
+                                delivery=deliveries, 
+                                parts=parts,
+                                waiting=waiting,
+                            )
+                
+                report = table.mail_report()
+                ctx = {
+                    'report' : report
+                }
+                subject = 'XIAOMI - Aktualny raport oczekujących dostaw'
+                message = get_template('xiaomi/xiaomi-delivery-report.html').render(ctx)
+                msg = EmailMessage(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    list(emails),
+                )
+                msg.content_subtype ="html"# Main content is now text/html
+                msg.send()
+                messages.success(self.request, 'report successfully sent')
+                return redirect('xiaomi')
+            except:
+                messages.warning(self.request, 'Something went wrong. Please contact admin')
+                return redirect('xiaomi')
+        
     
-    ctx = {"title" : "Xiaomi Default",
-           "claims" : claims,
-           "parts" : parts_all,
-           "waiting" : waiting_all,
-           "deliveries" : deliveries,
-           }
-    return render(request, "xiaomi/xiaomi.html", ctx)
+    
 
 @login_required
 def xiaomi_delivery_new(request):
