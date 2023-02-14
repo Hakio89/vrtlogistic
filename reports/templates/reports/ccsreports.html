@@ -103,6 +103,20 @@
 					</div>
 				</div>
 				{% endif %}
+				<table>
+					<thead>
+						<tr>
+							<td>NrNaprawy</td>							
+						</tr>
+					</thead>
+					<tbody>
+						{% for c in ccs %}
+						<tr>
+							<td>{{c.NrNaprawy}}</td>							
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 				{% if show %}
 				<div class="card">
 					<div class="card-body">

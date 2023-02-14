@@ -66,8 +66,22 @@
 		<div class="page-wrapper">
 			<div class="page-content">				
 				<p>Cześć,</p>
-        		<p>Poniżej aktualny raport planowanych dostaw dla biznesu XIAOMI:</p>
+        		<p>Dostawy w transporcie dla biznesu XIAOMI:</p>
 				<p>{{report|safe}}</p>
+				<table>
+					<thead>
+						<tr>
+							<td>Numer SO</td>
+						</tr>
+					</thead>
+					<tbody>
+						{% for delivery in deliveries %}
+						<tr>
+							<td>{{delivery.delivery}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 				<!--end breadcrumb-->
 				<p style="font-size: 14">Best Regards,</p>
 				<p style="font-size: 14">Pozdrawiam</p>

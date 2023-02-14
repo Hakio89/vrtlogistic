@@ -412,6 +412,8 @@ def xiaomi_parts_update(request, pk):
     return render(request, "xiaomi/xiaomi-parts-update.html", ctx)
 
 def xiaomi_delivery_report(request):
+    deliveries = Xiaomi.objects.all()
+    
     try:
         deliveries = Xiaomi.objects.all()
         parts = XiaomiPartsCatalog.objects.get()
@@ -431,5 +433,6 @@ def xiaomi_delivery_report(request):
     ctx = {
         "title" : "Xiaomi Deliveries Report",
         "report" : report,
+        "deliveries" : deliveries,
     }
     return render(request, "xiaomi/xiaomi-delivery-report.html", ctx)

@@ -98,22 +98,7 @@ DATABASES = {
     'HOST': 'localhost',
     'PORT': '5432',
     },
-    'empty': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'Empty',
-    'USER': 'postgres',
-    'PASSWORD': 'PgAdmin&2022',
-    'HOST': 'localhost',
-    'PORT': '5432',
-    },
-    'rental': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'dvdrental',
-    'USER': 'postgres',
-    'PASSWORD': 'PgAdmin&2022',
-    'HOST': 'localhost',
-    'PORT': '5432',
-    },
+
 }
 
 #DATABASES = {
