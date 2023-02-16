@@ -17,3 +17,4 @@ class Django(models.Model):
     StatusWiersza = models.CharField(max_length=255)
     DataUtworzeniaWiersza = models.DateTimeField()
     Ilosc = models.IntegerField()
+
