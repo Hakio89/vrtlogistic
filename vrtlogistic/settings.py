@@ -111,10 +111,13 @@ DATABASES = {
     'NAME': 'DAPS',
     'USER': 'django_user',
     'PASSWORD': 'DE3.rLAf=)e6Sej',
-    'HOST': '192.168.3.2',
-    'PORT': '',
-    "OPTIONS": {'driver': 'ODBC Driver 17 for SQL Server',        
-    }
+    'HOST': '192.168.3.2\django',
+    'PORT': '1433',
+    "OPTIONS": {
+        "driver": "ODBC Driver 17 for SQL Server",
+        "host_is_server": True,
+        }
+    
     },
 }
 

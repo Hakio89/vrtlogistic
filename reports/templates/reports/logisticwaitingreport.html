@@ -1,0 +1,52 @@
+{% extends 'reports\ccsreports.html' %}
+{%load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>DataGenerowania</td>
+                        <td>NrNaprawy</td>
+                        <td>DataRejestracji</td>
+                        <td>TypZgloszenia</td>
+                        <td>Roszczenie</td>
+                        <td>ReklamacjaCCS</td>
+                        <td>Producent</td>
+                        <td>Model</td>
+                        <td>Status</td>
+                        <td>KodPozycji</td>
+                        <td>DKodPozycjiNazwa</td>
+                        <td>KodPozycjiTypNaprawy</td>
+                        <td>StatusWiersza</td>
+                        <td>DDataUtworzeniaWiersza</td>
+                        <td>Ilosc</td>					
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ccs in object_list %}
+                    <tr>
+                        <td>{{ccs.DataGenerowania}}</td>
+                        <td>{{ccs.NrNaprawy}}</td>
+                        <td>{{ccs.DataRejestracji}}</td>
+                        <td>{{ccs.TypZgloszenia}}</td>
+                        <td>{{ccs.Roszczenie}}</td>
+                        <td>{{ccs.ReklamacjaCCS}}</td>
+                        <td>{{ccs.Producent}}</td>
+                        <td>{{ccs.Model}}</td>
+                        <td>{{ccs.Status}}</td>
+                        <td>{{ccs.KodPozycji}}</td>
+                        <td>{{ccs.DKodPozycjiNazwa}}</td>
+                        <td>{{ccs.KodPozycjiTypNaprawy}}</td>
+                        <td>{{ccs.StatusWiersza}}</td>
+                        <td>{{ccs.DDataUtworzeniaWiersza}}</td>
+                        <td>{{ccs.Ilosc}}</td>						
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>				
+        </div>
+    </div>
+</div>
+{% endblock %}

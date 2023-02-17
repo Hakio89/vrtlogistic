@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from .forms import CCSReportsForm
 from xiaomi.models import Xiaomi
 from django.contrib import messages
-from .models import Django
+from .models import DjangoReport
 
 # Create your views here.
 
@@ -16,7 +16,7 @@ class CCSReportsView(ListView):
         context = super().get_context_data(**kwargs)           
         form = CCSReportsForm(self.request.GET)
         show = False
-        context['ccs'] = Django.objects.all().using('ccs')
+        context['ccsreports'] = DjangoReport.objects.all().using('ccs')
         
         if self.request.GET:
             try:
@@ -28,11 +28,16 @@ class CCSReportsView(ListView):
                 messages.error(self.request, 'Błąd - głoś problem do administratora')
         
         context['form'] = form
-        context['deliveries'] = queryset
         context['show'] = show
         
     
         
         return context
         
-        
+class DeliveriesReport(ListView):
+    template_name = 'reports/deliveriesreport.html'
+    queryset = Xiaomi.objects.all()
+
+class LogisticWaitingReport(ListView):
+    template_name = 'reports/logisticwaitingreport.html'
+    queryset = DjangoReport.objects.all().using('ccs')
