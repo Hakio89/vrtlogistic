@@ -89,24 +89,24 @@ WSGI_APPLICATION = "vrtlogistic.wsgi.application"
 #default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 #DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
 
-DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'virtuallogisticdb',
-    'USER': 'postgres',
-    'PASSWORD': 'PgAdmin&2022',
-    'HOST': 'localhost',
-    'PORT': '5432',
-    },
-
-}
-
 #DATABASES = {
-#    "default": {
-#        "ENGINE": "django.db.backends.sqlite3",
-#        "NAME": BASE_DIR / "db.sqlite3",
-#    }
+#    'default': {
+#    'ENGINE': 'django.db.backends.postgresql',
+#    'NAME': 'virtuallogisticdb',
+#    'USER': 'postgres',
+#    'PASSWORD': 'PgAdmin&2023',
+#    'HOST': 'localhost',
+#    'PORT': '5432',
+#    },
+
 #}
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    },
+}
 
 
 # Password validation

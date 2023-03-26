@@ -1,0 +1,46 @@
+{% extends 'reports\ccsreports.html' %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>ZamowienieZakupu</td>
+                        <td>Oddzial</td>
+                        <td>Magazyn</td>
+                        <td>OdwolanieDoDostawcy</td>
+                        <td>Stan</td>
+                        <td>Status</td>
+                        <td>KontoDostawcy</td>
+                        <td>NazwaDostawcy</td>
+                        <td>DataUtworzeniaG</td>
+                        <td>KodPozycji</td>
+                        <td>KodPozycjiNazwa</td>
+                        <td>Ilosc</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ccs in object_list %}
+                    <tr>
+                        <td>{{ccs.ZamowienieZakupu}}</td>
+                        <td>{{ccs.Oddzial}}</td>
+                        <td>{{ccs.Magazyn}}</td>
+                        <td>{{ccs.OdwolanieDoDostawcy}}</td>
+                        <td>{{ccs.Stan}}</td>
+                        <td>{{ccs.Status}}</td>
+                        <td>{{ccs.KontoDostawcy}}</td>
+                        <td>{{ccs.NazwaDostawcy}}</td>
+                        <td>{{ccs.DataUtworzeniaG}}</td>
+                        <td>{{ccs.KodPozycji}}</td>
+                        <td>{{ccs.KodPozycjiNazwa}}</td>
+                        <td>{{ccs.Ilosc}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

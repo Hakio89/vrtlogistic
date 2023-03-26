@@ -1,0 +1,44 @@
+{% extends 'reports/ccsreports.html' %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>Deliveries</td>
+                        <td>Reckoning</td>
+                        <td>Status</td>
+                        <td>ZZ PMGP</td>
+                        <td>ZZ PMGH</td>
+                        <td>Date</td>
+                        <td>Created</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for delivery in object_list %}
+                    <tr>
+                        <td>{{delivery.delivery}}</td>
+                        <td>{{delivery.reckoning}}</td>
+                        <td>{{delivery.status}}</td>
+                        {% if delivery.zz_pmgp == None%}
+                        <td>&mdash;</td>
+                        {% else %}
+                        <td>{{delivery.zz_pmgp}}</td>
+                        {% endif %}
+                        {% if delivery.zz_pmgh == None%}
+                        <td>&mdash;</td>
+                        {% else %}
+                        <td>{{delivery.zz_pmgh}}</td>
+                        {% endif %}
+                        <td>{{delivery.date|date:"Y-m-d"}}&nbsp;{{delivery.date|time:"H:i"}}</td>
+                        <td>{{delivery.creator}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
