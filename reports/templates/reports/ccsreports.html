@@ -6,6 +6,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ title }}</title>
 	<!--favicon-->
 	<link rel="icon" href="{% static '/images/logo-favicon.png' %} " type="image/png" />
 	<!--plugins-->
@@ -58,7 +59,7 @@
                     </div>
 						
                     <div class="search-bar flex-grow-1">
-						<p align="center" class="logo-text"><b>CCS REPORTS</b> powered by <b>Virtual Logistic</b></p>
+						<p class="logo-text ccs-report-text"><b>CCS REPORTS</b> powered by <b>Virtual Logistic</b></p>
                     </div>
                     <div class="top-menu ms-auto">
 						
@@ -92,19 +93,20 @@
 				</div>
 				<!-- HERE IS THE CONTENT -->
 				<hr/>
-				{% if show == False %}
-				<div class="card" align="center">
+				{% if show %}
+				<div class="card ccs-report-form">
 					<div class="card-body">
-						<form method='GET'>
-							{{ form.as_p }}
+						<form method='POST'>
+							{{ form }}
 							{% csrf_token %}
-							<input type="submit" class="btn btn-success px-5" name='report' value='Generuj Raport'>
+							<input type="submit" class="btn btn-success px-5" value='Generuj Raport'>
 						</for>
 					</div>
 				</div>
 				{% endif %}
 				{% block content %}
 				{% endblock %}
+				{{ results }}
 				<!-- place for settings-->
 				<!--end breadcrumb-->
 				<div class="container mb-3">

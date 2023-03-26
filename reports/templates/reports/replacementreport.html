@@ -1,5 +1,5 @@
 {% extends 'reports\ccsreports.html' %}
-{%load static %}
+{% load static %}
 {% block content %}
 <div class="card">
     <div class="card-body">
@@ -7,15 +7,17 @@
             <table id="example2" class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <td>PN</td>
-                        <td>Stock Available</td>
+                        <td>Kod Pozycji</td>
+                        <td>Zamiennik</td>
+                        <td>Główna</td>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for pn, value in all_parts.items %}
-                    <tr>                        
-                        <td>{{ pn }}</td>
-                        <td>{{ value }}</td>                        
+                    {% for ccs in object_list %}
+                    <tr>
+                        <td>{{ccs.KodPozycji}}</td>
+                        <td>{{ccs.Zamiennik}}</td>
+                        <td>{{ccs.Glowny}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
