@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', 'virtuallogistic.pythonanywhere.com', 'vrtlogistic.pythonanywhere.com', 'virtuallogistic-hakio89.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142']
 
 
 # Application definition
