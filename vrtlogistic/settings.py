@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', 'virtuallogistic.pythonanywhere.com', 'vrtlogistic.pythonanywhere.com', 'virtuallogistic-hakio89.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142']
 
 
 # Application definition
@@ -89,17 +89,6 @@ WSGI_APPLICATION = "vrtlogistic.wsgi.application"
 #default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 #DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
 
-#DATABASES = {
-#    'default': {
-#    'ENGINE': 'django.db.backends.postgresql',
-#    'NAME': 'virtuallogisticdb',
-#    'USER': 'postgres',
-#    'PASSWORD': 'PgAdmin&2023',
-#    'HOST': 'localhost',
-#    'PORT': '5432',
-#    },
-
-#}
 
 DATABASES = {
     "default": {

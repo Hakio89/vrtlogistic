@@ -97,17 +97,12 @@ def PotencialRepairsToReleaseReport(request):
         ).order_by(
             'DataRejestracji'
         ).using('ccs')
-        #kartoteka = '410200001I5E'
-        #stock = stock_checking(kartoteka)
         stock = all_pn_stock()
         repair_parts = parts_for_repair(queryset)
         enough_stock = checking_enough_stock(stock, repair_parts)
         queryset = queryset.filter(NrNaprawy__in=enough_stock)
         context = {
             'queryset' : queryset, 
-            'stock' : stock,
-            'repair_parts' : repair_parts,
-            'enough_stock' : enough_stock,
             'title' : 'Potencjalne naprawy do zwolnienia',
             }
         return render(request, 'reports/potencialrepairstorelease.html', context)

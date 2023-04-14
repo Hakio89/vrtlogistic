@@ -1,4 +1,4 @@
-{% extends 'reports\ccsreports.html' %}
+{% extends 'reports/ccsreports.html' %}
 {%load static %}
 {% block content %}
 <div class="card">
@@ -49,12 +49,6 @@
         </div>
     </div>
 </div>
-<p><b>STOCK</b></p>
-<p>{{ stock }}</p>
-<p><b>REPAIR PARTS</b></p>
-<p>{{ repair_parts }}</p>
-<p>{{ repair_parts.1006941628 }}</p>
-<p><b>ENOUGH STOCK</b></p>
-<p>{{ enough_stock }}</p>
+
 
 {% endblock %}
