@@ -96,12 +96,12 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     },
     "ccs": {
-    "ENGINE": "mssql",
-    "NAME": "DAPS",
-    "USER": "django_user",
-    "PASSWORD": "DE3.rLAf=)e6Sej",
-    "HOST": "192.168.3.2\django",
-    "PORT": "1433",
+    "ENGINE": config('CCS_ENGINE'),
+    "NAME": config('CCS_NAME'),
+    "USER": config('CCS_USER'),
+    "PASSWORD": config('CCS_PASSWORD'),
+    "HOST": config('CCS_HOST'),
+    "PORT": config('CCS_PORT'),
     "OPTIONS": {
         "driver": "ODBC Driver 18 for SQL Server",
         "extra_params": "Encrypt=no",
