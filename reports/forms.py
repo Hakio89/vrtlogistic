@@ -1,11 +1,21 @@
 from django import forms
 
 class CCSReportsForm(forms.Form):
-    REPORT_CHOICE = [
-    ('NC', 'Naprawy Czekające'),
-    ('DCC', 'Dostępne części pod czeka'),
-    ('PNDZ', 'Potencjalne naprawy do zwolnienia'),
-    ('DX', 'Dostawy Xiaomi'),
-]
-    report = forms.ChoiceField(choices=REPORT_CHOICE, label='Wybierz raport:')
+    SELECT_BUSINESS = [
+    ('ALCATEL', 'ALCATEL'),
+    ('CAT', 'CAT'),
+    ('HUAWEI', 'HUAWEI'),
+    ('NEOLINE', 'NEOLINE'),
+    ('NOTHING', 'NOTHING'),
+    ('SAMSUNG', 'SAMSUNG'),
+    ('SETTI', 'SETTI'),
+    ('TCL', 'TCL'),
+    ('QLIVE', 'QLIVE'),
+    ('VIVO', 'VIVO'),
+    ('XIAOMI', 'XIAOMI'),
+    ]
+    
+
+    select_business = forms.MultipleChoiceField(choices=SELECT_BUSINESS, widget=forms.CheckboxSelectMultiple(), label='Wybierz biznes:')
+
 

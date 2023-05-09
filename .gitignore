@@ -5,3 +5,4 @@ static/xiaomi/templates*
 media/users/profile/images*
 env/
 *.sqlite3
+.env

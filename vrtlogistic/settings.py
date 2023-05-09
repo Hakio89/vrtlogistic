@@ -95,6 +95,18 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
+    "ccs": {
+    "ENGINE": config('CCS_ENGINE'),
+    "NAME": config('CCS_NAME'),
+    "USER": config('CCS_USER'),
+    "PASSWORD": config('CCS_PASSWORD'),
+    "HOST": config('CCS_HOST'),
+    "PORT": config('CCS_PORT'),
+    "OPTIONS": {
+        "driver": "ODBC Driver 18 for SQL Server",
+        "extra_params": "Encrypt=no",
+        }    
+    },
 }
 
 

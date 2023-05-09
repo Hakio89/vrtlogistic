@@ -1,3 +1,5 @@
+from typing import Any, Dict
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect, render, HttpResponse
 from django.views.generic import ListView
 from .forms import CCSReportsForm
@@ -10,7 +12,7 @@ from .calculate import stock_checking, all_pn_stock, parts_for_repair, checking_
 # Create your views here.
 
 class CCSReportsView(ListView):
-    template_name = 'reports/ccsreports.html'
+    template_name = 'reports/allreportslist.html'
     queryset = Xiaomi.objects.all()    
 
     def get_context_data(self, object_list=None, **kwargs):        
@@ -89,26 +91,53 @@ def run_procedure(request):
             messages.warning(request, 'Something went wrong. Please contact admin')
             return redirect('reports_ccs')
 
-def PotencialRepairsToReleaseReport(request): 
-    try:
-        queryset = LogisticWaiting.objects.filter(
+class PotencialRepairsToReleaseReport(ListView): 
+    template_name = 'reports/potencialrepairstorelease.html'
+    queryset = LogisticWaiting.objects.filter(
         Status='Czeka', 
         StatusWiersza='Braki zamówione'
         ).order_by(
             'DataRejestracji'
         ).using('ccs')
-        stock = all_pn_stock()
-        repair_parts = parts_for_repair(queryset)
-        enough_stock = checking_enough_stock(stock, repair_parts)
-        queryset = queryset.filter(NrNaprawy__in=enough_stock)
-        context = {
-            'queryset' : queryset, 
-            'title' : 'Potencjalne naprawy do zwolnienia',
-            }
-        return render(request, 'reports/potencialrepairstorelease.html', context)
-    except:
-        messages.warning(request, 'Something went wrong. Please contact admin')
-        return redirect('reports_ccs')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        show = False
+        form = CCSReportsForm()
+        if self.request.method == 'GET':
+            form = CCSReportsForm(self.request.GET)
+            if form.is_valid():
+                data = self.request.GET.getlist('select_business')
+                show = True
+                queryset = LogisticWaiting.objects.filter(
+                Producent__in=data,
+                Status='Czeka', 
+                StatusWiersza='Braki zamówione'
+                ).order_by(
+                    'DataRejestracji'
+                ).using('ccs')
+                stock = all_pn_stock(queryset)
+                repair_parts = parts_for_repair(queryset)
+                enough_stock = checking_enough_stock(stock, repair_parts)
+                queryset = queryset.filter(NrNaprawy__in=enough_stock)
+                if len(queryset) == 0:
+                    messages.warning(self.request, 'Brak potencjalnych napraw do zwolnienia dla wybranych biznesów')
+                context['queryset'] = queryset
+                
+       
+        
+        context['title'] = 'Potencjalne naprawy do zwolnienia'
+        
+        context['show'] = show
+        context['form'] = form
+        return context
+        """except:
+            messages.warning(self.request, 'Something went wrong. Please contact admin')"""
+        
+    
+    def post(self, request, *args, **kwargs):
+        pass
+        
 
 class ReplacementReport(ListView):
     template_name = 'reports/replacementreport.html'

@@ -21,13 +21,8 @@ def stock_checking(card):
                     stock.update({str(parts.KodPozycji) : int(parts.FizycznieDostepne) + int(parts.Zarejestrowane)})
         return stock
                 
-def all_pn_stock():
-    parts = LogisticWaiting.objects.filter(
-    Status='Czeka', 
-    StatusWiersza='Braki zamówione'
-    ).order_by(
-        'DataRejestracji'
-    ).using('ccs')
+def all_pn_stock(queryset):
+    parts = queryset
     unrepeated_pn = []
     for pn in parts:
         unrepeated_pn.append(pn.KodPozycji)
