@@ -2,15 +2,23 @@ from typing import Any, Dict
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect, render, HttpResponse
 from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from .forms import CCSReportsForm
 from xiaomi.models import Xiaomi
 from django.contrib import messages
 from .models import LogisticWaiting, BuyingOrder, Replacements
 from django.db import connections
-from .calculate import stock_checking, all_pn_stock, parts_for_repair, checking_enough_stock
+from .calculate import (
+    parts_for_repair, 
+    checking_enough_stock, 
+    unrepeated_pn_stock,
+    all_pn_stock,
+    )
 
 # Create your views here.
 
+@method_decorator(login_required, name='dispatch')
 class CCSReportsView(ListView):
     template_name = 'reports/allreportslist.html'
     queryset = Xiaomi.objects.all()    
@@ -116,18 +124,27 @@ class PotencialRepairsToReleaseReport(ListView):
                 ).order_by(
                     'DataRejestracji'
                 ).using('ccs')
-                stock = all_pn_stock(queryset)
+                unrepeated_pn = unrepeated_pn_stock(queryset)
+                all_stock_pmgp, all_stock_pmgh, all_stock_smgs = all_pn_stock(unrepeated_pn)
                 repair_parts = parts_for_repair(queryset)
-                enough_stock = checking_enough_stock(stock, repair_parts)
+                enough_stock = checking_enough_stock(
+                    all_stock_pmgp, 
+                    all_stock_pmgh, 
+                    all_stock_smgs, 
+                    repair_parts, 
+                    queryset,
+                    )
                 queryset = queryset.filter(NrNaprawy__in=enough_stock)
+                messages.success(self.request, 'Raport został poprawnie wygenerowany')
                 if len(queryset) == 0:
                     messages.warning(self.request, 'Brak potencjalnych napraw do zwolnienia dla wybranych biznesów')
                 context['queryset'] = queryset
+            elif form.is_valid() == False:
+                messages.info(self.request, 'Wybierz odpowiedni biznes/y lub wszystkie, a następnie wciśnij przycisk "Generuj Raport"')
                 
        
         
         context['title'] = 'Potencjalne naprawy do zwolnienia'
-        
         context['show'] = show
         context['form'] = form
         return context

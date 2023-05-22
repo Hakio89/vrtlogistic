@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic','virtuallogistic.euroccs.local' ]
+ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic','virtuallogistic.euroccs.local']
 
 
 # Application definition
