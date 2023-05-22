@@ -16,6 +16,10 @@ class CCSReportsForm(forms.Form):
     ]
     
 
-    select_business = forms.MultipleChoiceField(choices=SELECT_BUSINESS, widget=forms.CheckboxSelectMultiple(), label='Wybierz biznes:')
+    select_business = forms.MultipleChoiceField(
+        choices=SELECT_BUSINESS, 
+        widget=forms.CheckboxSelectMultiple(), 
+        label='Wybierz biznes:',
+    )
 
 

@@ -3,13 +3,69 @@
 {% block content %}
 <div class="card">
     <div class="card-body">
-        <form method='GET'>
-            <table>
-                {{ form.as_p }}
-                {% csrf_token %}
-                <th><input type="submit" class="btn btn-success px-5" value='Generuj Raport'></th>
-            </table>
-        </form>
+            <script language="JavaScript">
+                function toggle(source) {
+            checkboxes = document.getElementsByName('select_business');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = source.checked;
+            }
+            }
+            </script>
+            <form method='GET'>
+                    {{ form.non_field_errors }}
+                    <div class="form-check form-switch">
+                        <div>
+                            <label for="select_all">Wszystko</label><input class="form-check-input" type="checkbox" onClick="toggle(this)" id="select_all">
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="ALCATEL" class="form-check form-switch" id="id_select_business_0">
+                            <label class="form-check-label" for="id_select_business_0">ALCATEL</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="CAT" class="form-check form-switch" id="id_select_business_1">
+                            <label class="form-check-label" for="id_select_business_1">CAT</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="HUAWEI" class="form-check form-switch" id="id_select_business_2">
+                            <label class="form-check-label" for="id_select_business_2">HUAWEI</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="NEOLINE" class="form-check form-switch" id="id_select_business_3">
+                            <label class="form-check-label" for="id_select_business_3">NEOLINE</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="NOTHING" class="form-check form-switch" id="id_select_business_4">
+                            <label class="form-check-label" for="id_select_business_4">NOTHING</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="SAMSUNG" class="form-check form-switch" id="id_select_business_5">
+                            <label class="form-check-label" for="id_select_business_5">SAMSUNG</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="SETTI" class="form-check form-switch" id="id_select_business_6">
+                            <label class="form-check-label" for="id_select_business_6">SETTI</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="TCL" class="form-check form-switch" id="id_select_business_7">
+                            <label class="form-check-label" for="id_select_business_7">TCL</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="QLIVE" class="form-check form-switch" id="id_select_business_8">
+                            <label class="form-check-label" for="id_select_business_8">QLIVE</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="VIVO" class="form-check form-switch" id="id_select_business_9">
+                            <label class="form-check-label" for="id_select_business_9">VIVO</label>
+                        </div>
+                        <div class="inline-block-content">
+                            <input class="form-check-input" type="checkbox" name="select_business" value="XIAOMI" class="form-check form-switch" id="id_select_business_10">
+                            <label class="form-check-label" for="id_select_business_10">XIAOMI</label>
+                        </div>
+                    </div>
+                    <!--{{ form }} -->
+                    <input type="submit" class="btn btn-success px-5" value='Generuj Raport'>
+            </form>
+        </div>
     </div>
 </div>
 {% if show %}
@@ -19,21 +75,21 @@
             <table id="example2" class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <td>DataGenerowania</td>
-                        <td>NrNaprawy</td>
-                        <td>DataRejestracji</td>
-                        <td>TypZgloszenia</td>
+                        <td>Data Generowania</td>
+                        <td>Nr Naprawy</td>
+                        <td>Data Rejestracji</td>
+                        <td>Typ Zgłoszenia</td>
                         <td>Roszczenie</td>
-                        <td>ReklamacjaCCS</td>
+                        <td>Reklamacja CCS</td>
                         <td>Producent</td>
                         <td>Model</td>
                         <td>Status</td>
-                        <td>KodPozycji</td>
-                        <td>KodPozycjiNazwa</td>
-                        <td>KodPozycjiTypNaprawy</td>
-                        <td>StatusWiersza</td>
-                        <td>DDataUtworzeniaWiersza</td>
-                        <td>Ilosc</td>					
+                        <td>Kod Pozycji</td>
+                        <td>Nazwa Kodu Pozycji</td>
+                        <td>Typ Naprawy</td>
+                        <td>Status Wiersza</td>
+                        <td>Data Utworzenia Wiersza</td>
+                        <td>Ilość</td>					
                     </tr>
                 </thead>
                 <tbody>
@@ -61,5 +117,6 @@
         </div>
     </div>
 </div>
+
 {% endif %}
 {% endblock %}

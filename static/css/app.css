@@ -4430,3 +4430,8 @@ body.bg-theme15 {
 .ccs-report-form {
 	text-align: center;
 }
+
+.inline-block-content {
+	display: inline-block;
+	padding: 1.5rem;
+  }
