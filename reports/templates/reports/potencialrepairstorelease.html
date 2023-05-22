@@ -95,7 +95,7 @@
                 <tbody>
                     {% for ccs in queryset %}
                     <tr>
-                        <td>{{ccs.DataGenerowania|date:"Y-m-d"}}&nbsp;{{ccs.DataGenerowania|time:"H:i"}}</td>
+                        <td>{{ccs.DataGenerowania|date:"Y-m-d"}}</td>
                         <td>{{ccs.NrNaprawy}}</td>
                         <td>{{ccs.DataRejestracji|date:"Y-m-d"}}&nbsp;{{ccs.DataRejestracji|time:"H:i"}}</td>
                         <td>{{ccs.TypZgloszenia}}</td>
