@@ -1,14 +1,16 @@
-from typing import Any, Dict
-from django.db.models.query import QuerySet
-from django.shortcuts import redirect, render, HttpResponse
-from django.views.generic import ListView
+from django.shortcuts import redirect, render
+from django.views.generic import ListView, View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import CCSReportsForm
 from xiaomi.models import Xiaomi
 from django.contrib import messages
-from .models import LogisticWaiting, BuyingOrder, Replacements
-from django.db import connections
+from .models import (
+    LogisticWaiting, 
+    BuyingOrder, 
+    Replacements,
+    )
+
 from .calculate import (
     parts_for_repair, 
     checking_enough_stock, 
@@ -17,6 +19,11 @@ from .calculate import (
     )
 
 # Create your views here.
+
+class PotencialRepairsToReleaseReport(View):
+
+    def get(self, request, *args, **kwargs):
+        return redirect('prospective_repairs_to_release_report')
 
 @method_decorator(login_required, name='dispatch')
 class CCSReportsView(ListView):
@@ -88,7 +95,7 @@ class BuyingOrderReport(ListView):
 
 def run_procedure(request):
         try:
-            all_parts =  all_pn_stock()
+            all_parts =  all_pn_stock('410200005U5V')
             ctx = {
             'title' : "Dostępne części pod naprawy czekające",
                 'all_parts' : all_parts
@@ -99,7 +106,7 @@ def run_procedure(request):
             messages.warning(request, 'Something went wrong. Please contact admin')
             return redirect('reports_ccs')
 
-class PotencialRepairsToReleaseReport(ListView): 
+class ProspectiveRepairsToReleaseReport(ListView): 
     template_name = 'reports/potencialrepairstorelease.html'
     queryset = LogisticWaiting.objects.filter(
         Status='Czeka', 
@@ -125,12 +132,14 @@ class PotencialRepairsToReleaseReport(ListView):
                     'DataRejestracji'
                 ).using('ccs')
                 unrepeated_pn = unrepeated_pn_stock(queryset)
-                all_stock_pmgp, all_stock_pmgh, all_stock_smgs = all_pn_stock(unrepeated_pn)
+                all_s_pmgp, all_s_pmgh, all_s_smgs, all_t_s_pmgp, all_t_s_smgs  = all_pn_stock(unrepeated_pn)
                 repair_parts = parts_for_repair(queryset)
                 enough_stock = checking_enough_stock(
-                    all_stock_pmgp, 
-                    all_stock_pmgh, 
-                    all_stock_smgs, 
+                    all_s_pmgp, 
+                    all_s_pmgh, 
+                    all_s_smgs,
+                    all_t_s_pmgp,
+                    all_t_s_smgs,
                     repair_parts, 
                     queryset,
                     )

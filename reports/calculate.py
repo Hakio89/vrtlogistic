@@ -23,6 +23,8 @@ def all_stock_checking(part):
         stock_pmgp = {}
         stock_pmgh = {}
         stock_smgs = {}
+        tech_stock_pmgp = {}
+        tech_stock_smgs = {}
         for parts in procedure:
             if parts.Magazyn == 'PMGP':
                 if parts.Zarejestrowane > 0 or parts.FizycznieDostepne > 0:
@@ -33,21 +35,33 @@ def all_stock_checking(part):
             if parts.Magazyn == 'SMGS':
                 if parts.Zarejestrowane > 0 or parts.FizycznieDostepne > 0:
                     stock_smgs.update({str(parts.KodPozycji) : int(parts.FizycznieDostepne) + int(parts.Zarejestrowane)})
-    return stock_pmgp, stock_pmgh, stock_smgs
+            if str(parts.Magazyn).startswith('GP') and parts.Lokalizacja == "SPRAWNE":
+                if parts.Zarejestrowane > 0 or parts.FizycznieDostepne > 0:
+                    tech_stock_pmgp.update({str(parts.KodPozycji) : int(parts.FizycznieDostepne) + int(parts.Zarejestrowane)})
+            if str(parts.Magazyn).startswith('GS') and parts.Lokalizacja == "SPRAWNE":
+                if parts.Zarejestrowane > 0 or parts.FizycznieDostepne > 0:
+                    tech_stock_smgs.update({str(parts.KodPozycji) : int(parts.FizycznieDostepne) + int(parts.Zarejestrowane)})
+    return stock_pmgp, stock_pmgh, stock_smgs, tech_stock_pmgp, tech_stock_smgs
 
 def all_pn_stock(unrepeated_pn):
-    all_stock_pmgp = {}
-    all_stock_pmgh = {}
-    all_stock_smgs = {}
+    all_s_pmgp = {}
+    all_s_pmgh = {}
+    all_s_smgs = {}
+    all_t_s_pmgp = {}
+    all_t_s_smgs = {}
     for part in unrepeated_pn:
-        stock_pmgp, stock_pmgh, stock_smgs = all_stock_checking(part)
+        stock_pmgp, stock_pmgh, stock_smgs, tech_stock_pmgp, tech_stock_smgs = all_stock_checking(part)
         if stock_pmgp is not None:
-            all_stock_pmgp.update(stock_pmgp)
+            all_s_pmgp.update(stock_pmgp)
         if stock_pmgh is not None:
-            all_stock_pmgh.update(stock_pmgh)
+            all_s_pmgh.update(stock_pmgh)
         if stock_smgs is not None:
-            all_stock_smgs.update(stock_smgs)
-    return all_stock_pmgp, all_stock_pmgh, all_stock_smgs
+            all_s_smgs.update(stock_smgs)
+        if tech_stock_pmgp is not None:
+            all_t_s_pmgp.update(tech_stock_pmgp)
+        if tech_stock_smgs is not None:
+            all_t_s_smgs.update(tech_stock_smgs)
+    return all_s_pmgp, all_s_pmgh, all_s_smgs, all_t_s_pmgp, all_t_s_smgs
 
 def parts_for_repair(repairs):
     repair_parts = {}
@@ -59,7 +73,9 @@ def subset_repair_parts(set1, set2):
     return set1.issubset(set2)
 
 
-def checking_enough_stock(pmgp, pmgh, smgs, repairs, queryset):
+def checking_enough_stock(
+        pmgp, pmgh, smgs, tech_pmgp, tech_smgs, repairs, queryset
+        ):
     warehouse_stock = {}
     warehouse_stock.update(pmgp)
     warehouse_stock.update(pmgh)
@@ -67,6 +83,8 @@ def checking_enough_stock(pmgp, pmgh, smgs, repairs, queryset):
     pmgp_warehouse = pmgp
     pmgh_warehouse = pmgh
     smgs_warehouse = smgs
+    pmgp_tech = tech_pmgp
+    smgs_tech = tech_smgs
     needed_stock = repairs
     repairs_to_releases = []
     payment_repair = []
@@ -87,10 +105,15 @@ def checking_enough_stock(pmgp, pmgh, smgs, repairs, queryset):
                     pmgp_warehouse.update({part: remaining_pmgp_stock})
                     if int(pmgp_warehouse.get(part)) >= 0:
                         repairs_to_releases.append(repair)
-                    elif int(pmgp_warehouse.get(part)) < 0:
-                        set2.remove(part)                    
-                    else:
-                        continue
+                    elif part in pmgp_tech.keys():
+                        remaining_pmgp_stock = pmgp_tech.get(part) - qty
+                        pmgp_tech.update({part: remaining_pmgp_stock})
+                        if int(pmgp_tech.get(part)) >= 0:
+                            repairs_to_releases.append(repair)
+                        elif int(pmgp_warehouse.get(part)) < 0 and int(pmgp_tech.get(part)) < 0:
+                            set2.remove(part)                    
+                        else:
+                            continue
                 elif part in pmgh_warehouse.keys():
                     remaining_pmgh_stock = pmgh_warehouse.get(part) - qty
                     pmgh_warehouse.update({part: remaining_pmgh_stock})
@@ -105,22 +128,13 @@ def checking_enough_stock(pmgp, pmgh, smgs, repairs, queryset):
                     smgs_warehouse.update({part: remaining_smgs_stock})
                     if int(smgs_warehouse.get(part)) >= 0:
                         repairs_to_releases.append(repair)
-                    elif int(smgs_warehouse.get(part)) < 0:
-                        set2.remove(part)                    
-                    else:
-                        continue
-                """if part in warehouse_stock.keys():                
-                    remaining_stock = warehouse_stock.get(part) - qty
-                    warehouse_stock.update({part: remaining_stock})
-                    if int(warehouse_stock.get(part)) >= 0:
-                        repairs_to_releases.append(repair)
-                    elif int(warehouse_stock.get(part)) < 0:
-                        set2.remove(part)                    
-                    else:
-                        continue"""
+                    elif part in smgs_tech.keys():
+                        remaining_smgs_stock = smgs_tech.get(part) - qty
+                        smgs_tech.update({part: remaining_smgs_stock})
+                        if int(smgs_tech.get(part)) >= 0:
+                            repairs_to_releases.append(repair)
+                        elif int(smgs_warehouse.get(part)) < 0 and int(smgs_tech.get(part)) < 0:
+                            set2.remove(part)                    
+                        else:
+                            continue
     return repairs_to_releases
-
-    """for repair, pn_qty in repairs.items():
-        for key, value in pn_qty.items():
-            st = f'key:{key}, PN:{value}'"""
-          

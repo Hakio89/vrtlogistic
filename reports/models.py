@@ -5,7 +5,7 @@ from django.db import connection, connections
 # Create your models here.
 
 class LogisticWaiting(models.Model):
-    DataGenerowania = models.DateTimeField()
+    DataGenerowania = models.DateField()
     NrNaprawy = models.CharField(max_length=30, primary_key=True)
     DataRejestracji = models.DateField(auto_now=False, auto_now_add=False, null=True)
     TypZgloszenia =  models.CharField(max_length=255, null=True)
