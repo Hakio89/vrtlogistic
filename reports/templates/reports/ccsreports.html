@@ -34,7 +34,8 @@
 	<!--wrapper-->
 	<div class="wrapper">
 		<!--sidebar wrapper -->
-		<div class="sidebar-wrapper" data-simplebar="true">
+		
+		<!--<div class="sidebar-wrapper" data-simplebar="true">
 			<div class="sidebar-header">
 				<div>
 					<img src="{% static '/images/logo-VL.png' %}" class="logo-icon" alt="logo icon">
@@ -44,24 +45,24 @@
 				</div>
 				<div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
 				</div>
-			</div>
+			</div>-->
 			<!--navigation-->
-			<ul class="metismenu" id="menu">
+			<!--<ul class="metismenu" id="menu">-->
                 
 			<!--end navigation-->
 		</div>
 		<!--end sidebar wrapper -->
 		<!--start header -->
 		<header>
-            <div class="topbar d-flex align-items-center">
-                <nav class="navbar navbar-expand">
+            <!--<div class="topbar d-flex align-items-center">
+                 <nav class="navbar navbar-expand">
 					
                     <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                     </div>
 						
                     <div class="search-bar flex-grow-1">
 						<p class="logo-text ccs-report-text"><b>CCS REPORTS</b> powered by <b>Virtual Logistic</b></p>
-                    </div>
+                    </div>-->
                     <div class="top-menu ms-auto">
 						
                         <ul class="navbar-nav align-items-center">
@@ -82,27 +83,44 @@
                         </ul>
                     </div>
                 </nav>
-            </div>
+				
+           <!--</div>-->
         </header>
 		<!--end header -->
 		<!--start page wrapper -->
-		<div class="page-wrapper">
-			<div class="page-content">
-				
-				<!--breadcrumb-->
-				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+		<!--<div class="page-wrapper">
+			
+		</div>-->
+		<div class="card">
+			<div class="card-body">
+				<div class="search-bar flex-grow-1">
+					<p class="logo-text ccs-report-text"><b>CCS REPORTS</b> powered by <b>Virtual Logistic</b></p>
 				</div>
-				<!-- HERE IS THE CONTENT -->
-				<hr/>
-				{% block content %}
-				{% endblock %}
-				{{ results }}
-				<!-- place for settings-->
-				<!--end breadcrumb-->
-				<div class="container mb-3">
-					<div class="main-body">							
-										
+			</div>
+		</div>
+		
+		<div class="page-content">
+			
+			<!--breadcrumb-->
+			<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+			</div>
+			<!-- HERE IS THE CONTENT -->
+			{% block content %}
+			{% endblock %}
+			{{ results }}
+			<!-- place for settings-->
+			<!--end breadcrumb-->
+			<div class="container mb-3">
+				<div class="main-body">							
+									
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-body">
+					<div class="search-bar flex-grow-1">
+						<p class="ccs-report-text">Copyright © 2023. All right reserved.</p>
 					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -110,9 +128,7 @@
 		<!--end overlay-->
 		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
 		<!--End Back To Top Button-->
-		<footer class="page-footer">
-			<p class="mb-0">Copyright © 2023. All right reserved.</p>
-		</footer>
+		
 	</div>
 	<!--end wrapper-->
 	<!--start switcher-->

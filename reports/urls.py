@@ -8,5 +8,6 @@ urlpatterns = [
     path("reports/buying-order-report", views.BuyingOrderReport.as_view(), name="buying_order_report"),
     path("reports/available-stock-report", views.run_procedure , name="available_stock_report"),
     path("reports/potencial-repairs-to-release-report", views.PotencialRepairsToReleaseReport.as_view() , name="potencial_repairs_to_release_report"),
+    path("reports/prospective-repairs-to-release-report", views.ProspectiveRepairsToReleaseReport.as_view() , name="prospective_repairs_to_release_report"),
     path("reports/replacements", views.ReplacementReport.as_view() , name="replacement_report"),
 ]
