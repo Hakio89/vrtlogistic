@@ -132,15 +132,16 @@ class ProspectiveRepairsToReleaseReport(ListView):
                     'DataRejestracji'
                 ).using('ccs')
                 unrepeated_pn = unrepeated_pn_stock(queryset)
-                all_s_pmgp, all_s_pmgh, all_s_smgs, all_t_s_pmgp, all_t_s_smgs  = all_pn_stock(unrepeated_pn)
-                repair_parts = parts_for_repair(queryset)
+                all_pmgp, all_pmgh, all_smgs, all_tech_pmgp, all_tech_smgs  = all_pn_stock(unrepeated_pn)
+                repair_parts, set_repair_parts = parts_for_repair(queryset)
                 enough_stock = checking_enough_stock(
-                    all_s_pmgp, 
-                    all_s_pmgh, 
-                    all_s_smgs,
-                    all_t_s_pmgp,
-                    all_t_s_smgs,
+                    all_pmgp, 
+                    all_pmgh, 
+                    all_smgs,
+                    all_tech_pmgp,
+                    all_tech_smgs,
                     repair_parts, 
+                    set_repair_parts,
                     queryset,
                     )
                 queryset = queryset.filter(NrNaprawy__in=enough_stock)
