@@ -31,37 +31,37 @@ class XiaomiView(ListView):
         
     def post(self, request, *args, **kwargs):        
         if self.request.POST:
-            try:        
-                emails = MailReportReceivers.objects.all()
-                deliveries = Xiaomi.objects.all()
-                parts = XiaomiPartsCatalog.objects.get()
-                waiting = XiaomiWaitingParts.objects.get()
-                
-                table = Table(
-                                delivery=deliveries, 
-                                parts=parts,
-                                waiting=waiting,
-                            )
-                
-                report = table.mail_report()
-                ctx = {
-                    'report' : report
-                }
-                subject = 'XIAOMI - Aktualny raport oczekujących dostaw'
-                message = get_template('xiaomi/xiaomi-delivery-report.html').render(ctx)
-                msg = EmailMessage(
-                    subject,
-                    message,
-                    settings.EMAIL_HOST_USER,
-                    list(emails),
-                )
-                msg.content_subtype ="html"# Main content is now text/html
-                msg.send()
-                messages.success(self.request, 'report successfully sent')
-                return redirect('xiaomi')
-            except:
-                messages.warning(self.request, 'Something went wrong. Please contact admin')
-                return redirect('xiaomi')
+            #try:        
+            emails = MailReportReceivers.objects.all()
+            deliveries = Xiaomi.objects.all()
+            parts = XiaomiPartsCatalog.objects.get()
+            waiting = XiaomiWaitingParts.objects.get()
+            
+            table = Table(
+                            delivery=deliveries, 
+                            parts=parts,
+                            waiting=waiting,
+                        )
+            
+            report = table.mail_report()
+            ctx = {
+                'report' : report
+            }
+            subject = 'XIAOMI - Aktualny raport oczekujących dostaw'
+            message = get_template('xiaomi/xiaomi-delivery-report.html').render(ctx)
+            msg = EmailMessage(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                list(emails),
+            )
+            msg.content_subtype ="html"# Main content is now text/html
+            msg.send()
+            messages.success(self.request, 'report successfully sent')
+            return redirect('xiaomi')
+            #except:
+            messages.warning(self.request, 'Something went wrong. Please contact admin')
+            return redirect('xiaomi')
         
     
     
