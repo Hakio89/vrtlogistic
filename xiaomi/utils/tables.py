@@ -233,7 +233,7 @@ class Table:
             'CZEKA PMGH' : sumch,
             'Status' : str(''),
         }
-        report = report.append(sumup, ignore_index=True)
+
         report = report.fillna(str(""))
-        report = report.to_html(index=False, table_id="customers")        
+        report = report.to_html(index=False, table_id="customers")   
         return report
