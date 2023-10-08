@@ -18,7 +18,9 @@ urlpatterns = [
          name="xiaomi_delivery_delete"),
     path("xiaomi/deliveries/report/", views.xiaomi_delivery_report,
          name="xiaomi_delivery_report"),
-    
+
+    path("xiaomi/parts/all", views.xiaomi_parts_all, 
+         name="xiaomi_parts_all"),    
     path("xiaomi/parts/", views.xiaomi_parts,
          name="xiaomi_parts"),
     path("xiaomi/parts/update/<str:pk>/", views.xiaomi_parts_update,
@@ -33,6 +35,8 @@ urlpatterns = [
     path("xiaomi/claims/delete/<str:pk>/", views.xiaomi_claims_delete,
          name="xiaomi_claims_delete"),
     
+    path("xiaomi/waiting/all", views.xiaomi_waiting_all, 
+        name="xiaomi_waiting_all"),
     path("xiaomi/waiting/", views.xiaomi_waiting, 
         name="xiaomi_waiting"),
     path("xiaomi/waiting/update/<str:pk>/", views.xiaomi_waiting_update,
