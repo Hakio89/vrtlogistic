@@ -102,7 +102,6 @@ def xiaomi_delivery_update(request, pk):
     if request.method == "POST":
         try:
             form = XiaomiDeliveryForm(request.POST, instance=delivery_update)
-            delivery_update = Xiaomi.objects.get(delivery=pk)
 
             if form.is_valid():
                 form.save()
