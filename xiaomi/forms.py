@@ -15,7 +15,7 @@ class XiaomiNewForm(forms.ModelForm):
 class XiaomiDeliveryForm(forms.ModelForm):    
     class Meta:
         model = Xiaomi
-        fields = ['delivery', 'reckoning', 'status']
+        fields = ['delivery', 'reckoning', 'status', 'status_pmgp', 'status_pmgh']
         
     def __init__(self, *args, **kwargs):
         super(XiaomiDeliveryForm, self).__init__(*args, **kwargs)
