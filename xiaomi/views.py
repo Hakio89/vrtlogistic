@@ -102,9 +102,11 @@ def xiaomi_delivery_update(request, pk):
     if request.method == "POST":
         try:
             form = XiaomiDeliveryForm(request.POST, instance=delivery_update)
-            
+            delivery_update = Xiaomi.objects.get(delivery=pk)
+
             if form.is_valid():
                 form.save()
+
                 messages.success(request, 'delivery successfully updated')
                 return redirect('xiaomi_deliveries')
             
@@ -335,6 +337,19 @@ def xiaomi_waiting(request):
     return render(request, "xiaomi/xiaomi-waiting.html", ctx)
 
 @login_required
+def xiaomi_waiting_all(request):
+    try:
+        waiting_all = XiaomiWaitingParts.objects.all()
+    except:
+        messages.error(request, 'Please check your excel file or contact with the administrator')
+        return redirect('xiaomi_deliveries')
+    
+    ctx = {"title" : "Xiaomi Waiting",
+           "all_waiting" : waiting_all,
+           }
+    return render(request, "xiaomi/xiaomi-waiting-all.html", ctx)
+
+@login_required
 def xiaomi_prices(request):
     title = "Xiaomi Prices"
     ctx = {"title" : title}
@@ -384,6 +399,20 @@ def xiaomi_parts(request):
             "parts_all" : parts_all, 
            }
     return render(request, "xiaomi/xiaomi-parts.html", ctx)
+
+@login_required
+def xiaomi_parts_all(request):
+    try:
+        parts_all = XiaomiPartsCatalog.objects.all()
+    except:
+        messages.error(request, 'Please check your excel file or contact with the administrator')
+        return redirect('xiaomi_deliveries')
+    
+    ctx = {"title" : "Xiaomi Parts All",
+            "all_parts" : parts_all, 
+           }
+    return render(request, "xiaomi/xiaomi-parts-all.html", ctx)
+
 
 @login_required
 def xiaomi_parts_update(request, pk):

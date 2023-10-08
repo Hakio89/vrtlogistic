@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<hr/>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <th>Parts</th>
+                    <th>Date</th>
+                    <th>View</th>
+                    <th>File</th>         
+                </thead>
+                <tbody>
+                    {% for waits in all_waiting %}
+                    <tr>
+                        <td>{{waits.waiting_parts}}</td>
+                        <td>{{waits.date|date:"Y-m-d"}}&nbsp;{{parts.date|time:"H:i"}}</td>
+                        <td><a href="{% url 'xiaomi_waiting' %}"><i class="lni lni-popup"></i></a></td>
+                        <td><a href="{% url 'xiaomi_waiting_update' waits.id%}"><i class="lni lni-empty-file"></i></a></td>
+                        <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
