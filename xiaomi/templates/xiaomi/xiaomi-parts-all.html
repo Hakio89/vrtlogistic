@@ -20,7 +20,6 @@
                         <td>{{parts.date|date:"Y-m-d"}}&nbsp;{{parts.date|time:"H:i"}}</td>
                         <td><a href="{% url 'xiaomi_parts' %}"><i class="lni lni-popup"></i></a></td>
                         <td><a href="{% url 'xiaomi_parts_update' parts.id%}"><i class="lni lni-empty-file"></i></a></td>
-                        <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

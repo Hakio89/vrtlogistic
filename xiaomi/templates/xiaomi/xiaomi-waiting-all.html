@@ -17,10 +17,9 @@
                     {% for waits in all_waiting %}
                     <tr>
                         <td>{{waits.waiting_parts}}</td>
-                        <td>{{waits.date|date:"Y-m-d"}}&nbsp;{{parts.date|time:"H:i"}}</td>
+                        <td>{{waits.date|date:"Y-m-d"}}&nbsp;{{waits.date|time:"H:i"}}</td>
                         <td><a href="{% url 'xiaomi_waiting' %}"><i class="lni lni-popup"></i></a></td>
                         <td><a href="{% url 'xiaomi_waiting_update' waits.id%}"><i class="lni lni-empty-file"></i></a></td>
-                        <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
