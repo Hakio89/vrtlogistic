@@ -1,13 +1,17 @@
+from typing import Any
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from django.contrib import messages
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
 from vrtlogistic.settings import EMAIL_HOST_USER
 from django.conf import settings
+
+from sqlalchemy import create_engine
+from decouple import config
 
 from .models import *
 from .forms import *
@@ -62,9 +66,38 @@ class XiaomiView(ListView):
             except:
                 messages.warning(self.request, 'Something went wrong. Please contact admin')
                 return redirect('xiaomi')
-        
-    
-    
+
+@method_decorator(login_required, name='dispatch')     
+class XiaomiDeliveryCreate(CreateView):
+    model = Delivery
+    form_class = XiaomiDeliveryCreateFileForm
+    template_name = "xiaomi/xiaomi-delivery-create.html"
+
+    def post(self, request):
+        connection_string = config('MYSQL_CONNECTOR')
+        engine = create_engine(connection_string)
+        if engine:
+            print('start engine"')
+        else:
+            print('engine error')
+        try:
+            form = XiaomiDeliveryCreateFileForm(request.POST, request.FILES)
+            user = request.user
+            
+            if form.is_valid():
+                delivery = form.save(commit=False)
+                if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                    delivery.creator = user
+                    delivery.save()
+                    messages.success(request, 'new delivery successfully created')
+                    return redirect('xiaomi_deliveries')
+                else:
+                    messages.warning(request, 'You are trying o add the wrong file format')
+        except:
+            messages.warning(request, 'Something went wrong. Please contact admin')
+            
+        return redirect('xiaomi')
+
 
 @login_required
 def xiaomi_delivery_new(request):

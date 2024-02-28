@@ -41,3 +41,6 @@ typing_extensions    4.5.0
 tzdata               2022.7
 wheel                0.38.4
 whitenoise           6.3.0
+mysqlclient          2.2.4
+SQLAlchemy           2.0.25
+mysql-connector-python  8.3.0
