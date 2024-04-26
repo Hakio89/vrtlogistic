@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from django.shortcuts import redirect
+from django.urls import reverse
 
 # Create your models here.
 
@@ -26,8 +28,22 @@ class Xiaomi(models.Model):
     def __str__(self):
         return str(self.delivery)
     
+    def get_absolute_url(self):
+        return reverse("xiaomi_deliveries", kwargs={"delivery": self.delivery})
+    
     class Meta:
         ordering = ['-date']
+
+class DeliveryDetails(models.Model):
+
+    so_number = models.CharField(max_length=50, db_column='SO Number')
+    parts_number = models.CharField(max_length=50, blank=True, null=True, db_column='Parts Number')
+    parts_description = models.CharField(max_length=200, blank=True, null=True, db_column='Parts Desciption')
+    qty = models.IntegerField(blank=False, null=True, db_column='qty')
+
+    
+    def __str__(self):
+        return str(self.delivery_number)
     
 class Status(models.Model):
     

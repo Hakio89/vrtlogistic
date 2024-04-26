@@ -2,6 +2,18 @@ from django_pandas.io import read_frame
 
 import pandas as pd
 
+
+def open_delivery_file(file):
+        """Read a delivery file only"""
+        delivery = file        
+        delivery = pd.read_excel(delivery,
+                                usecols=['SO Number', 'Parts Number', 'Parts Desciption', 'Qty'])
+        delivery = delivery.pivot_table(index=["SO Number", "Parts Number", "Parts Desciption"],
+                                    values='Qty', aggfunc='sum')          
+        delivery = delivery.reset_index()
+        
+        return delivery
+
 class Table:
     
     def __init__(self, delivery=None, parts=None, claim=None, waiting=None):

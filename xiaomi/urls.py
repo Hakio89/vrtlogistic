@@ -8,6 +8,8 @@ urlpatterns = [
          name="xiaomi_delivery"),
     path("xiaomi/deliveries/", views.xiaomi_deliveries, 
          name="xiaomi_deliveries"),
+     path("xiaomi/deliveries/create/", views.XiaomiDeliveryCreate.as_view(), 
+         name="xiaomi_delivery_create"),
     path("xiaomi/deliveries/new/", views.xiaomi_delivery_new, 
          name="xiaomi_delivery_new"),
     path("xiaomi/delivery/update/<str:pk>/", views.xiaomi_delivery_update, 
