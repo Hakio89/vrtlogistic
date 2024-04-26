@@ -4,18 +4,21 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView
+from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
 from vrtlogistic.settings import EMAIL_HOST_USER
 from django.conf import settings
+from django.db.migrations.operations import RunSQL
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from sqlalchemy import create_engine
 from decouple import config
 
 from .models import *
 from .forms import *
-from .utils.tables import Table
+from .utils.tables import Table, open_delivery_file
 
 # Create your views here.
 
@@ -68,36 +71,40 @@ class XiaomiView(ListView):
                 return redirect('xiaomi')
 
 @method_decorator(login_required, name='dispatch')     
-class XiaomiDeliveryCreate(CreateView):
-    model = Delivery
-    form_class = XiaomiDeliveryCreateFileForm
+class XiaomiDeliveryCreate(FormView):
+    model = Xiaomi
+    form_class = XiaomiNewForm
     template_name = "xiaomi/xiaomi-delivery-create.html"
+    success_url = '/xiaomi/deliveries/'
 
-    def post(self, request):
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+            form.instance.creator = self.request.user
+            connection_string = config('MYSQL_CONNECTOR')
+            engine = create_engine(connection_string)                
+            with engine.connect():
+                df = open_delivery_file(form.instance.file).to_sql('xiaomi_deliverydetails', engine, if_exists='append', index=False)
+            form.save()
+            messages.success(self.request, 'new delivery successfully created')
+        return super().form_valid(form)
+        
+        """form(self.request.POST, self.request.FILES)
+        #user = request.user        
+        form.save(commit=False)
         connection_string = config('MYSQL_CONNECTOR')
         engine = create_engine(connection_string)
-        if engine:
-            print('start engine"')
-        else:
-            print('engine error')
-        try:
-            form = XiaomiDeliveryCreateFileForm(request.POST, request.FILES)
-            user = request.user
-            
-            if form.is_valid():
-                delivery = form.save(commit=False)
-                if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-                    delivery.creator = user
-                    delivery.save()
-                    messages.success(request, 'new delivery successfully created')
-                    return redirect('xiaomi_deliveries')
-                else:
-                    messages.warning(request, 'You are trying o add the wrong file format')
-        except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
-            
-        return redirect('xiaomi')
+        if form.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+            #form.creator = user
+            form.instance.creator = self.request.user
+            with engine.connect():
+                df = open_delivery_file(form.file).to_sql('xiaomi_deliverydetails', engine, if_exists='append', index=False)
+            form.save()"""
 
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        
 
 @login_required
 def xiaomi_delivery_new(request):

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 from django.shortcuts import redirect
+from django.urls import reverse
 
 # Create your models here.
 
@@ -27,27 +28,22 @@ class Xiaomi(models.Model):
     def __str__(self):
         return str(self.delivery)
     
+    def get_absolute_url(self):
+        return reverse("xiaomi_deliveries", kwargs={"delivery": self.delivery})
+    
     class Meta:
         ordering = ['-date']
 
-class Delivery(models.Model):
+class DeliveryDetails(models.Model):
 
-    delivery_number = models.CharField(max_length=50, blank=True)
-    part_number = models.CharField(max_length=50, blank=True, null=True)
-    part_description = models.CharField(max_length=200, blank=True, null=True)
-    part_qty = models.IntegerField(blank=False, null=True)
-    file = models.FileField(upload_to="xiaomi/deliveries/", blank=True, null=True)
-    date = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, 
-                          editable=False)
+    so_number = models.CharField(max_length=50, db_column='SO Number')
+    parts_number = models.CharField(max_length=50, blank=True, null=True, db_column='Parts Number')
+    parts_description = models.CharField(max_length=200, blank=True, null=True, db_column='Parts Desciption')
+    qty = models.IntegerField(blank=False, null=True, db_column='qty')
+
     
     def __str__(self):
         return str(self.delivery_number)
-    
-    class Meta:
-        ordering = ['-date']
-
     
 class Status(models.Model):
     

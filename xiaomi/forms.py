@@ -22,17 +22,6 @@ class XiaomiDeliveryForm(forms.ModelForm):
         
         for name, field in self.fields.items():
             field.widget.attrs.update({'class' : 'form-control'})
-
-class XiaomiDeliveryCreateFileForm(forms.ModelForm):
-    class Meta:
-        model = Delivery
-        fields = ['file']
-
-    def __init__(self, *args, **kwargs):
-        super(XiaomiDeliveryCreateFileForm, self).__init__(*args, **kwargs)
-        
-        for name, field in self.fields.items():
-            field.widget.attrs.update({'class' : 'form-control'})
             
 class XiaomiDeliveryFileForm(forms.ModelForm):    
     class Meta:
