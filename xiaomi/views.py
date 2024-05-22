@@ -88,23 +88,7 @@ class XiaomiDeliveryCreate(FormView):
                 df = open_delivery_file(form.instance.file).to_sql('xiaomi_deliverydetails', engine, if_exists='append', index=False)
             form.save()
             messages.success(self.request, 'new delivery successfully created')
-        return super().form_valid(form)
-        
-        """form(self.request.POST, self.request.FILES)
-        #user = request.user        
-        form.save(commit=False)
-        connection_string = config('MYSQL_CONNECTOR')
-        engine = create_engine(connection_string)
-        if form.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            #form.creator = user
-            form.instance.creator = self.request.user
-            with engine.connect():
-                df = open_delivery_file(form.file).to_sql('xiaomi_deliverydetails', engine, if_exists='append', index=False)
-            form.save()"""
-
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        
+        return super().form_valid(form)        
 
 @login_required
 def xiaomi_delivery_new(request):

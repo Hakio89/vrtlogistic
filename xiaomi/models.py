@@ -45,6 +45,9 @@ class DeliveryDetails(models.Model):
     def __str__(self):
         return str(self.delivery_number)
     
+    class Meta:
+        ordering = ['-qty']
+    
 class Status(models.Model):
     
     status = models.CharField(max_length=50)
