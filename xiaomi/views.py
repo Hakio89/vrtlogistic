@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.template.loader import get_template
@@ -71,10 +71,36 @@ class XiaomiView(ListView):
                 return redirect('xiaomi')
 
 @method_decorator(login_required, name='dispatch')     
-class XiaomiDeliveryCreate(FormView):
+class XiaomiDeliveryCreate(CreateView):
     model = Xiaomi
     form_class = XiaomiNewForm
     template_name = "xiaomi/xiaomi-delivery-create.html"
+    success_url = '/xiaomi/deliveries/'
+
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+            check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
+            check_so = form.instance.delivery
+            if check_file == check_so:
+                form.instance.creator = self.request.user
+                connection_string = config('MYSQL_CONNECTOR')
+                engine = create_engine(connection_string)                
+                with engine.connect():
+                    df = open_delivery_file(form.instance.file).to_sql('xiaomi_deliverydetails', engine, if_exists='append', index=False)
+                form.save()
+                messages.success(self.request, 'new delivery successfully created')
+            else:
+                messages.warning(self.request, 'Numery SO w formularzu i pliku są różne! Popraw dane')
+                return redirect('xiaomi_delivery_create')
+        return super().form_valid(form)        
+
+
+class XiaomiDeliveryUpdate(UpdateView):
+    model = Xiaomi
+    form_class = XiaomiDeliveryForm
+    template_name = "xiaomi/xiaomi-delivery-update.html"
     success_url = '/xiaomi/deliveries/'
 
 
@@ -88,36 +114,12 @@ class XiaomiDeliveryCreate(FormView):
                 df = open_delivery_file(form.instance.file).to_sql('xiaomi_deliverydetails', engine, if_exists='append', index=False)
             form.save()
             messages.success(self.request, 'new delivery successfully created')
-        return super().form_valid(form)        
-
-@login_required
-def xiaomi_delivery_new(request):
-    user = request.user
-    form = XiaomiNewForm()    
+        return super().form_valid(form)   
     
-    
-    if request.method == "POST":
-        try:
-            form = XiaomiNewForm(request.POST, request.FILES)
-            
-            if form.is_valid():
-                delivery = form.save(commit=False)
-                if delivery.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-                    delivery.creator = user
-                    delivery.save()
-                    messages.success(request, 'new delivery successfully created')
-                    return redirect('xiaomi_deliveries')
-                else:
-                    messages.warning(request, 'You are trying o add the wrong file format')
-        except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
-    
-    ctx = {
-        "title" : "Xiaomi New Delivery",
-        "form" : form,
-           }
-    return render(request, "xiaomi/xiaomi-delivery-new.html", ctx)
-
+    def get_object(self):
+        model_instance = Xiaomi.objects.get(delivery=self.kwargs['pk'])
+        return model_instance
+       
 @login_required
 def xiaomi_delivery_update(request, pk):
     delivery_update = Xiaomi.objects.get(delivery=pk)
