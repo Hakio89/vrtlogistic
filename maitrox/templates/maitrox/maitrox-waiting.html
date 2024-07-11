@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<hr/>
+<h6 align="center" class="mb-0 text-uppercase">Waiting Parts</h6>
+<hr/>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <th>Part</th>
+                    <th>Qty</th>
+                </thead>
+                <tbody>
+                    {%for waits in waiting_table%}
+                    <tr>
+                        <td>{{waits.parts_number}}</td>
+                        <td>{{waits.qty}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

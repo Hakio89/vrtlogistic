@@ -18,7 +18,7 @@ def profileCreated(sender, created, instance, **kwargs):
     subject = 'Witamy w Virtual Logistic'
     message_text = f'Cześć {owner},\n\
         Zostało dla ciebie utworzone nowe konto użytkownika\n\
-        Zaloguj się na stronie: http://virtuallogistic-hakio89.pythonanywhere.com/users/login/ \n\
+        Zaloguj się na stronie: virtuallogistic/users/login/ \n\
         Pozdrawiamy\n\
         Zespół Virtual Logistic'
     

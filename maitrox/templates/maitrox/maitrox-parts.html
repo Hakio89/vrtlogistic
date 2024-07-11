@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<hr/>
+<h6 align="center" class="mb-0 text-uppercase">Parts Catalog</h6>
+<hr/>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <th>Part</th>
+                    <th>Description</th>
+                    <th>Warehouse</th>
+                </thead>
+                <tbody>
+                    {%for parts in parts_table%}
+                    <tr>
+                        <td>{{parts.parts_number}}</td>
+                        <td>{{parts.parts_description}}</td>
+                        <td>{{parts.warehouse}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

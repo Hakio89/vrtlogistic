@@ -20,7 +20,7 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin-panel/", admin.site.urls),
-    path("", include("xiaomi.urls")),
+    path("", include("maitrox.urls")),
     path("", include("dashboard.urls")),
     path("", include("alcatel.urls")),
     path("", include("cat.urls")),
