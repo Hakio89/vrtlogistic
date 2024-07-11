@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "maitrox",
     "dashboard",
-    "alcatel",
-    "cat",
     "users",
     "reports",
 ]
