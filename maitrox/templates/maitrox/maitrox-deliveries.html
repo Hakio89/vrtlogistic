@@ -28,41 +28,41 @@
                     <th>Delete</th>          
                 </thead>
                 <tbody>
-                    {% for xiao in maitrox %}
+                    {% for mait in maitrox %}
                     <tr>
-                        <td>{{xiao.delivery}}</td>
-                        {%if xiao.reckoning != None%}
-                        <td>{{xiao.reckoning}}</td>
+                        <td>{{mait.delivery}}</td>
+                        {%if mait.reckoning != None%}
+                        <td>{{mait.reckoning}}</td>
                         {%else%}
                         <td></td>
                         {%endif%}
-                        <td><span class="badge {{xiao.status}}">{{xiao.status}}</span></td>
-                        {%if xiao.zz_pmgp != None%}
-                        <td>{{xiao.zz_pmgp}}</td>
+                        <td><span class="badge {{mait.status}}">{{mait.status}}</span></td>
+                        {%if mait.zz_pmgp != None%}
+                        <td>{{mait.zz_pmgp}}</td>
                         {%else%}
                         <td>&mdash;</td>
                         {%endif%}
-                        {%if xiao.status_pmgp != None%}
-                        <td><span class="badge {{xiao.status_pmgp}}">{{xiao.status_pmgp}}</span></td>
+                        {%if mait.status_pmgp != None%}
+                        <td><span class="badge {{mait.status_pmgp}}">{{mait.status_pmgp}}</span></td>
                         {%else%}
                         <td>&mdash;</td>
                         {%endif%}
-                        {%if xiao.zz_pmgh != None%}
-                        <td>{{xiao.zz_pmgh}}</td>
+                        {%if mait.zz_pmgh != None%}
+                        <td>{{mait.zz_pmgh}}</td>
                         {%else%}
                         <td>&mdash;</td>
                         {%endif%}
-                        {%if xiao.status_pmgh != None%}
-                        <td><span class="badge {{xiao.status_pmgh}}">{{xiao.status_pmgh}}</span></td>
+                        {%if mait.status_pmgh != None%}
+                        <td><span class="badge {{mait.status_pmgh}}">{{mait.status_pmgh}}</span></td>
                         {%else%}
                         <td>&mdash;</td>
                         {%endif%}
-                        <td><a href="{% url 'xiaomi_delivery' xiao.delivery%}"><i class="lni lni-popup"></i></a></td>
-                        <td><a href="{% url 'xiaomi_delivery_update' xiao.delivery%}"><i class="lni lni-exit-up"></i></a></td>
-                        <td><a href="{% url 'xiaomi_delivery_file_update' xiao.delivery%}"><i class="lni lni-empty-file"></i></a></td>
-                        <td>{{xiao.date|date:"Y-m-d"}}&nbsp;{{xiao.date|time:"H:i"}}</td>
-                        <td>{{xiao.creator|capfirst}}</td>
-                        <td><a href="{% url 'xiaomi_delivery_delete' xiao.delivery%}"><i class="lni lni-trash"></i></a></td>
+                        <td><a href="{% url 'maitrox_delivery' mait.delivery%}"><i class="lni lni-popup"></i></a></td>
+                        <td><a href="{% url 'maitrox_delivery_update' mait.delivery%}"><i class="lni lni-exit-up"></i></a></td>
+                        <td><a href="{% url 'maitrox_delivery_file_update' mait.delivery%}"><i class="lni lni-empty-file"></i></a></td>
+                        <td>{{mait.date|date:"Y-m-d"}}&nbsp;{{mait.date|time:"H:i"}}</td>
+                        <td>{{mait.creator|capfirst}}</td>
+                        <td><a href="{% url 'maitrox_delivery_delete' mait.delivery%}"><i class="lni lni-trash"></i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

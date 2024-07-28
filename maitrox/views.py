@@ -86,21 +86,28 @@ class MaitroxDeliveryCreate(CreateView):
 
 
     def form_valid(self, form):
-        form.save(commit=False)
-        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
-            check_so = form.instance.delivery
-            if check_file == check_so:
-                form.instance.creator = self.request.user
-                connection_string = config('MYSQL_CONNECTOR')
-                engine = create_engine(connection_string)                
-                with engine.connect():
-                    df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
-                form.save()
-                messages.success(self.request, f'Nowa dostawa {form.instance.delivery} utworzona')
-            else:
-                messages.warning(self.request, 'Nr SO w formularzu i pliku różnią się, popraw dane!')
+        try:
+            form.save(commit=False)
+            if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
+                check_so = form.instance.delivery
+                if check_file == check_so:
+                    form.instance.creator = self.request.user
+                    connection_string = config('MYSQL_CONNECTOR')
+                    engine = create_engine(connection_string)                
+                    with engine.connect():
+                        df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
+                    form.save()
+                    messages.success(self.request, f'Nowa dostawa {form.instance.delivery} utworzona')
+                else:
+                    messages.warning(self.request, 'Nr SO w formularzu i pliku różnią się, popraw dane!')
+                    return redirect('maitrox_delivery_create')
+        except TypeError:
+                messages.warning(self.request, 'Plik jest uszkodzony. Pobierz template i wklej dane a następnie wczytaj plik')
                 return redirect('maitrox_delivery_create')
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox_delivery_create')
         return super().form_valid(form)        
 
 @method_decorator(login_required, name='dispatch') 
