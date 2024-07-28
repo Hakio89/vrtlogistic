@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from xiaomi.models import Xiaomi
+from maitrox.models import Maitrox
 
 # Create your views here.
 
@@ -13,5 +13,5 @@ class DashboardView(TemplateView):
     def get_context_data(self, **kwargs):
             context = super().get_context_data(**kwargs)
             context["title"] =  "Dashboard"
-            context["deliveries"] = Xiaomi.objects.all()
+            context["deliveries"] = Maitrox.objects.all()
             return context

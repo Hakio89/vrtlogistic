@@ -1,0 +1,73 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<p align="right">
+    <a href="{% url 'maitrox_delivery_create' %}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-add-to-queue mr-1"></i>New</button></a>
+</p>
+</p>
+<hr/>
+<h6 align="center" class="mb-0 text-uppercase">All Deliveries</h6>
+<hr/>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <th>Delivery no</th>
+                    <th>Reckoning no</th>
+                    <th>Status</th>
+                    <th>ZZ PMGP</th>
+                    <th>Status PMGP</th>
+                    <th>ZZ PMGH</th>
+                    <th>Status PMGH</th>
+                    <th>View</th>
+                    <th>Update</th>
+                    <th>File</th>
+                    <th>Date</th>
+                    <th>Owner</th>
+                    <th>Delete</th>          
+                </thead>
+                <tbody>
+                    {% for mait in maitrox %}
+                    <tr>
+                        <td>{{mait.delivery}}</td>
+                        {%if mait.reckoning != None%}
+                        <td>{{mait.reckoning}}</td>
+                        {%else%}
+                        <td></td>
+                        {%endif%}
+                        <td><span class="badge {{mait.status}}">{{mait.status}}</span></td>
+                        {%if mait.zz_pmgp != None%}
+                        <td>{{mait.zz_pmgp}}</td>
+                        {%else%}
+                        <td>&mdash;</td>
+                        {%endif%}
+                        {%if mait.status_pmgp != None%}
+                        <td><span class="badge {{mait.status_pmgp}}">{{mait.status_pmgp}}</span></td>
+                        {%else%}
+                        <td>&mdash;</td>
+                        {%endif%}
+                        {%if mait.zz_pmgh != None%}
+                        <td>{{mait.zz_pmgh}}</td>
+                        {%else%}
+                        <td>&mdash;</td>
+                        {%endif%}
+                        {%if mait.status_pmgh != None%}
+                        <td><span class="badge {{mait.status_pmgh}}">{{mait.status_pmgh}}</span></td>
+                        {%else%}
+                        <td>&mdash;</td>
+                        {%endif%}
+                        <td><a href="{% url 'maitrox_delivery' mait.delivery%}"><i class="lni lni-popup"></i></a></td>
+                        <td><a href="{% url 'maitrox_delivery_update' mait.delivery%}"><i class="lni lni-exit-up"></i></a></td>
+                        <td><a href="{% url 'maitrox_delivery_file_update' mait.delivery%}"><i class="lni lni-empty-file"></i></a></td>
+                        <td>{{mait.date|date:"Y-m-d"}}&nbsp;{{mait.date|time:"H:i"}}</td>
+                        <td>{{mait.creator|capfirst}}</td>
+                        <td><a href="{% url 'maitrox_delivery_delete' mait.delivery%}"><i class="lni lni-trash"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

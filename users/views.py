@@ -15,19 +15,19 @@ def user_login(request):
             try:
                 user = User.objects.get(username=username)
             except:
-                messages.warning(request, 'Login is incorrect')
+                messages.warning(request, 'Logowanie nieprawidłowe')
             
             user = authenticate(request, username=username, password=password)
             
             if user is not None:
                 login(request, user)
-                messages.success(request, 'successfully logged in')
+                messages.success(request, 'Pomyślnie zalogowano')
                 return redirect('dashboard')
             else:
-                messages.warning(request, 'Password is incorrect')
+                messages.warning(request, 'Hasło jest niewłaściwe')
             
         except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
+            messages.warning(request, 'Coś poszło nie tak. Proszę o kontakt z administratorems')
         
         
     return render(request, "users/login.html")
@@ -35,10 +35,10 @@ def user_login(request):
 def user_logout(request):
     try:
         logout(request)
-        messages.success(request, 'successfully logged out')
+        messages.success(request, 'Zostałeś pomyślnie wylogowany')
         
     except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
+            messages.warning(request, 'Coś poszło nie tak. Proszę o kontakt z administratorems')
             
     return redirect('user_login')
 
@@ -55,7 +55,7 @@ def user_registration(request):
                 user = user_form.save()
                 user.set_password(user.password)
                 user.save()
-                messages.success(request, 'successfully registered')
+                messages.success(request, 'Zostałeś pomyślnie zarejestrowany')
                 
                 profile = profile_form.save(commit=False)
                 profile.owner = user
@@ -71,7 +71,7 @@ def user_registration(request):
                 print(user_form.errors, profile_form.errors)
                 
         except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
+            messages.warning(request, 'Coś poszło nie tak. Proszę o kontakt z administratorems')
             
     else:
         user_form = UserForm()
@@ -99,17 +99,17 @@ def user_profile(request, pk):
                 user_profile.profile_image.delete()
                 if profile_image_form.is_valid():
                     profile_image_form.save()
-                    messages.success(request, 'image successfully updated')
+                    messages.success(request, 'Zdjęcie poprawnie załadowane')
                     return redirect('user_profile', pk )
                 
             if "data_update" in request.POST:
                 if profile_update_form.is_valid():
                     profile_update_form.save()     
-                    messages.success(request, 'successfully updated')       
+                    messages.success(request, 'Dane zostały zaktualizowane')       
                     return redirect('user_profile', pk )
                 
         except:
-            messages.warning(request, 'Something went wrong. Please contact admin')
+            messages.warning(request, 'Coś poszło nie tak. Proszę o kontakt z administratorems')
         
     ctx = {
         "user" : user,

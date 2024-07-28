@@ -1,7 +1,6 @@
 media/xiaomi/deliveries/*
 media/xiaomi/parts-catalog/*
 media/xiaomi/waiting-parts/*
-static/xiaomi/templates*
 media/users/profile/images*
 env/
 *.sqlite3

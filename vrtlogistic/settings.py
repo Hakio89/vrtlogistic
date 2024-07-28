@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool)
+DEBUG = config('DBG', cast=bool)
 
 ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic','virtuallogistic.euroccs.local']
 
@@ -41,10 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "xiaomi",
+    "maitrox",
     "dashboard",
-    "alcatel",
-    "cat",
     "users",
     "reports",
 ]

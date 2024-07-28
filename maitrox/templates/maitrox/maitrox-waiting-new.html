@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+{%load static %}
+
+
+{% block content %}
+<hr/>
+<h6 align="center" class="mb-0 text-uppercase">New Waiting </h6>
+<hr/>
+<form class="row g-3" method="POST" enctype="multipart/form-data">
+    {{form.as_p}}
+    {% csrf_token %}
+    <div class="col-12">
+        <div class="d-grid">
+            <button type="submit" class="btn btn-light"><i class="bx bxs-save"></i>Save</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

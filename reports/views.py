@@ -3,7 +3,7 @@ from django.views.generic import ListView, View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .forms import CCSReportsForm
-from xiaomi.models import Xiaomi
+from maitrox.models import Maitrox
 from django.contrib import messages
 from .models import (
     LogisticWaiting, 
@@ -28,7 +28,7 @@ class PotencialRepairsToReleaseReport(View):
 @method_decorator(login_required, name='dispatch')
 class CCSReportsView(ListView):
     template_name = 'reports/allreportslist.html'
-    queryset = Xiaomi.objects.all()    
+    queryset = Maitrox.objects.all()    
 
     def get_context_data(self, object_list=None, **kwargs):        
         queryset = object_list if object_list is not None else self.object_list
@@ -68,7 +68,7 @@ class CCSReportsView(ListView):
         
 class DeliveriesReport(ListView):
     template_name = 'reports/deliveriesreport.html'
-    queryset = Xiaomi.objects.all()
+    queryset = Maitrox.objects.all()
 
 class LogisticWaitingReport(ListView):
     template_name = 'reports/logisticwaitingreport.html'
