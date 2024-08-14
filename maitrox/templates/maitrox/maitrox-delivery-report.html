@@ -25,7 +25,7 @@
 	<link href="{% static '/css/app.css' %}" rel="stylesheet">
 	<link href="{% static '/css/icons.css' %}" rel="stylesheet">
 	
-	<title>{{title}} {{delivery.delivery}}</title>
+	<title>{{title}}</title>
 	<style>
 		#customers {
 		  font-family: Arial, Helvetica, sans-serif;
@@ -64,36 +64,45 @@
 	<div class="wrapper">
 		<!--sidebar wrapper -->
 		<div class="page-wrapper">
-			<div class="page-content">				
-				<p>Cześć,</p>
-        		<p>Dostawy w transporcie dla biznesu XIAOMI:</p>
-				<p>{{report|safe}}</p>
+			<div class="page-content">	
+        		<p>Dostawy w transporcie oczekujące na dostarczenie do CCS:</p>
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="example2" class="table table-striped table-bordered">
+								<thead>
+									<th>Delivery no</th>
+									<th>Reckoning no</th>
+									<th>Status</th>									
+									<th>Date</th>
+									<th>Owner</th>         
+								</thead>
+								<tbody>
+									{% for mait in deliveries %}
+									<tr>
+										<td>{{mait.delivery}}</td>
+										{%if mait.reckoning != None%}
+										<td>{{mait.reckoning}}</td>
+										{%else%}
+										<td></td>
+										{%endif%}
+										<td><span class="badge {{mait.status}}">{{mait.status}}</span></td>
+										<td>{{mait.date|date:"Y-m-d"}}&nbsp;{{mait.date|time:"H:i"}}</td>
+										<td>{{mait.creator|capfirst}}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 				<!--end breadcrumb-->
-				<p style="font-size: 14">Best Regards,</p>
-				<p style="font-size: 14">Pozdrawiam</p>
-				<b><h4>Paweł Kaczmarek</h4></b>
-				<span style="font-size: 13">tel:   +48 (0) 22 726 38 27<br>
+				<b><p style="font-size: 14">POWERED BY VIRTUAL LOGISTIC</p></b>
+				<b><p style="font-size: 12">Created by:</p></b>
+				<b><h6>Paweł Kaczmarek</h6></b>
+				<span style="font-size: 10">tel:   +48 (0) 22 726 38 27<br>
 				kom: +48 (0) 602 457 641<br>
 				e-mail: p.kaczmarek@ccsonline.pl<br>
-				<br>
-				Cyfrowe Centrum Serwisowe S.A.   <br>
-				05-500 Piaseczno, Puławska 40 A    <br></span>
-				<hr></hr>
-				<span style="font-size: 9"><p>Cyfrowe Centrum Serwisowe S.A. z siedzibą w Piasecznie, adres: ul. Puławska 40 A, 05-500 Piaseczno, KRS: 0000253995, NIP: 951-19-78-674, REGON: 016321051, Numer Rejestrowy BDO: 000042506.</p>
-				<p>Dokumentacja spółki przechowywana jest w Sądzie Rejonowym dla m.st. Warszawy w Warszawie, XIV Wydział Gospodarczy Krajowego Rejestru Sądowego.
-				Wysokość kapitału zakładowego: 1.589.100 złotych (kapitał zakładowy został w całości wpłacony).</p>
-				
-				<b>UWAGA:</b>
-				<br>
-				<p>Niniejsza wiadomość elektroniczna wraz z wszelkimi załącznikami jest skierowana wyłącznie do jej adresatów i zawiera informacje poufne i prawnie chronione. Uprzejmie informujemy, że jeżeli niniejsza wiadomość zostanie odebrana przez osobę nie będącą jej adresatem, pracownikiem adresata ani osobą odpowiedzialną za dostarczenie tej wiadomości adresatowi, jej rozpowszechnianie, przekazywanie, kopiowanie lub korzystanie z niej w inny sposób jest zabronione. Jeżeli niniejsza wiadomość została Państwu przesłana omyłkowo, uprzejmie prosimy o niezwłoczne poinformowanie o tym fakcie nadawcy drogą elektroniczną, a następnie trwałe usunięcie niniejszej wiadomości z komputera.</p>
-				
-				<b>NOTICE:</b>
-				<br>
-				<p>This e-mail message and all attachments transmitted with it are intended solely for the use of the addressee and contain legally privileged and confidential information. If the reader of this message is not the intended recipient, or an employee or agent responsible for delivering of this message to the intended recipient, you are hereby notified that any dissemination, distribution, copying, or other use of this message or its attachments is strictly prohibited. If you have received this message in error, please notify the sender immediately by replying to this message and please delete it permanently from your computer.</p>
-				
-				<b>Oświadczenie o posiadaniu statusu dużego przedsiębiorcy</b>
-				<br>
-				<p>Działając zgodnie z art. 4c ustawy z dnia 8 marca 2013 r. o przeciwdziałaniu nadmiernym opóźnieniom w transakcjach handlowych (Dz.U.2021.0.424) zarząd Cyfrowego Centrum Serwisowego S.A. z siedzibą w Piasecznie oświadcza, że spółka ta posiada status dużego przedsiębiorcy</p></span>
 				<div class="container mb-3">
 					<div class="main-body">							
 										
@@ -135,61 +144,7 @@
 		$('#example').DataTable()
 	  });
 		
-	</script>
-	<script>
-		$(document).ready(function() {
-			var table = $('#example2').DataTable( {
-				lengthChange: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example2_wrapper .col-md-6:eq(0)' );
-		} );
 	</script>	
-	<script>
-		$(document).ready(function() {
-			var table = $('#example3').DataTable( {
-				lengthChange: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example3_wrapper .col-md-6:eq(0)' );
-		} );
-	</script>	
-	<script>
-		$(document).ready(function() {
-			var table = $('#example4').DataTable( {
-				lengthChange: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example4_wrapper .col-md-6:eq(0)' );
-		} );
-	</script>
-	<!--
-	<script src="{% static '/js/index.js' %}"></script>
-	-->
-	<!--app JS-->
-	<script src="{% static 'js/app.js' %}"></script>
-	{% if messages %}
-		{% for message in messages %}
-		<script type="text/javascript">
-			$(document).ready(function {{message.tags}}_noti() {
-				Lobibox.notify('{{message.tags}}', {
-					pauseDelayOnHover: true,
-					continueDelayOnInactiveTab: false,
-					position: 'top right',
-					icon: 'bx bx-error',
-					msg: '{{message}}'
-				});
-			});
-		</script>
-		{% endfor %}
-    {% endif %}
-	
 </body>
 
 </html>

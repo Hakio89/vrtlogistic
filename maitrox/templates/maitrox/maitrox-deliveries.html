@@ -16,16 +16,13 @@
                     <th>Delivery no</th>
                     <th>Reckoning no</th>
                     <th>Status</th>
-                    <th>ZZ PMGP</th>
-                    <th>Status PMGP</th>
-                    <th>ZZ PMGH</th>
-                    <th>Status PMGH</th>
+                    <th>Business</th>
                     <th>View</th>
                     <th>Update</th>
                     <th>File</th>
                     <th>Date</th>
                     <th>Owner</th>
-                    <th>Delete</th>          
+                    <th>Delete</th>        
                 </thead>
                 <tbody>
                     {% for mait in maitrox %}
@@ -37,26 +34,7 @@
                         <td></td>
                         {%endif%}
                         <td><span class="badge {{mait.status}}">{{mait.status}}</span></td>
-                        {%if mait.zz_pmgp != None%}
-                        <td>{{mait.zz_pmgp}}</td>
-                        {%else%}
-                        <td>&mdash;</td>
-                        {%endif%}
-                        {%if mait.status_pmgp != None%}
-                        <td><span class="badge {{mait.status_pmgp}}">{{mait.status_pmgp}}</span></td>
-                        {%else%}
-                        <td>&mdash;</td>
-                        {%endif%}
-                        {%if mait.zz_pmgh != None%}
-                        <td>{{mait.zz_pmgh}}</td>
-                        {%else%}
-                        <td>&mdash;</td>
-                        {%endif%}
-                        {%if mait.status_pmgh != None%}
-                        <td><span class="badge {{mait.status_pmgh}}">{{mait.status_pmgh}}</span></td>
-                        {%else%}
-                        <td>&mdash;</td>
-                        {%endif%}
+                        <td>{{mait.business}}</td>
                         <td><a href="{% url 'maitrox_delivery' mait.delivery%}"><i class="lni lni-popup"></i></a></td>
                         <td><a href="{% url 'maitrox_delivery_update' mait.delivery%}"><i class="lni lni-exit-up"></i></a></td>
                         <td><a href="{% url 'maitrox_delivery_file_update' mait.delivery%}"><i class="lni lni-empty-file"></i></a></td>

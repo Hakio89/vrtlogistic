@@ -7,7 +7,8 @@ from django.views.generic import (ListView,
                                   CreateView, 
                                   UpdateView,
                                   DeleteView,
-                                  DetailView)
+                                  DetailView,
+                                  TemplateView)
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.template.loader import get_template
@@ -16,6 +17,7 @@ from vrtlogistic.settings import EMAIL_HOST_USER
 from django.conf import settings
 from django.db.migrations.operations import RunSQL
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Sum, OuterRef, Subquery
 
 from sqlalchemy import create_engine
 from decouple import config
@@ -35,14 +37,17 @@ class MaitroxView(ListView):
     template_name =  "maitrox/maitrox.html"
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Maitrox Default"
-        context["claims"] = ClaimParts.objects.all()
-        context["parts"] = PartsCatalog.objects.all()
-        context["waiting"] = WaitingParts.objects.all()
-        context["deliveries"] = Maitrox.objects.all()
-        return context
-        
+        try:
+            context = super().get_context_data(**kwargs)
+            context["title"] = "Maitrox Default"
+            context["claims"] = ClaimParts.objects.all()
+            context["parts"] = PartsCatalog.objects.all()
+            context["waiting"] = WaitingParts.objects.all()
+            context["deliveries"] = Maitrox.objects.all()
+            return context
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
     def post(self, request, *args, **kwargs):        
         if self.request.POST:
             try:        
@@ -61,7 +66,7 @@ class MaitroxView(ListView):
                 ctx = {
                     'report' : report,
                 }
-                subject = 'Maitrox - Aktualny raport oczekujących dostaw Xiaomi oraz NIU'
+                subject = 'Maitrox - Aktualny raport dostaw'
                 message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
                 msg = EmailMessage(
                     subject,
@@ -80,7 +85,7 @@ class MaitroxView(ListView):
 @method_decorator(login_required, name='dispatch')     
 class MaitroxDeliveryCreate(CreateView):
     model = Maitrox
-    form_class = NewForm
+    form_class = NewDeliveryForm
     template_name = "maitrox/maitrox-delivery-create.html"
     success_url = '/maitrox/deliveries'
 
@@ -118,14 +123,20 @@ class MaitroxDeliveryUpdate(UpdateView):
     success_url = '/maitrox/deliveries/'
     
     def form_valid(self, form):
-        form.save()
-        messages.success(self.request, f'Dostawa {form.instance.delivery} zaktualizowana')
-        return super().form_valid(form)   
-    
+        try: 
+            form.save()
+            messages.success(self.request, f'Dostawa {form.instance.delivery} zaktualizowana')
+            return super().form_valid(form)   
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
     def get_object(self):
-        model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
-        return model_instance
-
+        try: 
+            model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            return model_instance
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 @method_decorator(login_required, name='dispatch') 
 class MaitroxFileUpdate(UpdateView):
     model = Maitrox
@@ -134,31 +145,37 @@ class MaitroxFileUpdate(UpdateView):
     success_url = '/maitrox/deliveries/'
     
     def get_object(self):
-        model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
-        return model_instance
-    
+        try:
+            model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            return model_instance
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
     def form_valid(self, form):
-        to_be_deleted = Maitrox.objects.get(delivery=self.kwargs['pk'])
-        detele_old_data = DeliveryDetails.objects.filter(so_number=to_be_deleted)
-        detele_old_data.delete()
-        to_be_deleted.file.delete()        
-        form.save(commit=False)
-        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
-            check_so = form.instance.delivery
-            if check_file == check_so:
-                form.instance.creator = self.request.user
-                connection_string = config('MYSQL_CONNECTOR')
-                engine = create_engine(connection_string)                
-                with engine.connect():
-                    df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
-                form.save()
-                messages.success(self.request, f'Plik {form.instance.delivery} został zaktualizowany')
-            else:
-                messages.warning(self.request, 'Nr SO w formularzu i pliku różnią się, popraw dane!')
-                return redirect('maitrox_delivery_file_update')        
-        return super().form_valid(form)    
-
+        try:
+            to_be_deleted = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            detele_old_data = DeliveryDetails.objects.filter(so_number=to_be_deleted)
+            detele_old_data.delete()
+            to_be_deleted.file.delete()        
+            form.save(commit=False)
+            if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
+                check_so = form.instance.delivery
+                if check_file == check_so:
+                    form.instance.creator = self.request.user
+                    connection_string = config('MYSQL_CONNECTOR')
+                    engine = create_engine(connection_string)                
+                    with engine.connect():
+                        df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
+                    form.save()
+                    messages.success(self.request, f'Plik {form.instance.delivery} został zaktualizowany')
+                else:
+                    messages.warning(self.request, 'Nr SO w formularzu i pliku różnią się, popraw dane!')
+                    return redirect('maitrox_delivery_file_update')        
+            return super().form_valid(form)    
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 @method_decorator(login_required, name='dispatch') 
 class MaitroxDeliveryDelete(DeleteView):
     model = Maitrox
@@ -179,73 +196,39 @@ class MaitroxDeliveryDelete(DeleteView):
         return redirect('xiaomi_deliveries')
     
     def get_object(self):
-        model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
-        return model_instance
+        try:
+            model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            return model_instance
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 
-@login_required
-def maitrox_delivery(request, pk):
-    try:
-        single_delivery = Maitrox.objects.get(delivery=pk)
-        parts = PartsCatalog.objects.get()
-        claim = ClaimParts.objects.all()
-        waiting = WaitingParts.objects.get()
-        form_pmgp = PmgpDeliveryForm(instance=single_delivery)
-        form_pmgh = PmghDeliveryForm(instance=single_delivery)
-
-
-        table = Table(delivery=single_delivery, 
-                    parts=parts, claim=claim,
-                    waiting=waiting)
-        del_data = table.delivery_joining()
-        pmgp = table.pmgp_delivery(del_data)
-        pmgh = table.pmgh_delivery(del_data)
-        nan = table.nan_delivery(del_data)
-        pmgp_html = pmgp.to_html(index=False, table_id="example2", classes="table table-striped table-bordered Transport")  
-        pmgh_html = pmgh.to_html(index=False, table_id="example3", classes="table table-striped table-bordered TearDown")
-        pmgp_len = len(pmgp)
-        pmgh_len = len(pmgh)
-        pmgp_sum = pmgp['Qty'].sum()
-        pmgh_sum = pmgh['Qty'].sum()
-        del_nan = nan.to_html(index=False, table_id="example4", classes="table table-striped table-bordered")
-        del_empty = nan.empty
-        
-        if request.method == "POST":
-            form_p = PmgpDeliveryForm(request.POST, instance=single_delivery)
-            form_h = PmghDeliveryForm(request.POST, instance=single_delivery)
-                            
-            if "pmgp" in request.POST:       
-                if form_p.is_valid():
-                    form_p.save()
-                    return redirect(request.path)
-                
-            if "pmgh" in request.POST:
-                if form_h.is_valid():
-                    form_h.save()
-                    return redirect(request.path)
-        
-    except TypeError:    
-        messages.error(request, 'Popraw dane w pliku na ogólne')
-        return redirect('maitrox_deliveries')
+class MaitroxDeliveryDetails(DetailView):
+    model = Maitrox
+    template_name = "maitrox/maitrox-delivery.html"
+    success_url = '/maitrox/deliveries/'
     
-    except:
-        messages.error(request, 'There no data. Please make sure you add parts catalog or contact with the administrator')
-        return redirect('maitrox_deliveries')
-            
-    ctx = {
-           "delivery" : single_delivery,
-           "pmgp_to_html" : pmgp_html,
-            "pmgh_to_html" : pmgh_html,
-            "pmgp_len" : pmgp_len,
-            "pmgh_len" : pmgh_len,
-           "pmgp_sum" : pmgp_sum,
-            "pmgh_sum" : pmgh_sum,
-            "del_nan" : del_nan,
-            "del_empty" : del_empty,
-            "form_pmgp" : form_pmgp,
-            "form_pmgh" : form_pmgh,
-         }
-    return render(request, "maitrox/maitrox-delivery.html", ctx)
-
+    def get_context_data(self, **kwargs):
+        try:
+            context = super().get_context_data(**kwargs)
+            context['title'] = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            delivery_details = DeliveryDetails.objects.filter(
+                so_number=self.kwargs['pk'])
+            context['delivery_details']= delivery_details
+            context['countings'] = delivery_details.aggregate(count_pn=Count('parts_number'),
+                sum_pn=Sum('qty'))
+            return context
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
+    
+    def get_object(self):
+        try:
+            model_instance = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            return model_instance
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 @method_decorator(login_required, name='dispatch') 
 class MaitroxDeliveries(ListView):
     model = Maitrox
@@ -267,10 +250,13 @@ class MaitroxClaimsCreate(CreateView):
     form_class = ClaimForm
     
     def form_valid(self, form):
-        form.save()
-        messages.success(self.request, f'Nowa reklamacja {form.instance.claim_part} została dodana')
-        return super().form_valid(form)
-
+        try:
+            form.save()
+            messages.success(self.request, f'Nowa reklamacja {form.instance.claim_part} została dodana')
+            return super().form_valid(form)
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 @method_decorator(login_required, name='dispatch') 
 class MaitroxClaimsUpdate(UpdateView):
     model = ClaimParts
@@ -279,10 +265,13 @@ class MaitroxClaimsUpdate(UpdateView):
     form_class = ClaimForm
     
     def form_valid(self, form):
-        form.save()
-        messages.success(self.request, f'Claim for {form.instance.claim_part} updated successfully')
-        return super().form_valid(form)
-
+        try:
+            form.save()
+            messages.success(self.request, f'Claim for {form.instance.claim_part} updated successfully')
+            return super().form_valid(form)
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 @method_decorator(login_required, name='dispatch') 
 class MaitroxClaimsDelete(DeleteView):
     model = ClaimParts
@@ -297,20 +286,23 @@ class MaitroxWaitingCreate(CreateView):
     success_url = '/maitrox/waiting/all'
     
     def form_valid(self, form):
-        form.save(commit=False)
-        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            #try: 
-            connection_string = config('MYSQL_CONNECTOR')
-            engine = create_engine(connection_string)                
-            with engine.connect():
-                df = open_waitings_file(form.instance.file).to_sql('maitrox_waitingsdetails', engine, if_exists='append', index_label='id')
-            form.save()
-            messages.success(self.request, 'Nowe części czekające zostały dodane')
-            #except:
-            #    messages.warning(self.request, 'There is some error. Please contact administrator')
-            #    return redirect('xiaomi_waiting_new')
-        return super().form_valid(form)        
-    
+        try:
+            form.save(commit=False)
+            if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                #try: 
+                connection_string = config('MYSQL_CONNECTOR')
+                engine = create_engine(connection_string)                
+                with engine.connect():
+                    df = open_waitings_file(form.instance.file).to_sql('maitrox_waitingsdetails', engine, if_exists='append', index_label='id')
+                form.save()
+                messages.success(self.request, 'Nowe części czekające zostały dodane')
+                #except:
+                #    messages.warning(self.request, 'There is some error. Please contact administrator')
+                #    return redirect('xiaomi_waiting_new')
+            return super().form_valid(form)        
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
 @method_decorator(login_required, name='dispatch')
 class MaitroxWaitings(ListView):
     model = WaitingsDetails
@@ -334,19 +326,23 @@ class MaitroxWaitingsUpdate(UpdateView):
     form_class = WaitingForm
     success_url = '/maitrox/waiting/all'
     
-    def form_valid(self, form):       
-        form.save(commit=False)
-        to_be_deleted = WaitingParts.objects.get(id=self.kwargs['pk'])
-        to_be_deleted.file.delete() 
-        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            connection_string = config('MYSQL_CONNECTOR')
-            engine = create_engine(connection_string)                
-            with engine.connect():
-                df = open_waitings_file(form.instance.file).to_sql('xiaomi_waitingsdetails', engine, if_exists='replace', index_label='id')
-            form.save()
-            messages.success(self.request, 'Plik został poprawnie zaktualizowany')       
-        return super().form_valid(form)    
-
+    def form_valid(self, form):
+        try:     
+            form.save(commit=False)
+            to_be_deleted = WaitingParts.objects.get(id=self.kwargs['pk'])
+            to_be_deleted.file.delete() 
+            if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                connection_string = config('MYSQL_CONNECTOR')
+                engine = create_engine(connection_string)                
+                with engine.connect():
+                    df = open_waitings_file(form.instance.file).to_sql('xiaomi_waitingsdetails', engine, if_exists='replace', index_label='id')
+                form.save()
+                messages.success(self.request, 'Plik został poprawnie zaktualizowany')       
+            return super().form_valid(form)    
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
+        
 @method_decorator(login_required, name='dispatch')
 class MaitroxPartsNew(CreateView):
     model = PartsCatalog
@@ -357,16 +353,16 @@ class MaitroxPartsNew(CreateView):
     def form_valid(self, form):
         form.save(commit=False)
         if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            #try:    
-            connection_string = config('MYSQL_CONNECTOR')
-            engine = create_engine(connection_string)                
-            with engine.connect():
-                df = open_parts_file(form.instance.file).to_sql('xiaomi_partsdetails', engine, if_exists='append', index_label='id')
-                form.save()
-                messages.success(self.request, 'Nowy katalog części został dodany')
-            #except:
-            #    messages.warning(self.request, 'There is some error. Please contact administrator')
-            #    return redirect('xiaomi_parts_new')
+            try:    
+                connection_string = config('MYSQL_CONNECTOR')
+                engine = create_engine(connection_string)                
+                with engine.connect():
+                    df = open_parts_file(form.instance.file).to_sql('maitrox_partsdetails', engine, if_exists='append', index_label='id')
+                    form.save()
+                    messages.success(self.request, 'Nowy katalog części został dodany')
+            except:
+                messages.warning(self.request, 'There is some error. Please contact administrator')
+                return redirect('xiaomi_parts_new')
         return super().form_valid(form)        
     
 @method_decorator(login_required, name='dispatch')
@@ -388,41 +384,53 @@ class MaitroxPartsUpdate(UpdateView):
     form_class = PartsForm
     success_url = '/maitrox/parts/all'
     
-    def form_valid(self, form):       
-        form.save(commit=False)
-        to_be_deleted = PartsCatalog.objects.get(id=self.kwargs['pk'])
-        to_be_deleted.file.delete() 
-        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            connection_string = config('MYSQL_CONNECTOR')
-            engine = create_engine(connection_string)                
-            with engine.connect():
-                df = open_parts_file(form.instance.file).to_sql('xiaomi_partsdetails', engine, if_exists='replace', index_label='id')
-            form.save()
-            messages.success(self.request, 'File has been updated successfully')       
-        return super().form_valid(form)    
- 
-def maitrox_delivery_report(request):
-    deliveries = Maitrox.objects.all()
+    def form_valid(self, form):
+        try:     
+            form.save(commit=False)
+            to_be_deleted = PartsCatalog.objects.get(id=self.kwargs['pk'])
+            to_be_deleted.file.delete() 
+            if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                connection_string = config('MYSQL_CONNECTOR')
+                engine = create_engine(connection_string)                
+                with engine.connect():
+                    df = open_parts_file(form.instance.file).to_sql('xiaomi_partsdetails', engine, if_exists='replace', index_label='id')
+                form.save()
+                messages.success(self.request, 'File has been updated successfully')       
+            return super().form_valid(form)    
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
+        
+class MaitroxDeliveryReport(TemplateView):
+    template_name = "maitrox/maitrox-delivery-report.html"
     
-    try:
+    def get_context_data(self, **kwargs: Any):
+        ctx = super().get_context_data(**kwargs)
+        ctx['deliveries'] = Maitrox.objects.filter(status__status='Transport')
+        ctx['title']= 'Maitrox Deliveries Report'            
+        return ctx
+    """def maitrox_delivery_report(request):
         deliveries = Maitrox.objects.all()
-        parts = PartsCatalog.objects.get()
-        waiting = WaitingParts.objects.get()
         
-        table = Table(
-                        delivery=deliveries, 
-                        parts=parts,
-                        waiting=waiting,
-                    )
-        
-        report = table.mail_report()
-    
-    except:
-            messages.warning(request, 'Coś poszło nie tak, skontakuj się z administratorem')
+        try:
+            deliveries = Maitrox.objects.all()
+            parts = PartsCatalog.objects.get()
+            waiting = WaitingParts.objects.get()
             
-    ctx = {
-        "title" : "Maitrox Deliveries Report",
-        "report" : report,
-        "deliveries" : deliveries,
-    }
-    return render(request, "maitrox/maitrox-delivery-report.html", ctx)
+            table = Table(
+                            delivery=deliveries, 
+                            parts=parts,
+                            waiting=waiting,
+                        )
+            
+            report = table.mail_report()
+        
+        except:
+                messages.warning(request, 'Coś poszło nie tak, skontakuj się z administratorem')
+                
+        ctx = {
+            "title" : "Maitrox Deliveries Report",
+            "report" : report,
+            "deliveries" : deliveries,
+        }
+        return render(request, "maitrox/maitrox-delivery-report.html", ctx)"""

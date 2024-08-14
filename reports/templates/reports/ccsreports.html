@@ -195,7 +195,8 @@
 	<script>
 		$(document).ready(function() {
 			var table = $('#example2').DataTable( {
-				lengthChange: false,
+				lengthChange: true,
+				ordering: false,
 				buttons: [ 'copy', 'excel', 'pdf', 'print']
 			} );
 		 
