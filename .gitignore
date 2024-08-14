@@ -2,6 +2,7 @@ media/xiaomi/deliveries/*
 media/xiaomi/parts-catalog/*
 media/xiaomi/waiting-parts/*
 media/users/profile/images*
+media/maitrox*
 env/
 *.sqlite3
 .env

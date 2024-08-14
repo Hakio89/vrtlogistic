@@ -4,6 +4,7 @@ import uuid
 from django.shortcuts import redirect
 from django.urls import reverse
 
+
 # Create your models here.
 
 
@@ -15,12 +16,7 @@ class Maitrox(models.Model):
     creator = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     date = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey("Status", on_delete=models.CASCADE)
-    zz_pmgp = models.CharField(max_length=50, blank=True, null=True)
-    lpr_pmgp = models.CharField(max_length=100, blank=True, null=True)
-    status_pmgp = models.ForeignKey("StatusPmgp", on_delete=models.CASCADE, blank=True, null=True)
-    zz_pmgh = models.CharField(max_length=50, blank=True, null=True)
-    lpr_pmgh = models.CharField(max_length=100, blank=True, null=True)
-    status_pmgh = models.ForeignKey("StatusPmgh", on_delete=models.CASCADE, blank=True, null=True)
+    business = models.ForeignKey("Business", on_delete=models.CASCADE, blank=True, null=True)
     file = models.FileField(upload_to="maitrox/deliveries/", blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, 
                           editable=False)
@@ -33,6 +29,13 @@ class Maitrox(models.Model):
     
     class Meta:
         ordering = ['-date']
+        
+class PartsDetails(models.Model):
+    
+    parts_number = models.CharField(max_length=50, blank=True, null=True,db_column='Kod pozycji')
+    parts_description = models.CharField(max_length=200, blank=True, null=True,db_column='Opis dla serwisu')
+    warehouse = models.CharField(max_length=50, blank=True, null=True,db_column='Domyślny magazyn serwisu')
+    id = models.IntegerField(unique=True, primary_key=True)
 
 class DeliveryDetails(models.Model):
 
@@ -40,7 +43,12 @@ class DeliveryDetails(models.Model):
     parts_number = models.CharField(max_length=50, blank=True, null=True, db_column='Parts Number')
     parts_description = models.CharField(max_length=200, blank=True, null=True, db_column='Parts Desciption')
     qty = models.IntegerField(blank=False, null=True, db_column='qty')
+    
+    def warehouse_type(self):
+        return PartsDetails.objects.get(parts_number=self.parts_number).warehouse
 
+    warehouse = property(warehouse_type)
+    
     
     def __str__(self):
         return str(self.so_number)
@@ -55,19 +63,12 @@ class Status(models.Model):
     def __str__(self):
         return str(self.status)
     
-class StatusPmgp(models.Model):
+class Business(models.Model):
     
-    status_pmgp = models.CharField(max_length=50)
-    
-    def __str__(self):
-        return str(self.status_pmgp)
-    
-class StatusPmgh(models.Model):
-    
-    status_pmgh = models.CharField(max_length=50)
+    business = models.CharField(max_length=50)
     
     def __str__(self):
-        return str(self.status_pmgh)
+        return str(self.business)
     
 class PartsCatalog(models.Model):
 
@@ -80,12 +81,7 @@ class PartsCatalog(models.Model):
     def __str__(self):
         return str(self.parts_catalog)
     
-class PartsDetails(models.Model):
-    
-    parts_number = models.CharField(max_length=50, blank=True, null=True,db_column='Kod pozycji')
-    parts_description = models.CharField(max_length=200, blank=True, null=True,db_column='Opis dla serwisu')
-    warehouse = models.CharField(max_length=50, blank=True, null=True,db_column='Domyślny magazyn serwisu')
-    id = models.IntegerField(unique=True, primary_key=True)
+
 
 class WaitingParts(models.Model):
     

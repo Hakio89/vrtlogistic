@@ -1,13 +1,13 @@
 from django import forms
 from .models import *
 
-class NewForm(forms.ModelForm):    
+class NewDeliveryForm(forms.ModelForm):    
     class Meta:
         model = Maitrox
-        fields = ['delivery', 'reckoning', 'status', 'file']
+        fields = ['delivery', 'reckoning', 'business', 'status', 'file']
         
     def __init__(self, *args, **kwargs):
-        super(NewForm, self).__init__(*args, **kwargs)
+        super(NewDeliveryForm, self).__init__(*args, **kwargs)
         
         for name, field in self.fields.items():
             field.widget.attrs.update({'class' : 'form-control'})
@@ -15,7 +15,7 @@ class NewForm(forms.ModelForm):
 class DeliveryForm(forms.ModelForm):    
     class Meta:
         model = Maitrox
-        fields = ['delivery', 'reckoning', 'status', 'status_pmgp', 'status_pmgh']
+        fields = ['delivery', 'reckoning', 'business', 'status']
         
     def __init__(self, *args, **kwargs):
         super(DeliveryForm, self).__init__(*args, **kwargs)
@@ -55,35 +55,7 @@ class WaitingForm(forms.ModelForm):
         
         for name, field in self.fields.items():
             field.widget.attrs.update({'class' : 'form-control'})
-            
-class PmgpDeliveryForm(forms.ModelForm):
-    class Meta:
-        model = Maitrox
-        fields = ['zz_pmgp', 'lpr_pmgp', 'status_pmgp']
-        labels = {'zz_pmgp':'Give the PMGP order:',
-                  'lpr_pmgp':'Give the LPR for PMGP order:',
-                  'status_pmgp':'Choose current Status:'}
-        
-    def __init__(self, *args, **kwargs):
-        super(PmgpDeliveryForm, self).__init__(*args, **kwargs)
-        
-        for name, field in self.fields.items():
-            field.widget.attrs.update({'class' : 'form-control'})
-            
-class PmghDeliveryForm(forms.ModelForm):
-    class Meta:
-        model = Maitrox
-        fields = ['zz_pmgh', 'lpr_pmgh', 'status_pmgh']
-        labels = {'zz_pmgh':'Give the PMGH order:',
-                  'lpr_pmgh':'Give the LPR for PMGH order:',
-                  'status_pmgh':'Choose current Status:'}
-        
-    def __init__(self, *args, **kwargs):
-        super(PmghDeliveryForm, self).__init__(*args, **kwargs)
-        
-        for name, field in self.fields.items():
-            field.widget.attrs.update({'class' : 'form-control'})
-            
+              
 class ClaimForm(forms.ModelForm):
     class Meta:
         model = ClaimParts

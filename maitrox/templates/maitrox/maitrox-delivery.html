@@ -2,103 +2,127 @@
 
 {% block content %}
 <p align="right">
-    <a href="{% url 'maitrox_delivery_update' delivery.delivery%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
+    <a href="{% url 'maitrox_delivery_update' maitrox.delivery%}"><button type="button" class="btn btn-light px-5 radius-30"><i class="bx bx-upload mr-1"></i>Update</button></a>
 </p>
-{% if pmgp_len != 0 %}
+<h6 class="mb-0 text-uppercase">Delivery info</h6>
 <hr/>
-<h6 align="center" class="mb-0 text-uppercase Transport">PMGP WAREHOUSE</h6>
-
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">            
-            {{pmgp_to_html|safe}}            
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
+    <div class="col">
+        <div class="card radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <p class="mb-0">Delivery Number</p>
+                        <h5 class="my-1">{{title.delivery}}</h5>
+                    </div>
+                    <div class="ms-auto font-35 text-white"><i class="lni lni-delivery"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <p class="mb-0">Reckoning Number</p>
+                        <h5 class="my-1">{{title.reckoning}}</h5>
+                    </div>
+                    <div class="ms-auto font-35 text-white"><i class="lni lni-book"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div align="left">
+                        <p class="mb-0">Business</p>
+                        <h5 class="my-1">{{title.business}}</h5>
+                    </div>
+                    <div class="ms-auto font-35 text-white"><i class="lni lni-home"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <p class="mb-0">PN Quantity</p>
+                        <h5 class="my-1">{{countings.count_pn}}</h5>
+                    </div>
+                    <div class="ms-auto font-35 text-white"><i class="lni lni-bricks"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <p class="mb-0">PN Summary</p>
+                        <h5 class="my-1">{{countings.sum_pn}}</h5>
+                    </div>
+                    <div class="ms-auto font-35 text-white"><i class="lni lni-cart-full"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <p class="mb-0">Status</p>
+                        <h5 class="my-0">{{title.status}}</h5>
+                    </div>
+                    <div class="ms-auto font-35 text-white"><i class="lni lni-checkbox"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<table class="table mb-0">
-    <thead>
-        <th>Delivery no:</th>
-        {%if delivery.reckoning%}
-        <th>Reckoning no:</th>
-        {%endif%}
-        <th>PN:</th>
-        <th>Sum:</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{delivery.delivery}}</td>
-            {%if delivery.reckoning%}
-            <td>{{delivery.reckoning}}</td>
-            {%endif%}
-            <td>{{pmgp_len}}</td>
-            <td>{{pmgp_sum}}</td>
-        </tr>
-    </tbody>
-</table>
 <hr/>
-<form class="row g-3" method="POST">
-    {{form_pmgp.as_p}}
-    {% csrf_token %}
-    <div class="col-12">
-        <div class="d-grid">
-            <button type="submit" class="btn btn-light" name="pmgp"><i class="bx bxs-save"></i>Save</button>
-        </div>
-    </div>
-</form>
-{%endif%}
-{% if pmgh_len != 0 %}
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase TearDown">PMGH WAREHOUSE</h6>
+<h6 class="mb-0 text-uppercase">Delivery Details</h6>
 <hr/>
 <div class="card">
     <div class="card-body">
-        <div class="table-responsive">            
-            {{ pmgh_to_html|safe}}            
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <th>SO</th>
+                    <th>PN</th>
+                    <th>Description</th>									
+                    <th>QTY</th>  
+                    <th>Warehouse</th>    
+                </thead>
+                <tbody>
+                    
+                    {% for mait in delivery_details %}
+                    <tr>
+                        <td>{{mait.so_number}}</td>
+                        <td>{{mait.parts_number}}</td>
+                        <td>{{mait.parts_description}}</td>
+                        <td>{{mait.qty}}</td>
+                        <td>{{mait.warehouse}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-<table class="table mb-0">
-    <thead>
-        <th>Delivery no:</th>
-        {%if delivery.reckoning%}
-        <th>Reckoning no:</th>
-        {%endif%}
-        <th>PN:</th>
-        <th>Sum:</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{delivery.delivery}}</td>
-            {%if delivery.reckoning%}
-            <td>{{delivery.reckoning}}</td>
-            {%endif%}
-            <td>{{pmgh_len}}</td>
-            <td>{{pmgh_sum}}</td>
-        </tr>
-    </tbody>
-</table>
 <hr/>
-<form class="row g-3" method="POST">
-    {{form_pmgh.as_p}}
-    {% csrf_token %}
-    <div class="col-12">
-        <div class="d-grid">
-            <button type="submit" class="btn btn-light" name="pmgh"><i class="bx bxs-save"></i>Save</button>
-        </div>
-    </div>
-</form>
-{%endif%}
-{%if del_empty == False%}
+<h6 class="mb-0 text-uppercase">AX Orders</h6>
 <hr/>
-<h6 align="center" class="mb-0 text-uppercase">Lack of Parts</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">            
-            {{del_nan|safe}}            
-        </div>
-    </div>
-</div>
-{%endif%}
 {% endblock %}
