@@ -28,7 +28,7 @@ class PotencialRepairsToReleaseReport(View):
 @method_decorator(login_required, name='dispatch')
 class CCSReportsView(ListView):
     template_name = 'reports/allreportslist.html'
-    queryset = Maitrox.objects.all()    
+    queryset = Maitrox.objects.all()
 
     def get_context_data(self, object_list=None, **kwargs):        
         queryset = object_list if object_list is not None else self.object_list
@@ -72,15 +72,16 @@ class DeliveriesReport(ListView):
 
 class LogisticWaitingReport(ListView):
     template_name = 'reports/logisticwaitingreport.html'
-    queryset = LogisticWaiting.objects.filter(
-        Status='Czeka', 
-        StatusWiersza='Braki zamówione'
-        ).order_by('DataRejestracji', 'KodPozycjiTypNaprawy').using('ccs')   
+    model = LogisticWaiting
     
     def get_context_data(self, **kwargs):
         try:
             context = super().get_context_data(**kwargs)
-            context['title'] = 'Naprawy czekające'    
+            context['title'] = 'Naprawy czekające' 
+            context['reports'] =  LogisticWaiting.objects.filter(
+            Status='Czeka', 
+            StatusWiersza='Braki zamówione'
+            ).order_by('DataRejestracji', 'KodPozycjiTypNaprawy').using("ccs")  
             return context 
         except:
             messages.warning(self.request, 'Something went wrong. Please contact admin')

@@ -6,3 +6,4 @@ media/maitrox*
 env/
 *.sqlite3
 .env
+newenv/

@@ -7,14 +7,13 @@ contourpy==1.2.1
 cycler==0.12.1
 dj-database-url==2.2.0
 dj-static==0.0.6
-Django==5.0.8
+Django==5.0
 django-pandas==0.6.7
 et-xmlfile==1.1.0
 fonttools==4.53.1
 greenlet==3.0.3
 kiwisolver==1.4.5
 matplotlib==3.9.2
-mssql==1.0.1
 mssql-django==1.5
 mysql-connector-python==9.0.0
 mysqlclient==2.2.4
@@ -25,7 +24,6 @@ pandas==2.2.2
 pillow==10.4.0
 psycopg2==2.9.9
 pycparser==2.22
-pymssql==2.3.0
 pyodbc==5.1.0
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0

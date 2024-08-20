@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ccs in object_list %}
+                    {% for ccs in reports %}
                     <tr>
                         <td>{{ccs.DataGenerowania|date:"Y-m-d"}}&nbsp;{{ccs.DataGenerowania|time:"H:i"}}</td>
                         <td>{{ccs.NrNaprawy}}</td>

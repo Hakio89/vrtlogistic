@@ -99,13 +99,14 @@ DATABASES = {
             "read_default_file": "/etc/mysql/my.cnf",
             },
     },
+    
     "ccs": {
-    "ENGINE": config('CCS_ENGINE'),
-    "NAME": config('CCS_NAME'),
-    "USER": config('CCS_USER'),
-    "PASSWORD": config('CCS_PASSWORD'),
-    "HOST": config('CCS_HOST'),
-    "PORT": config('CCS_PORT'),
+    "ENGINE": config("CCS_ENGINE"),
+    "NAME": config("CCS_NAME"),
+    "USER": config("CCS_USER"),
+    "PASSWORD": config("CCS_PASSWORD"),
+    "HOST": config("CCS_HOST"),
+    "PORT": config("CCS_PORT"),
     "OPTIONS": {
         "driver": "ODBC Driver 18 for SQL Server",
         "extra_params": "Encrypt=no",
@@ -147,7 +148,6 @@ TIME_ZONE = "Europe/Warsaw"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
