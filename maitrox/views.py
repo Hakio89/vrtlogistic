@@ -37,51 +37,29 @@ class MaitroxView(ListView):
     model = Maitrox
     template_name =  "maitrox/maitrox.html"
     
-    def get_context_data(self, **kwargs):
-        try:
-            context = super().get_context_data(**kwargs)
-            context["title"] = "Maitrox Default"
-            context["claims"] = ClaimParts.objects.all()
-            context["parts"] = PartsCatalog.objects.all()
-            context["waiting"] = WaitingParts.objects.all()
-            context["deliveries"] = Maitrox.objects.all()
-            return context
-        except:
-            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
-            return redirect('maitrox')
     def post(self, request, *args, **kwargs):        
         if self.request.POST:
-            try:        
-                emails = MailReportReceivers.objects.all()
-                deliveries = Maitrox.objects.all()
-                parts = PartsCatalog.objects.get()
-                waiting = WaitingParts.objects.get()
-                
-                table = Table(
-                                delivery=deliveries, 
-                                parts=parts,
-                                waiting=waiting,
-                            )
-                
-                report = table.mail_report()
-                ctx = {
-                    'report' : report,
-                }
-                subject = 'Maitrox - Aktualny raport dostaw'
-                message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
-                msg = EmailMessage(
-                    subject,
-                    message,
-                    settings.EMAIL_HOST_USER,
-                    list(emails),
-                )
-                msg.content_subtype ="html"# Main content is now text/html
-                msg.send()
-                messages.success(self.request, 'Raport został poprawnie wysłany')
-                return redirect('maitrox')
-            except:
-                messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
-                return redirect('maitrox')
+            #try:        
+            emails = MailReportReceivers.objects.all()
+            report = Maitrox.objects.filter(status__status='Transport')
+            ctx = {
+                'deliveries' : report,
+            }
+            subject = 'Maitrox - Aktualny raport dostaw'
+            message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
+            msg = EmailMessage(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                list(emails),
+            )
+            msg.content_subtype ="html"# Main content is now text/html
+            msg.send()
+            messages.success(self.request, 'Raport został poprawnie wysłany')
+            return redirect('maitrox')
+            #except:
+            #    messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            #    return redirect('maitrox')
 
 @method_decorator(login_required, name='dispatch')     
 class MaitroxDeliveryCreate(CreateView):
