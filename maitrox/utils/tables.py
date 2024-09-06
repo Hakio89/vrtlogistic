@@ -34,9 +34,18 @@ def open_parts_file(file):
         return parts
 
 def read_ax_zz(queryset):
-    query = read_frame(queryset, fieldnames=['ZamowienieZakupu', 'OdwolanieDoDostawcy', 'Status'])
+    query = read_frame(queryset, fieldnames=[
+        'ZamowienieZakupu', 
+        'OdwolanieDoDostawcy', 
+        'Stan', 
+        'Status', 
+        'Magazyn', 
+        'Oddzial',
+        'KontoDostawcy', 
+        'NazwaDostawcy' 
+        ])
     query = query.drop_duplicates()
-    return query.to_html(index=False, classes='table mb-0 table-dark table-striped')
+    return query.to_html(index=False, classes='table mb-0 table-dark table-striped', justify='left')
 
 class Table:
     
