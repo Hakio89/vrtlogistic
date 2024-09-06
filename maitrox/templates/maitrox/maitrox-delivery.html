@@ -127,26 +127,8 @@
 <hr/>
 <div class="card">
     <div class="card-body">
-        <table class="table mb-0 table-dark table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">ZZ</th>
-                    <th scope="col">Magazyn</th>
-                    <th scope="col">Stan</th>
-                    <th scope="col">Odwołanie</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for a in ax %}
-                <tr>
-                    <th scope="row">{{a.ZamowienieZakupu}}</th>
-                    <td>{{a.Magazyn}}</td>
-                    <td>{{a.Stan}}</td>
-                    <td>{{a.OdwolanieDoDostawcy}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {{ ax|safe }}
+        
     </div>
 </div>
 {% endblock %}

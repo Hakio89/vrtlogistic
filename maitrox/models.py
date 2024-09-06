@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import uuid
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.db.models import Count, Sum
 
 
 # Create your models here.
@@ -20,6 +21,16 @@ class Maitrox(models.Model):
     file = models.FileField(upload_to="maitrox/deliveries/", blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, 
                           editable=False)
+    
+    def part_numbers_qty(self):
+        return DeliveryDetails.objects.filter(so_number=self.delivery).aggregate(Count('parts_number'))
+                   
+    
+    def quantity_qty(self):
+        return DeliveryDetails.objects.filter(so_number=self.delivery).aggregate(Sum('qty'))
+    
+    parts_number = property(part_numbers_qty)
+    qty = property(quantity_qty)
     
     def __str__(self):
         return str(self.delivery)
