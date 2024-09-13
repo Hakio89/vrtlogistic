@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ccs in object_list %}
+                    {% for ccs in reports %}
                     <tr>
                         <td>{{ccs.DataGenerowania|date:"Y-m-d"}}&nbsp;{{ccs.DataGenerowania|time:"H:i"}}</td>
                         <td>{{ccs.NrNaprawy}}</td>
@@ -40,7 +40,7 @@
                         <td>{{ccs.KodPozycjiNazwa}}</td>
                         <td>{{ccs.KodPozycjiTypNaprawy}}</td>
                         <td>{{ccs.StatusWiersza}}</td>
-                        <td>{{ccs.DDataUtworzeniaWiersza|date:"Y-m-d"}}&nbsp;{{ccs.DDataUtworzeniaWiersza|time:"H:i"}}</td>
+                        <td>{{ccs.DataUtworzeniaWiersza|date:"Y-m-d"}}&nbsp;{{ccs.DataUtworzeniaWiersza|time:"H:i"}}</td>
                         <td>{{ccs.Ilosc}}</td>						
                     </tr>
                     {% endfor %}

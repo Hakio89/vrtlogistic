@@ -99,13 +99,14 @@ DATABASES = {
             "read_default_file": "/etc/mysql/my.cnf",
             },
     },
+    
     "ccs": {
-    "ENGINE": config('CCS_ENGINE'),
-    "NAME": config('CCS_NAME'),
-    "USER": config('CCS_USER'),
-    "PASSWORD": config('CCS_PASSWORD'),
-    "HOST": config('CCS_HOST'),
-    "PORT": config('CCS_PORT'),
+    "ENGINE": config("CCS_ENGINE"),
+    "NAME": config("CCS_NAME"),
+    "USER": config("CCS_USER"),
+    "PASSWORD": config("CCS_PASSWORD"),
+    "HOST": config("CCS_HOST"),
+    "PORT": config("CCS_PORT"),
     "OPTIONS": {
         "driver": "ODBC Driver 18 for SQL Server",
         "extra_params": "Encrypt=no",
@@ -148,7 +149,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -170,9 +170,11 @@ LOGIN_URL = "/users/login/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = config('EMAIL_BACKEND')
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'reports.backends.email_backend.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

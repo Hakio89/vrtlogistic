@@ -10,4 +10,5 @@ urlpatterns = [
     path("reports/potencial-repairs-to-release-report", views.PotencialRepairsToReleaseReport.as_view() , name="potencial_repairs_to_release_report"),
     path("reports/prospective-repairs-to-release-report", views.ProspectiveRepairsToReleaseReport.as_view() , name="prospective_repairs_to_release_report"),
     path("reports/replacements", views.ReplacementReport.as_view() , name="replacement_report"),
+    path("reports/waiting-parts-in-delivered-batches", views.WaitingPartsInBatches.as_view() , name="waiting_in_delivered_batches"),
 ]

@@ -1,7 +1,7 @@
 <ul class="metismenu" id="menu">
     <li>
         <a href="javascript:;" class="has-arrow">
-            <div class="parent-icon"><i class='bx bx-home-circle'></i>
+            <div class="parent-icon"><i class='bx bx-window-alt'></i>
             </div>
             <div class="menu-title">Dashboard</div>
         </a>
@@ -13,7 +13,7 @@
     <li class="menu-label">Suppliers</li>
     <li>
         <a href="javascript:;" class="has-arrow">
-            <div class="parent-icon"><i class='bx bx-bot'></i>
+            <div class="parent-icon"><i class='bx bx-package'></i>
             </div>
             <div class="menu-title">Maitrox</div>
         </a>
@@ -27,6 +27,27 @@
             <li> <a href="{% url 'maitrox_claims' %}"><i class="bx bx-right-arrow-alt"></i>Claims</a>
             </li>
             <li> <a href="{% url 'maitrox_waiting_all' %}"><i class="bx bx-right-arrow-alt"></i>Waiting</a>
+            </li>
+            <!--
+            <li> <a href="{% url 'maitrox_prices' %}"><i class="bx bx-right-arrow-alt"></i>Prices</a>
+            </li>
+            -->
+        </ul>
+    </li>
+    <li>
+        <a href="javascript:;" class="has-arrow">
+            <div class="parent-icon"><i class='bx bx-file'></i>
+            </div>
+            <div class="menu-title">Reports</div>
+        </a>
+        <ul>
+            <li> <a href="{% url 'prospective_repairs_to_release_report' %}"><i class="bx bx-right-arrow-alt"></i>Raport potencjalnych napraw do zwolnienia</a>
+            </li>
+            <li> <a href="{% url 'logistic_waiting_report' %}"><i class="bx bx-right-arrow-alt"></i>Raportu napraw czekających</a>
+            </li>
+            <li> <a href="{% url 'deliveries_report' %}"><i class="bx bx-right-arrow-alt"></i>Raport dostępnych dostaw </a>
+            </li>
+            <li> <a href="{% url 'waiting_in_delivered_batches' %}"><i class="bx bx-right-arrow-alt"></i>Raport czękających w dostawie</a>
             </li>
             <!--
             <li> <a href="{% url 'maitrox_prices' %}"><i class="bx bx-right-arrow-alt"></i>Prices</a>

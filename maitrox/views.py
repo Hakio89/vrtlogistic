@@ -27,7 +27,10 @@ from .forms import *
 from .utils.tables import (Table, 
                            open_delivery_file,
                            open_waitings_file,
-                           open_parts_file,)
+                           open_parts_file,
+                           read_ax_zz,
+                           )
+from reports.models import BuyingOrder
 
 # Create your views here.
 
@@ -36,37 +39,17 @@ class MaitroxView(ListView):
     model = Maitrox
     template_name =  "maitrox/maitrox.html"
     
-    def get_context_data(self, **kwargs):
-        try:
-            context = super().get_context_data(**kwargs)
-            context["title"] = "Maitrox Default"
-            context["claims"] = ClaimParts.objects.all()
-            context["parts"] = PartsCatalog.objects.all()
-            context["waiting"] = WaitingParts.objects.all()
-            context["deliveries"] = Maitrox.objects.all()
-            return context
-        except:
-            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
-            return redirect('maitrox')
     def post(self, request, *args, **kwargs):        
         if self.request.POST:
             try:        
                 emails = MailReportReceivers.objects.all()
-                deliveries = Maitrox.objects.all()
-                parts = PartsCatalog.objects.get()
-                waiting = WaitingParts.objects.get()
-                
-                table = Table(
-                                delivery=deliveries, 
-                                parts=parts,
-                                waiting=waiting,
-                            )
-                
-                report = table.mail_report()
+                transport = Maitrox.objects.filter(status__status='Transport')
+                verification = Maitrox.objects.filter(status__status='verification')
                 ctx = {
-                    'report' : report,
+                    'transport': transport,
+                    'verification': verification,
                 }
-                subject = 'Maitrox - Aktualny raport dostaw'
+                subject = 'Maitrox - informacje o dostawach'
                 message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
                 msg = EmailMessage(
                     subject,
@@ -208,16 +191,18 @@ class MaitroxDeliveryDetails(DetailView):
     template_name = "maitrox/maitrox-delivery.html"
     success_url = '/maitrox/deliveries/'
     
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any):
         try:
-            context = super().get_context_data(**kwargs)
-            context['title'] = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            ctx = super().get_context_data(**kwargs)
+            ctx['title'] = Maitrox.objects.get(delivery=self.kwargs['pk'])
             delivery_details = DeliveryDetails.objects.filter(
                 so_number=self.kwargs['pk'])
-            context['delivery_details']= delivery_details
-            context['countings'] = delivery_details.aggregate(count_pn=Count('parts_number'),
-                sum_pn=Sum('qty'))
-            return context
+            ctx['delivery_details']= delivery_details
+            ctx['countings'] = delivery_details.aggregate(count_pn=Count('parts_number'),
+                                                          sum_pn=Sum('qty'))
+            ax=BuyingOrder.objects.filter(OdwolanieDoDostawcy=self.kwargs['pk']).using("ccs")
+            ctx['ax'] = read_ax_zz(ax)            
+            return ctx
         except:
             messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
             return redirect('maitrox')
@@ -229,6 +214,7 @@ class MaitroxDeliveryDetails(DetailView):
         except:
             messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
             return redirect('maitrox')
+        
 @method_decorator(login_required, name='dispatch') 
 class MaitroxDeliveries(ListView):
     model = Maitrox
@@ -405,32 +391,12 @@ class MaitroxDeliveryReport(TemplateView):
     template_name = "maitrox/maitrox-delivery-report.html"
     
     def get_context_data(self, **kwargs: Any):
-        ctx = super().get_context_data(**kwargs)
-        ctx['deliveries'] = Maitrox.objects.filter(status__status='Transport')
-        ctx['title']= 'Maitrox Deliveries Report'            
-        return ctx
-    """def maitrox_delivery_report(request):
-        deliveries = Maitrox.objects.all()
-        
         try:
-            deliveries = Maitrox.objects.all()
-            parts = PartsCatalog.objects.get()
-            waiting = WaitingParts.objects.get()
-            
-            table = Table(
-                            delivery=deliveries, 
-                            parts=parts,
-                            waiting=waiting,
-                        )
-            
-            report = table.mail_report()
-        
+            ctx = super().get_context_data(**kwargs)
+            ctx['transport'] = Maitrox.objects.filter(status__status='Transport')
+            ctx['verification'] = Maitrox.objects.filter(status__status='Verification')
+            ctx['title']= 'Maitrox Deliveries Report' 
         except:
-                messages.warning(request, 'Coś poszło nie tak, skontakuj się z administratorem')
-                
-        ctx = {
-            "title" : "Maitrox Deliveries Report",
-            "report" : report,
-            "deliveries" : deliveries,
-        }
-        return render(request, "maitrox/maitrox-delivery-report.html", ctx)"""
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
+            return ctx

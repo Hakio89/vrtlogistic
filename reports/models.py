@@ -1,5 +1,6 @@
 from django.db import models
 from django.db import connection, connections
+from django.db.models import Sum
 
 
 # Create your models here.
@@ -38,6 +39,13 @@ class BuyingOrder(models.Model):
     KodPozycji = models.CharField(max_length=20, primary_key=True)
     KodPozycjiNazwa = models.CharField(max_length=90, null=True)
     Ilosc = models.IntegerField(null=True)
+
+    def waiting_qty(self):
+        return LogisticWaiting.objects.filter(KodPozycji=self.KodPozycji
+        ).using('ccs'
+        ).aggregate(Sum('Ilosc'))
+    
+    waiting = property(waiting_qty)
 
     class Meta:
        managed = False

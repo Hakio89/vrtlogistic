@@ -10,8 +10,6 @@
                         <td>Deliveries</td>
                         <td>Reckoning</td>
                         <td>Status</td>
-                        <td>ZZ PMGP</td>
-                        <td>ZZ PMGH</td>
                         <td>Date</td>
                         <td>Created</td>
                     </tr>
@@ -21,17 +19,7 @@
                     <tr>
                         <td>{{delivery.delivery}}</td>
                         <td>{{delivery.reckoning}}</td>
-                        <td>{{delivery.status}}</td>
-                        {% if delivery.zz_pmgp == None%}
-                        <td>&mdash;</td>
-                        {% else %}
-                        <td>{{delivery.zz_pmgp}}</td>
-                        {% endif %}
-                        {% if delivery.zz_pmgh == None%}
-                        <td>&mdash;</td>
-                        {% else %}
-                        <td>{{delivery.zz_pmgh}}</td>
-                        {% endif %}
+                        <td>{{delivery.status}}</td>                        
                         <td>{{delivery.date|date:"Y-m-d"}}&nbsp;{{delivery.date|time:"H:i"}}</td>
                         <td>{{delivery.creator}}</td>
                     </tr>

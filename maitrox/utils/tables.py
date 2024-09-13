@@ -33,6 +33,26 @@ def open_parts_file(file):
         
         return parts
 
+def read_ax_zz(queryset):
+    query = read_frame(queryset, fieldnames=[
+        'ZamowienieZakupu', 
+        'OdwolanieDoDostawcy', 
+        'Stan', 
+        'Status', 
+        'Magazyn', 
+        'Oddzial',
+        'KontoDostawcy', 
+        'NazwaDostawcy' 
+        ])
+    query = query.drop_duplicates()
+    return query.to_html(index=False, classes='table mb-0 table-dark table-striped', justify='left')
+
+def waiting_parts_list(queryset):
+    query = read_frame(queryset, fieldnames=[
+        'KodPozycji'
+        ])
+    return query
+
 class Table:
     
     def __init__(self, delivery=None, parts=None, claim=None, waiting=None):
