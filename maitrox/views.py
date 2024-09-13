@@ -28,7 +28,8 @@ from .utils.tables import (Table,
                            open_delivery_file,
                            open_waitings_file,
                            open_parts_file,
-                           read_ax_zz)
+                           read_ax_zz,
+                           )
 from reports.models import BuyingOrder
 
 # Create your views here.
@@ -40,29 +41,29 @@ class MaitroxView(ListView):
     
     def post(self, request, *args, **kwargs):        
         if self.request.POST:
-            #try:        
-            emails = MailReportReceivers.objects.all()
-            transport = Maitrox.objects.filter(status__status='Transport')
-            verification = Maitrox.objects.filter(status__status='verification')
-            ctx = {
-                'transport': transport,
-                'verification': verification,
-            }
-            subject = 'Maitrox - informacje o dostawach'
-            message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
-            msg = EmailMessage(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                list(emails),
-            )
-            msg.content_subtype ="html"# Main content is now text/html
-            msg.send()
-            messages.success(self.request, 'Raport został poprawnie wysłany')
-            return redirect('maitrox')
-            #except:
-            #    messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
-            #    return redirect('maitrox')
+            try:        
+                emails = MailReportReceivers.objects.all()
+                transport = Maitrox.objects.filter(status__status='Transport')
+                verification = Maitrox.objects.filter(status__status='verification')
+                ctx = {
+                    'transport': transport,
+                    'verification': verification,
+                }
+                subject = 'Maitrox - informacje o dostawach'
+                message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
+                msg = EmailMessage(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    list(emails),
+                )
+                msg.content_subtype ="html"# Main content is now text/html
+                msg.send()
+                messages.success(self.request, 'Raport został poprawnie wysłany')
+                return redirect('maitrox')
+            except:
+                messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+                return redirect('maitrox')
 
 @method_decorator(login_required, name='dispatch')     
 class MaitroxDeliveryCreate(CreateView):
@@ -73,28 +74,28 @@ class MaitroxDeliveryCreate(CreateView):
 
 
     def form_valid(self, form):
-        #try:
-        form.save(commit=False)
-        if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
-            check_so = form.instance.delivery
-            if check_file == check_so:
-                form.instance.creator = self.request.user
-                connection_string = config('MYSQL_CONNECTOR')
-                engine = create_engine(connection_string)                
-                with engine.connect():
-                    df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
-                form.save()
-                messages.success(self.request, f'Nowa dostawa {form.instance.delivery} utworzona')
-            else:
-                messages.warning(self.request, 'Nr SO w formularzu i pliku różnią się, popraw dane!')
+        try:
+            form.save(commit=False)
+            if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
+                check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
+                check_so = form.instance.delivery
+                if check_file == check_so:
+                    form.instance.creator = self.request.user
+                    connection_string = config('MYSQL_CONNECTOR')
+                    engine = create_engine(connection_string)                
+                    with engine.connect():
+                        df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
+                    form.save()
+                    messages.success(self.request, f'Nowa dostawa {form.instance.delivery} utworzona')
+                else:
+                    messages.warning(self.request, 'Nr SO w formularzu i pliku różnią się, popraw dane!')
+                    return redirect('maitrox_delivery_create')
+        except TypeError:
+                messages.warning(self.request, 'Plik jest uszkodzony. Pobierz template i wklej dane a następnie wczytaj plik')
                 return redirect('maitrox_delivery_create')
-        #except TypeError:
-        #        messages.warning(self.request, 'Plik jest uszkodzony. Pobierz template i wklej dane a następnie wczytaj plik')
-        #        return redirect('maitrox_delivery_create')
-        #except:
-        #    messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
-        #    return redirect('maitrox_delivery_create')
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox_delivery_create')
         return super().form_valid(form)        
 
 @method_decorator(login_required, name='dispatch') 
@@ -190,19 +191,18 @@ class MaitroxDeliveryDetails(DetailView):
     template_name = "maitrox/maitrox-delivery.html"
     success_url = '/maitrox/deliveries/'
     
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any):
         try:
-            context = super().get_context_data(**kwargs)
-            context['title'] = Maitrox.objects.get(delivery=self.kwargs['pk'])
+            ctx = super().get_context_data(**kwargs)
+            ctx['title'] = Maitrox.objects.get(delivery=self.kwargs['pk'])
             delivery_details = DeliveryDetails.objects.filter(
                 so_number=self.kwargs['pk'])
-            context['delivery_details']= delivery_details
-            context['countings'] = delivery_details.aggregate(count_pn=Count('parts_number'),
-                sum_pn=Sum('qty'))
-            ax= BuyingOrder.objects.filter(OdwolanieDoDostawcy=self.kwargs['pk']).using("ccs")
-            context['ax'] = read_ax_zz(ax)
-            print(read_ax_zz(ax))
-            return context
+            ctx['delivery_details']= delivery_details
+            ctx['countings'] = delivery_details.aggregate(count_pn=Count('parts_number'),
+                                                          sum_pn=Sum('qty'))
+            ax=BuyingOrder.objects.filter(OdwolanieDoDostawcy=self.kwargs['pk']).using("ccs")
+            ctx['ax'] = read_ax_zz(ax)            
+            return ctx
         except:
             messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
             return redirect('maitrox')
@@ -391,8 +391,12 @@ class MaitroxDeliveryReport(TemplateView):
     template_name = "maitrox/maitrox-delivery-report.html"
     
     def get_context_data(self, **kwargs: Any):
-        ctx = super().get_context_data(**kwargs)
-        ctx['transport'] = Maitrox.objects.filter(status__status='Transport')
-        ctx['verification'] = Maitrox.objects.filter(status__status='Verification')
-        ctx['title']= 'Maitrox Deliveries Report' 
-        return ctx
+        try:
+            ctx = super().get_context_data(**kwargs)
+            ctx['transport'] = Maitrox.objects.filter(status__status='Transport')
+            ctx['verification'] = Maitrox.objects.filter(status__status='Verification')
+            ctx['title']= 'Maitrox Deliveries Report' 
+        except:
+            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+            return redirect('maitrox')
+            return ctx

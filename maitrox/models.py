@@ -4,7 +4,7 @@ import uuid
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.db.models import Count, Sum
-
+from reports.models import LogisticWaiting
 
 # Create your models here.
 
@@ -29,6 +29,7 @@ class Maitrox(models.Model):
     def quantity_qty(self):
         return DeliveryDetails.objects.filter(so_number=self.delivery).aggregate(Sum('qty'))
     
+        
     parts_number = property(part_numbers_qty)
     qty = property(quantity_qty)
     
@@ -57,9 +58,14 @@ class DeliveryDetails(models.Model):
     
     def warehouse_type(self):
         return PartsDetails.objects.get(parts_number=self.parts_number).warehouse
-
-    warehouse = property(warehouse_type)
     
+    def waiting_qty(self):
+        return LogisticWaiting.objects.filter(KodPozycji=self.parts_number
+                ).using('ccs'
+                ).aggregate(Sum('Ilosc'))   
+    
+    waiting = property(waiting_qty)
+    warehouse = property(warehouse_type)
     
     def __str__(self):
         return str(self.so_number)
