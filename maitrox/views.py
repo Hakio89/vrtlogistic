@@ -321,7 +321,7 @@ class MaitroxWaitingsUpdate(UpdateView):
                 connection_string = config('MYSQL_CONNECTOR')
                 engine = create_engine(connection_string)                
                 with engine.connect():
-                    df = open_waitings_file(form.instance.file).to_sql('xiaomi_waitingsdetails', engine, if_exists='replace', index_label='id')
+                    df = open_waitings_file(form.instance.file).to_sql('maitrox_waitingsdetails', engine, if_exists='replace', index_label='id')
                 form.save()
                 messages.success(self.request, 'Plik został poprawnie zaktualizowany')       
             return super().form_valid(form)    
@@ -379,7 +379,7 @@ class MaitroxPartsUpdate(UpdateView):
                 connection_string = config('MYSQL_CONNECTOR')
                 engine = create_engine(connection_string)                
                 with engine.connect():
-                    df = open_parts_file(form.instance.file).to_sql('xiaomi_partsdetails', engine, if_exists='replace', index_label='id')
+                    df = open_parts_file(form.instance.file).to_sql('maitrox_partsdetails', engine, if_exists='replace', index_label='id')
                 form.save()
                 messages.success(self.request, 'File has been updated successfully')       
             return super().form_valid(form)    
