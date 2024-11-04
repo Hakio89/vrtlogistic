@@ -60,7 +60,8 @@ class DeliveryDetails(models.Model):
         return PartsDetails.objects.get(parts_number=self.parts_number).warehouse
     
     def waiting_qty(self):
-        return LogisticWaiting.objects.filter(KodPozycji=self.parts_number
+        return LogisticWaiting.objects.filter(KodPozycji=self.parts_number, 
+                                              StatusWiersza='Braki zamówione'
                 ).using('ccs'
                 ).aggregate(Sum('Ilosc'))   
     
