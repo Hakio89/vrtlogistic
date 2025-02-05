@@ -49,7 +49,7 @@ class MaitroxView(ListView):
                     'transport': transport,
                     'verification': verification,
                 }
-                subject = 'Maitrox - informacje o dostawach'
+                subject = 'Raport dostaw by VL'
                 message = get_template('maitrox/maitrox-delivery-report.html').render(ctx)
                 msg = EmailMessage(
                     subject,
