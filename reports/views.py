@@ -119,7 +119,6 @@ class ProspectiveRepairsToReleaseReport(ListView):
                 form = CCSReportsForm(self.request.GET)
                 if form.is_valid():
                     data = self.request.GET.getlist('select_business')
-                    print(data)
                     show = True
                     queryset = LogisticWaiting.objects.filter(
                     Producent__in=data,
