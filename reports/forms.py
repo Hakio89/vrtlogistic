@@ -13,6 +13,8 @@ class CCSReportsForm(forms.Form):
     ('QLIVE', 'QLIVE'),
     ('VIVO', 'VIVO'),
     ('XIAOMI', 'XIAOMI'),
+    ('MOTOROLA', 'MOTOROLA'),
+    ('SEGWAY', 'SEGWAY'),
     ]
     
 
