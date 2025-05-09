@@ -38,7 +38,7 @@ from reports.models import BuyingOrder
 class MaitroxView(ListView):
     model = Maitrox
     template_name =  "maitrox/maitrox.html"
-    
+        
     def post(self, request, *args, **kwargs):        
         if self.request.POST:
             try:        
@@ -64,6 +64,16 @@ class MaitroxView(ListView):
             except:
                 messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
                 return redirect('maitrox')
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["deliveries"] = Maitrox.objects.all()
+        context["claims"] = ClaimParts.objects.all()
+        context["parts"] = PartsCatalog.objects.all()
+        context["waiting"] = WaitingParts.objects.all()
+        
+        return context
+    
 
 @method_decorator(login_required, name='dispatch')     
 class MaitroxDeliveryCreate(CreateView):
