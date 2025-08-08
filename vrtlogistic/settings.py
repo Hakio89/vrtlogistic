@@ -11,23 +11,30 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
 from dj_database_url import parse as dburl
-
+import environ
 import os
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG=env('DEBUG')
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DBG', cast=bool)
+
 
 ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic','virtuallogistic.euroccs.local']
 
@@ -94,19 +101,19 @@ DATABASES = {
         "NAME": "virtuallogisticdb",
         "HOST": "localhost",
         "PORT": 3306,
-        "PASSWORD": config('MYSQL_PASSWORD'),
+        "PASSWORD": env('MYSQL_PASSWORD'),
         "OPTIONS": {
             "read_default_file": "/etc/mysql/my.cnf",
             },
     },
     
     "ccs": {
-    "ENGINE": config("CCS_ENGINE"),
-    "NAME": config("CCS_NAME"),
-    "USER": config("CCS_USER"),
-    "PASSWORD": config("CCS_PASSWORD"),
-    "HOST": config("CCS_HOST"),
-    "PORT": config("CCS_PORT"),
+    "ENGINE": env("CCS_ENGINE"),
+    "NAME": env("CCS_NAME"),
+    "USER": env("CCS_USER"),
+    "PASSWORD": env("CCS_PASSWORD"),
+    "HOST": env("CCS_HOST"),
+    "PORT": env("CCS_PORT"),
     "OPTIONS": {
         "driver": "ODBC Driver 18 for SQL Server",
         "extra_params": "Encrypt=no",
@@ -172,9 +179,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'reports.backends.email_backend.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
