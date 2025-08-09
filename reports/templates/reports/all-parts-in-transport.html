@@ -1,0 +1,52 @@
+{% extends 'reports/ccsreports.html' %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>Zamówienie Zakupu</td>                        
+                        <td>Kod pozycji</td>
+                        <td>Nazwa</td>
+                        <td>Ilość</td>
+                        <td>Oddział</td>
+                        <td>Magazyn</td>
+                        <td>Odwołanie</td>
+                        <td>Ilość czekających</td>
+                        <td>Stan</td>
+                        <td>Status</td>
+                        <td>Konto Dostawcy</td>
+                        <td>Nazwa Dostawcy</td>
+                        <td>Data utworzenia</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ccs in transport %}
+                    <tr>
+                        <td>{{ccs.ZamowienieZakupu}}</td>
+                        <td>{{ccs.KodPozycji}}</td>
+                        <td>{{ccs.KodPozycjiNazwa}}</td>
+                        <td>{{ccs.Ilosc}}</td>
+                        <td>{{ccs.Oddzial}}</td>
+                        <td>{{ccs.Magazyn}}</td>
+                        <td>{{ccs.OdwolanieDoDostawcy}}</td>
+                        {% if ccs.waiting.Ilosc__sum == none %}
+                        <td>0</td>
+                        {% else %}
+                        <td>{{ccs.waiting.Ilosc__sum}}</td>
+                        {% endif %}
+                        <td>{{ccs.Stan}}</td>
+                        <td>{{ccs.Status}}</td>
+                        <td>{{ccs.KontoDostawcy}}</td>
+                        <td>{{ccs.NazwaDostawcy}}</td>
+                        <td>{{ccs.DataUtworzeniaG|date:"Y-m-d"}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

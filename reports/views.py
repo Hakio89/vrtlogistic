@@ -177,3 +177,18 @@ class WaitingPartsInBatches(ListView):
         except:
             messages.warning(self.request, 'Błąd - głoś problem do administratora')
             return redirect('reports_ccs')
+        
+class WaitingPartsInTransport(ListView):
+    template_name = 'reports/all-parts-in-transport.html'
+    queryset = Maitrox.objects.all()
+
+    def get_context_data(self, **kwargs):
+        try:
+            context = super().get_context_data(**kwargs)
+            deliveries_in_transport = list(Maitrox.objects.filter(status__status='Transport'))
+            print(deliveries_in_transport)
+            context['transport'] = BuyingOrder.objects.filter(OdwolanieDoDostawcy__in=deliveries_in_transport).using("ccs")
+            return context
+        except:
+            messages.warning(self.request, 'Błąd - głoś problem do administratora')
+            return redirect('reports_ccs')
