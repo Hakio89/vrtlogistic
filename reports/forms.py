@@ -16,6 +16,8 @@ class CCSReportsForm(forms.Form):
     ('MOTOROLA', 'MOTOROLA'),
     ('SEGWAY', 'SEGWAY'),
     ('BOTTARI', 'BOTTARI'),
+    ('TINECO', 'TINECO'),
+    ('INDIANA', 'INDIANA'),
     ]
     
 
