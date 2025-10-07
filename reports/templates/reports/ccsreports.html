@@ -221,30 +221,6 @@
 		{% endfor %}
     {% endif %}
 
-	<script>
-		function setTheme(themeId) {
-			// Usuń wszystkie klasy bg-themeX z <body>
-			document.body.className = document.body.className.replace(/\bbg-theme\d+\b/g, '');
-			// Dodaj klasę bg-theme oraz bg-themeX
-			document.body.classList.add('bg-theme', 'bg-' + themeId);
-			// Zapisz wybór w localStorage
-			localStorage.setItem('selectedTheme', themeId);
-		}
-
-		// Obsługa kliknięć na motywy
-		document.querySelectorAll('.switcher li[id^="theme"]').forEach(function(li) {
-			li.addEventListener('click', function() {
-				setTheme(this.id);
-			});
-		});
-
-		// Przy ładowaniu strony ustaw motyw z localStorage
-		document.addEventListener('DOMContentLoaded', function() {
-			var savedTheme = localStorage.getItem('selectedTheme');
-			if (savedTheme) {
-				setTheme(savedTheme);
-			}
-		});
 	</script>
 	
 </body>
