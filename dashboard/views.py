@@ -12,6 +12,9 @@ class DashboardView(TemplateView):
     
     def get_context_data(self, **kwargs):
             context = super().get_context_data(**kwargs)
-            context["title"] =  "Dashboard"
+            context["title"] =  "Panel główny"
             context["deliveries"] = Maitrox.objects.all()
+            if self.request.user.is_authenticated:
+                from users.models import Profile
+                Profile.objects.get_or_create(owner=self.request.user)
             return context

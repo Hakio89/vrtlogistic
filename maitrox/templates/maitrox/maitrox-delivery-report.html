@@ -301,7 +301,7 @@
 							<td>{{del.date|date:"Y-m-d"}}&nbsp;{{del.date|time:"H:i"}}</td>
 							<td>{{del.parts_number.parts_number__count}}</td>
 							<td>{{del.qty.qty__sum}}</td>
-              <td><a href="http://virtuallogistic/maitrox/delivery/{{ del.delivery }}/">szczegóły</a></td>
+              <td><a href="{{ base_url }}/dostawa/{{ del.delivery }}/">szczegóły</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -417,7 +417,7 @@
 						<td>{{del.date|date:"Y-m-d"}}&nbsp;{{del.date|time:"H:i"}}</td>
             <td>{{del.parts_number.parts_number__count}}</td>
             <td>{{del.qty.qty__sum}}</td>
-            <td><a href="http://virtuallogistic/maitrox/delivery/{{ del.delivery }}/">szczegóły</a></td>
+            <td><a href="{{ base_url }}/dostawa/{{ del.delivery }}/">szczegóły</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -551,22 +551,22 @@
 					<tr>
 						<td>Raport potencjalnych napraw do zwolnienia</td>
 						<td>Raport wskazuje części, które sa na magazynie i powinny zwolnić określone naprawy</td>
-						<td><a href="http://virtuallogistic/reports/prospective-repairs-to-release-report">przejdź do raportu</a></td>
+						<td><a href="{{ base_url }}/raport-naprawy-do-zwolnienia/">przejdź do raportu</a></td>
 					</tr>
 					<tr>
 						<td>Raport napraw czekających</td>
 						<td>Raport wskazuje naprawy oczekujące na części</td>
-						<td><a href="http://virtuallogistic/reports/logistic-waiting-report">przejdź do raportu</a></td>
+						<td><a href="{{ base_url }}/raport-naprawy-czekajace/">przejdź do raportu</a></td>
 					</tr>
           <tr>
 						<td>Raport części czekających w dostawie</td>
 						<td>Raport wskazuje wszystkie części w dostawie wraz z ilością czekających</td>
-						<td><a href="http://virtuallogistic/reports/waiting-parts-in-delivered-batches">przejdź do raportu</a></td>
+						<td><a href="{{ base_url }}/raport-czekajace-w-dostawie/">przejdź do raportu</a></td>
 					</tr>
           <tr>
 						<td>Raport części w transporcie</td>
 						<td>Raport wskazuje części, które znajdują się w transporcie do CCS i są dostępne w AX.</td>
-						<td><a href="http://virtuallogistic/reports/all-parts-in-transport">przejdź do raportu</a></td>
+						<td><a href="{{ base_url }}/raport-czesci-w-transporcie/">przejdź do raportu</a></td>
 					</tr>
 				</tbody>
 			</table>

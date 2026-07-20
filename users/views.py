@@ -75,7 +75,7 @@ def user_registration(request):
             
     else:
         user_form = UserForm()
-        profile_form = UserProfileForm
+        profile_form = UserProfileForm()
     
     ctx = {"user_form" : user_form,
            "profile_form" : profile_form,
@@ -86,11 +86,17 @@ def user_registration(request):
 @login_required
 def user_profile(request, pk):
     user = User.objects.get(username=pk)
-    user_profile = Profile.objects.get(owner=user)
+    user_profile, created = Profile.objects.get_or_create(owner=user)
     profile_update_form = UserProfileUpdateForm(instance=user_profile)
     profile_image_form = UserProfileImageUpdateForm(instance=user_profile)
     
+    can_edit = (request.user == user)
+    
     if request.method == "POST":
+        if not can_edit:
+            messages.error(request, 'Nie masz uprawnień do edycji tego profilu.')
+            return redirect('user_profile', pk)
+            
         try:
             profile_image_form = UserProfileImageUpdateForm(request.POST, request.FILES, instance=user_profile)
             profile_update_form = UserProfileUpdateForm(request.POST, instance=user_profile)
@@ -112,8 +118,10 @@ def user_profile(request, pk):
             messages.warning(request, 'Coś poszło nie tak. Proszę o kontakt z administratorems')
         
     ctx = {
+        "title": "Profil użytkownika",
         "user" : user,
         "profile_update_form" : profile_update_form,
         "profile_image_form" : profile_image_form,
+        "can_edit" : can_edit,
     }
     return render(request, "users/profile.html", ctx)

@@ -8,6 +8,7 @@ class Profile(models.Model):
     workplace = models.CharField(max_length=100, null=True, blank=True)
     occupation = models.CharField(max_length=100, null=True, blank=True)
     supervisor = models.CharField(max_length=100, null=True, blank=True)
+    website = models.URLField(max_length=200, null=True, blank=True)
     profile_image = models.ImageField(null=True, blank=True, 
                                       upload_to='users/profile/images',
                                       default='users/profile/images/user-default.png',

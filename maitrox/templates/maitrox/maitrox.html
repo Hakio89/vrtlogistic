@@ -1,111 +1,162 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<form class="row g-3" method="POST">
-    {% csrf_token %}
-    <div class="col-12">
-        <p align="right">
-            <button type="submit" class="btn btn-light px-5 radius-30"><i class="bx bx-send mr-1"></i>Send Report</button>
-        </p>
+<!-- Top Toolbar -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-200 dark:border-slate-800">
+    <div>
+        <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Pulpit dostaw</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">Podsumowanie i statystyki dostaw oraz reklamacji.</p>
     </div>
-</form>
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase">Deliveries</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="example2" class="table table-striped table-bordered">
-                <thead>
-                    <th>Delivery</th>
-                    <th>Reckoning</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </thead>
-                <tbody>
-                    {%for delivery in deliveries%}
-                    <tr>
-                        <td>{{delivery.delivery}}</td>
-                        <td>{{delivery.reckoning}}</td>
-                        <td><span class="badge {{delivery.status}}">{{delivery.status}}</span></td>
-                        <td>{{delivery.date|date:"Y-m-d"}}&nbsp;{{delivery.date|time:"H:i"}}</td>
-                    </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
+    
+    <form method="POST" class="shrink-0">
+        {% csrf_token %}
+        <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150 cursor-pointer focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9-2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            Wyślij Raport
+        </button>
+    </form>
+</div>
+
+<!-- 4x1 Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Card 1: Deliveries Count -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Wszystkie dostawy</p>
+            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white leading-none">{{ total_deliveries }}</h3>
         </div>
+        <span class="p-3 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+        </span>
+    </div>
+
+    <!-- Card 2: Total Parts Count -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Części w dostawach</p>
+            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white leading-none">{{ total_parts_in_deliveries }}</h3>
+        </div>
+        <span class="p-3 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+        </span>
+    </div>
+
+    <!-- Card 3: Waiting Parts Count -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Części czekające</p>
+            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white leading-none">{{ total_waiting_parts }}</h3>
+        </div>
+        <span class="p-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </span>
+    </div>
+
+    <!-- Card 4: Claim Parts Count -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Części w reklamacji</p>
+            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white leading-none">{{ total_claimed_parts }}</h3>
+        </div>
+        <span class="p-3 bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </span>
     </div>
 </div>
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase">Claim Parts</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="example3" class="table table-striped table-bordered">
-                <thead>
-                    <th>Part</th>
-                    <th>Qty</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </thead>
-                <tbody>
-                    {%for claim in claims%}
-                    <tr>
-                        <td>{{claim.claim_part}}</td>
-                        <td>{{claim.qty}}</td>
-                        <td><span class="badge {{claim.status}}">{{claim.status}}</span></td>
-                        <td>{{claim.date|date:"Y-m-d"}}&nbsp;{{claim.date|time:"H:i"}}</td>
-                    </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
+
+<!-- Secondary Content Grid (Timeline / Breakdown) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column: Latest Deliveries -->
+    <div class="lg:col-span-2 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900 dark:text-white">Ostatnio dodane dostawy</h3>
+            <a href="{% url 'maitrox_deliveries' %}" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Wszystkie dostawy &rarr;</a>
+        </div>
+        <div class="divide-y divide-slate-100 dark:divide-slate-800/80">
+            {% for delivery in latest_deliveries %}
+            <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition-colors">
+                <div class="flex items-start gap-4">
+                    <span class="p-2.5 bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 rounded-xl shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17h14" />
+                        </svg>
+                    </span>
+                    <div>
+                        <a href="{% url 'maitrox_delivery' delivery.delivery %}" class="font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{{ delivery.delivery }}</a>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            Rozliczenie: <span class="font-medium text-slate-700 dark:text-slate-350">{{ delivery.reckoning|default:"Brak" }}</span> &bull; 
+                            Dodano: <span class="font-medium text-slate-700 dark:text-slate-350">{{ delivery.date|date:"Y-m-d H:i" }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+                        {{ delivery.status }}
+                    </span>
+                    <a href="{% url 'maitrox_delivery' delivery.delivery %}" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" title="Szczegóły">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-8 text-center text-slate-400 dark:text-slate-500">
+                Brak zarejestrowanych dostaw.
+            </div>
+            {% endfor %}
         </div>
     </div>
-</div>
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase">Parts Catalog</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="example4" class="table table-striped table-bordered">
-                <thead>
-                    <th>Name</th>
-                    <th>Update date</th>
-                </thead>
-                <tbody>
-                    {%for part in parts%}
-                    <tr>
-                        <td>{{part.parts_catalog}}</td>
-                        <td>{{part.date|date:"Y-m-d"}}&nbsp;{{part.date|time:"H:i"}}</td>
-                    </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
+
+    <!-- Right Column: Status & Catalog Metadata -->
+    <div class="space-y-6">
+        <!-- Breakdown Card -->
+        <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="font-bold text-slate-900 dark:text-white mb-4">Podsumowanie Dostaw</h3>
+            <div class="space-y-4">
+                {% for status in status_counts %}
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                        <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
+                        {{ status.status__status }}
+                    </span>
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ status.count }}</span>
+                </div>
+                {% empty %}
+                <p class="text-xs text-slate-400 dark:text-slate-500 text-center py-4">Brak statusów.</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-</div>
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase">Waiting Parts</h6>
-<hr/>
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="example5" class="table table-striped table-bordered">
-                <thead>
-                    <th>Name</th>
-                    <th>Update date</th>
-                </thead>
-                <tbody>
-                    {%for wait in waiting%}
-                    <tr>
-                        <td>{{wait.waiting_parts}}</td>
-                        <td>{{wait.date|date:"Y-m-d"}}&nbsp;{{wait.date|time:"H:i"}}</td>
-                    </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
+
+        <!-- Catalog Stats Card -->
+        <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="font-bold text-slate-900 dark:text-white mb-4">Inne Metryki</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-slate-500 dark:text-slate-400">Pozycje w katalogu części</span>
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ total_catalog_parts }}</span>
+                </div>
+                <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+                    <span class="text-sm text-slate-500 dark:text-slate-400">Reklamacje w toku</span>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">{{ active_claims_count }} oczekujących</span>
+                </div>
+                <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+                    <span class="text-sm text-slate-500 dark:text-slate-400">Reklamacje rozstrzygnięte</span>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">{{ resolved_claims_count }} uznanych</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

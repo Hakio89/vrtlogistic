@@ -1,0 +1,545 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-navy-dark: #0f172a;      /* Deep Slate 900 */
+  --color-navy-medium: #1e293b;    /* Slate 800 */
+  --color-navy-light: #6366f1;     /* Indigo 500 */
+  
+  --color-blue-primary: #4f46e5;   /* Indigo 600 */
+  --color-blue-hover: #4338ca;     /* Indigo 700 */
+  --color-blue-light: #e0e7ff;     /* Indigo 100 */
+  
+  --color-grey-bg: #f8fafc;        /* Slate 50 */
+  --color-grey-card: #ffffff;
+  --color-grey-border: #e2e8f0;    /* Slate 200 */
+  --color-grey-text: #64748b;      /* Slate 500 */
+  --color-grey-dark: #334155;      /* Slate 700 */
+  
+  --color-text-primary: #0f172a;   /* Primary text color (navy-dark equivalent for light mode) */
+  --color-sidebar-bg: #0f172a;     /* Sidebar background color (navy-dark equivalent) */
+}
+
+@layer theme {
+  .dark {
+    --color-text-primary: #f8fafc;   /* In dark mode, primary text is light Slate 50 */
+    --color-grey-bg: #0b0f19;        /* Dark background */
+    --color-grey-card: #111827;      /* Dark card */
+    --color-grey-border: #1f2937;    /* Slate 800 or Gray 800 border */
+    --color-grey-text: #9ca3af;      /* Gray 400 secondary text */
+    --color-grey-dark: #e5e7eb;      /* Gray 200 body text */
+    --color-blue-light: #1e1b4b;     /* Indigo 950 for background badges */
+  }
+}
+
+/* Wskazujesz Tailwindowi, gdzie ma szukać klas w projekcie Django */
+@source "../../**/templates/**/*.html";
+@source "../../../**/*.html";
+@source "../../**/*.html";
+@source "../**/*.html";
+@source "../../**/templates/*.html";
+@source "../../**/*.py";
+@source "../../static/**/*.js";
+
+@layer base {
+  body {
+    background-color: var(--color-grey-bg);
+    color: var(--color-grey-dark);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    letter-spacing: -0.015em;
+  }
+
+  /* --- NOWOCZESNY DESIGN ELEMENTÓW INTERFEJSU --- */
+  
+  /* Karty (Cards) */
+  .card {
+    background-color: var(--color-grey-card) !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden;
+  }
+  
+  .card-body {
+    padding: 1.75rem !important;
+  }
+  
+  .card-title {
+    color: var(--color-text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+  }
+
+  /* Tabele (Modern Light Tables like Stripe/Vercel) */
+  .table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    color: var(--color-grey-dark) !important;
+  }
+  
+  .table th {
+    background-color: var(--color-grey-bg) !important;
+    color: var(--color-grey-text) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.725rem !important;
+    letter-spacing: 0.06em !important;
+    padding: 0.875rem 1rem !important;
+    border-bottom: 2px solid var(--color-grey-border) !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+  
+  .table td {
+    padding: 1rem 1rem !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid var(--color-grey-border) !important;
+    background-color: var(--color-grey-card) !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .table-striped tbody tr:nth-of-type(odd) td {
+    background-color: var(--color-grey-bg) !important;
+  }
+  
+  .table-bordered th, .table-bordered td {
+    border: 1px solid var(--color-grey-border) !important;
+  }
+
+  /* Odznaki (Badges) */
+  .badge {
+    padding: 0.35em 0.75em !important;
+    font-size: 0.725rem !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    text-transform: capitalize !important;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .badge.bg-success, .badge.success {
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+  }
+  
+  .badge.bg-danger, .badge.danger {
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+  }
+  
+  .badge.bg-warning, .badge.warning {
+    background-color: #fffbeb !important;
+    color: #b45309 !important;
+  }
+  
+  .badge.bg-primary, .badge.primary {
+    background-color: var(--color-blue-light) !important;
+    color: var(--color-blue-primary) !important;
+  }
+
+  /* Przyciski (Buttons) */
+  .btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 500 !important;
+    border-radius: 0.5rem !important;
+    padding: 0.625rem 1.25rem !important;
+    transition: all 0.2s ease-in-out !important;
+    font-size: 0.875rem !important;
+    cursor: pointer !important;
+    border: 1px solid transparent !important;
+  }
+  
+  .btn-primary {
+    background-color: var(--color-blue-primary) !important;
+    border-color: var(--color-blue-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.05) !important;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-blue-hover) !important;
+    border-color: var(--color-blue-hover) !important;
+  }
+
+  .btn-light {
+    background-color: var(--color-grey-bg) !important;
+    border-color: var(--color-grey-border) !important;
+    color: var(--color-grey-dark) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+  }
+  .btn-light:hover {
+    background-color: var(--color-grey-border) !important;
+    color: var(--color-text-primary) !important;
+  }
+
+  /* Formularze (Django Forms i inne) */
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  select,
+  textarea {
+    width: 100% !important;
+    padding: 0.625rem 0.875rem !important;
+    background-color: var(--color-grey-card) !important;
+    border: 1px solid var(--color-grey-border) !important;
+    border-radius: 0.5rem !important;
+    color: var(--color-text-primary) !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease-in-out !important;
+    outline: none !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+  }
+  
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--color-blue-primary) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+  }
+
+  input[type="file"] {
+    width: 100% !important;
+    padding: 0.5rem 0.75rem !important;
+    background-color: var(--color-grey-card) !important;
+    border: 1px solid var(--color-grey-border) !important;
+    border-radius: 0.5rem !important;
+    color: var(--color-grey-text) !important;
+    font-size: 0.875rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+  }
+  
+  input[type="file"]::file-selector-button {
+    background-color: var(--color-grey-bg) !important;
+    border: 1px solid var(--color-grey-border) !important;
+    color: var(--color-text-primary) !important;
+    padding: 0.375rem 0.75rem !important;
+    border-radius: 0.375rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    margin-right: 0.75rem !important;
+    transition: all 0.2s ease-in-out !important;
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    background-color: var(--color-grey-border) !important;
+  }
+  
+  label {
+    display: inline-block !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: var(--color-grey-dark) !important;
+  }
+}
+
+/* --- FLUIDALNY UKŁAD WYGLĄDU (LAYOUT FLEXBOX) --- */
+
+.wrapper {
+  display: flex !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+}
+
+/* Sidebar */
+.sidebar-wrapper {
+  width: 260px;
+  height: 100vh;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: var(--color-sidebar-bg) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  z-index: 100;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  height: 64px;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 1.5rem !important;
+  background-color: var(--color-sidebar-bg) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  flex-shrink: 0;
+  justify-content: space-between !important;
+}
+
+.logo-icon {
+  width: 28px !important;
+  height: auto !important;
+}
+
+.logo-text {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  color: #ffffff !important;
+  margin-left: 0.625rem !important;
+}
+
+.toggle-icon {
+  color: #64748b !important;
+  font-size: 1.25rem !important;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.toggle-icon:hover {
+  color: #ffffff !important;
+}
+
+/* Sidebar Navigation (Metismenu Premium Design) */
+.sidebar-wrapper .metismenu {
+  padding: 1.25rem 0.75rem !important;
+}
+
+.sidebar-wrapper .metismenu a {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  color: #94a3b8 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.625rem 0.875rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  margin: 0.125rem 0.25rem !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
+}
+
+.sidebar-wrapper .metismenu a .parent-icon {
+  font-size: 1.25rem !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sidebar-wrapper .metismenu a .menu-title {
+  margin-left: 0.75rem !important;
+}
+
+.sidebar-wrapper .metismenu a:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Active element style with vertical bar indicator on the left */
+.sidebar-wrapper .metismenu .mm-active > a {
+  color: #ffffff !important;
+  background-color: rgba(99, 102, 241, 0.08) !important;
+}
+
+.sidebar-wrapper .metismenu .mm-active > a::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 3px;
+  background-color: var(--color-navy-light);
+  border-radius: 0 4px 4px 0;
+}
+
+.sidebar-wrapper .metismenu ul {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0.5rem !important;
+  border: none !important;
+  margin: 0.25rem 0.25rem !important;
+  padding: 0.25rem 0 !important;
+}
+
+.sidebar-wrapper .metismenu ul a {
+  padding-left: 2.5rem !important;
+  font-size: 0.8rem !important;
+}
+
+/* Metismenu Arrow styling */
+.sidebar-wrapper .metismenu .has-arrow:after {
+  border-color: #64748b !important;
+  border-width: 1.5px 0 0 1.5px !important;
+  right: 16px !important;
+}
+
+.sidebar-wrapper .metismenu .has-arrow[aria-expanded="true"]:after,
+.sidebar-wrapper .metismenu .mm-active > .has-arrow:after {
+  transform: rotate(-135deg) translateY(-50%) !important;
+  border-color: #ffffff !important;
+}
+
+.menu-label {
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 0.675rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 1.5rem 1rem 0.5rem 1.125rem !important;
+}
+
+/* Header Topbar */
+.topbar {
+  height: 64px;
+  background-color: var(--color-grey-card) !important;
+  border-bottom: 1px solid var(--color-grey-border) !important;
+  width: 100% !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+  flex-shrink: 0;
+}
+
+.topbar .navbar {
+  padding: 0 1.75rem !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.user-box {
+  border-left: 1px solid var(--color-grey-border) !important;
+  padding-left: 1.25rem !important;
+}
+
+.user-box .user-img {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 9999px !important;
+  object-fit: cover !important;
+  border: 1px solid var(--color-grey-border) !important;
+}
+
+.user-box .user-info .user-name {
+  color: var(--color-text-primary) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+}
+
+.user-box .user-info .designattion {
+  color: var(--color-grey-text) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Page Content Wrapper */
+.page-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  background-color: var(--color-grey-bg) !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-content {
+  padding: 2.25rem !important;
+  flex-grow: 1 !important;
+  overflow-y: auto !important;
+}
+
+.page-footer {
+  background-color: var(--color-grey-card) !important;
+  border-top: 1px solid var(--color-grey-border) !important;
+  color: var(--color-grey-text) !important;
+  padding: 1.25rem !important;
+  text-align: center !important;
+  font-size: 0.815rem !important;
+  flex-shrink: 0;
+}
+
+/* --- TOGGLED (COLLAPSED) SIDEBAR STATE --- */
+.wrapper.toggled .sidebar-wrapper {
+  width: 72px;
+}
+
+.wrapper.toggled .logo-text {
+  display: none !important;
+}
+
+.wrapper.toggled .sidebar-header {
+  justify-content: center !important;
+}
+
+.wrapper.toggled .sidebar-header .toggle-icon {
+  display: none !important;
+}
+
+.wrapper.toggled .sidebar-wrapper .menu-title,
+.wrapper.toggled .sidebar-wrapper .menu-label,
+.wrapper.toggled .sidebar-wrapper .has-arrow:after {
+  display: none !important;
+}
+
+.wrapper.toggled .sidebar-wrapper .metismenu ul {
+  display: none !important;
+}
+
+.wrapper.toggled .sidebar-wrapper .metismenu a {
+  justify-content: center !important;
+  margin: 0.125rem 0.5rem !important;
+  padding: 0.625rem 0 !important;
+}
+
+.wrapper.toggled .sidebar-wrapper .metismenu a .parent-icon {
+  margin-right: 0 !important;
+}
+
+.wrapper.toggled .sidebar-wrapper .metismenu .mm-active > a::before {
+  top: 15%;
+  bottom: 15%;
+  width: 4px;
+}
+
+/* --- COLLAPSED SIDEBAR HOVER EXPANSION --- */
+.wrapper.toggled.sidebar-hovered .sidebar-wrapper {
+  width: 260px;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
+}
+
+.wrapper.toggled.sidebar-hovered .logo-text {
+  display: inline-block !important;
+}
+
+.wrapper.toggled.sidebar-hovered .sidebar-header {
+  justify-content: space-between !important;
+}
+
+.wrapper.toggled.sidebar-hovered .sidebar-wrapper .menu-title,
+.wrapper.toggled.sidebar-hovered .sidebar-wrapper .menu-label,
+.wrapper.toggled.sidebar-hovered .sidebar-wrapper .has-arrow:after {
+  display: inline-block !important;
+}
+
+.wrapper.toggled.sidebar-hovered .sidebar-wrapper .metismenu ul.mm-show {
+  display: block !important;
+}
+
+.wrapper.toggled.sidebar-hovered .sidebar-wrapper .metismenu a {
+  justify-content: flex-start !important;
+  padding: 0.625rem 0.875rem !important;
+  margin: 0.125rem 0.25rem !important;
+}
+
+/* Hide switcher */
+.switcher-wrapper {
+  display: none !important;
+}
+
+/* Wyśrodkowanie i ograniczenie szerokości formularzy na podstronach (maks. 1/2 strony) */
+.page-content form {
+  max-width: 640px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}

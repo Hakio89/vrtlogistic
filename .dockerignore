@@ -1,0 +1,12 @@
+.git
+.venv
+env
+newenv
+*.sqlite3
+.env
+staticfiles
+media
+secrets
+Dockerfile
+compose.yaml
+README.md

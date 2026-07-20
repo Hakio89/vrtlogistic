@@ -16,7 +16,8 @@ import environ
 import os
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    DBG=(bool, False)
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG=env('DEBUG')
+DEBUG = env('DEBUG') or env('DBG')
 
 
 
@@ -36,7 +37,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 
 
-ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic','virtuallogistic.euroccs.local']
+ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic', 'virtuallogistic.euroccs.local', 'rtlogisitc', 'rtlogistic', 'vrtlogistic']
 
 
 # Application definition
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -95,31 +97,54 @@ WSGI_APPLICATION = "vrtlogistic.wsgi.application"
 #DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
 
 
-DATABASES = {
+db_host = os.environ.get('DB_HOST', 'localhost')
+db_name = os.environ.get('DB_NAME', 'virtuallogisticdb')
+db_user = os.environ.get('DB_USER', '')
+db_password = env('MYSQL_PASSWORD', default='')
+
+db_password_file = os.environ.get('DB_PASSWORD_FILE')
+if db_password_file and os.path.exists(db_password_file):
+    try:
+        with open(db_password_file, 'r') as f:
+            db_password = f.read().strip()
+    except Exception:
+        pass
+
+db_options = {}
+if os.path.exists("/etc/mysql/my.cnf"):
+    db_options["read_default_file"] = "/etc/mysql/my.cnf"
+
+"""DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "virtuallogisticdb",
-        "HOST": "localhost",
+        "NAME": db_name,
+        "HOST": db_host,
         "PORT": 3306,
-        "PASSWORD": env('MYSQL_PASSWORD'),
-        "OPTIONS": {
-            "read_default_file": "/etc/mysql/my.cnf",
-            },
+        "PASSWORD": db_password,
+        "OPTIONS": db_options,
     },
-    
+"""
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "db.sqlite3",
+    },
     "ccs": {
-    "ENGINE": env("CCS_ENGINE"),
-    "NAME": env("CCS_NAME"),
-    "USER": env("CCS_USER"),
-    "PASSWORD": env("CCS_PASSWORD"),
-    "HOST": env("CCS_HOST"),
-    "PORT": env("CCS_PORT"),
-    "OPTIONS": {
-        "driver": "ODBC Driver 18 for SQL Server",
-        "extra_params": "Encrypt=no",
+        "ENGINE": env("CCS_ENGINE"),
+        "NAME": env("CCS_NAME"),
+        "USER": env("CCS_USER"),
+        "PASSWORD": env("CCS_PASSWORD"),
+        "HOST": env("CCS_HOST"),
+        "PORT": env("CCS_PORT"),
+        "OPTIONS": {
+            "driver": "ODBC Driver 18 for SQL Server",
+            "extra_params": "Encrypt=no",
         }    
     },
 }
+
+
 
 
 # Password validation
@@ -148,7 +173,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "pl"
 
 TIME_ZONE = "Europe/Warsaw"
 
@@ -159,7 +184,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_DIR = os.path.join(BASE_DIR, "static")
+STATIC_DIR = os.path.join(BASE_DIR, "vrtlogistic/static")
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     STATIC_DIR,
