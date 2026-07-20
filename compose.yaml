@@ -1,0 +1,85 @@
+services:
+  # --- BAZY DANYCH ---
+  virtuallogistic_db:
+    image: mysql:8.2.0
+    command: '--default-authentication-plugin=caching_sha2_password'
+    volumes:
+      - virtuallogistic_db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: virtuallogisticdb
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/virtuallogistic_root_pass
+      MYSQL_USER: virtuallogistic_user
+      MYSQL_PASSWORD_FILE: /run/secrets/virtuallogistic_user_pass
+    secrets:
+      - virtuallogistic_root_pass
+      - virtuallogistic_user_pass
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      retries: 10
+
+  # --- APLIKACJE DJANGO ---
+  vrtlogistic:
+    build: .
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /vrtlogistic
+          ignore:
+            - .venv/
+            - .git/
+            - secrets/
+        - action: rebuild
+          path: ./pyproject.toml
+    depends_on:
+      virtuallogistic_db:
+        condition: service_healthy
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=virtuallogistic_db
+      - DB_NAME=virtuallogisticdb
+      - DB_USER=virtuallogistic_user
+      - DB_PASSWORD_FILE=/run/secrets/virtuallogistic_user_pass
+    secrets:
+      - virtuallogistic_user_pass
+
+  # --- REVERSE PROXY (Nginx Proxy Manager) ---
+  proxy-manager-vrtl:
+    image: 'jc21/nginx-proxy-manager:2'
+    container_name: proxy-manager-vrtl
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81' # Panel administracyjny
+    volumes:
+      - ./proxy/data:/data
+      - ./proxy/letsencrypt:/etc/letsencrypt
+      - ./vrtlogistic/media:/data/vrtlogistic_media:ro
+
+  # --- ZARZĄDZANIE (phpMyAdmin) ---
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    ports:
+      - "8080:80"
+    environment:
+      # Kluczowa linijka: PMA_HOSTS pozwala zarządzać wieloma kontenerami
+      - PMA_HOSTS=virtuallogistic_db
+      - UPLOAD_LIMIT=300M
+      - PMA_ARBITRARY=1
+    depends_on:
+      - virtuallogistic_db
+
+volumes:
+  virtuallogistic_db_data:
+
+secrets:
+  virtuallogistic_user_pass:
+    file: ./secrets/virtuallogistic_user_pass.txt
+  virtuallogistic_root_pass:
+    file: ./secrets/virtuallogistic_root_pass.txt

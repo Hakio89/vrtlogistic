@@ -1,6 +1,6 @@
 {% extends 'reports/ccsreports.html' %}
 {% load static %}
-{% block content %}
+{% block report_content %}
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -32,11 +32,7 @@
                         <td>{{ccs.Oddzial}}</td>
                         <td>{{ccs.Magazyn}}</td>
                         <td>{{ccs.OdwolanieDoDostawcy}}</td>
-                        {% if ccs.waiting.Ilosc__sum == none %}
-                        <td>0</td>
-                        {% else %}
-                        <td>{{ccs.waiting.Ilosc__sum}}</td>
-                        {% endif %}
+                        <td>{{ccs.precalculated_waiting}}</td>
                         <td>{{ccs.Stan}}</td>
                         <td>{{ccs.Status}}</td>
                         <td>{{ccs.KontoDostawcy}}</td>

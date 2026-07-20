@@ -1,245 +1,109 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!--favicon-->
-		<link rel="icon" href="{% static 'images/logo-favicon.png'%}" type="image/png" />
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="{% static '/plugins/notifications/css/lobibox.min.css'%}"/>
-		<link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">
-		<link href="{% static 'css/bootstrap-extended.css'%}" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-		<link href="{% static 'css/app.css'%}" rel="stylesheet">
-		<link href="{% static 'css/icons.css'%}" rel="stylesheet">
-		<title>Virtual Logistic login</title>
-	</head>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="{% static 'images/logo-favicon.png' %}" type="image/png" />
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
-<body class="bg-theme bg-theme1">
-	<!--wrapper-->
-	<div class="wrapper">
-		<div class="section-authentication-signin d-flex align-items-center justify-content-center my-5 my-lg-0">
-			<div class="container-fluid">
-				<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
-					<div class="col mx-auto">
-						<div class="mb-4 text-center">						
-							<img src="{% static 'images/logo-VL.png' %}" width="180" alt="logo"/>
-							<p align="center"><h6>Virtual Logistic</h6></p>							
-						</div>
-						<div class="card">
-							<div class="card-body">
-								<div class="border p-4 rounded">
-									<div class="text-center">
-										<h3 class="">Sign in</h3>
-										<!-- <p>Don't have an account yet? <b><a href="{% url 'user_registration'%}">Sign up here</a></b>
-										</p>-->
-									</div>
-									<div class="form-body">
-										<form class="row g-3" method="POST">
-											{% csrf_token %}
-											<div class="col-12">
-												<label for="inputEmailAddress" class="form-label">User Name</label>
-												<input type="text" class="form-control" id="inputEmailAddress" placeholder="user name" name="username">
-											</div>
-											<div class="col-12">
-												<label for="inputChoosePassword" class="form-label">Enter Password</label>
-												<div class="input-group" id="show_hide_password">
-													<input type="password" class="form-control border-end-0" name="password" id="inputChoosePassword" placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-check form-switch">
-													<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-													<label class="form-check-label" for="flexSwitchCheckChecked">Remember Me</label>
-												</div>
-											</div>
-											<!--
-											<div class="col-md-6 text-end">	<a href="authentication-forgot-password.html">Forgot Password ?</a>
-											</div>
-											-->
-											<div class="col-12">
-												<div class="d-grid">
-													<button type="submit" class="btn btn-light"><i class="bx bxs-lock-open"></i>Sign in</button>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
+	<!-- Tailwind Compiled CSS -->
+	<link href="{% static 'css/vrtlogistic.css' %}?{% now 'U' %}" rel="stylesheet">
+	<title>Logowanie | Virtual Logistic</title>
+</head>
+
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4 font-sans antialiased text-slate-200 relative overflow-hidden">
+	<!-- Background grid pattern -->
+	<div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+
+	<!-- Glowing ambient blobs -->
+	<div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-indigo-600/10 rounded-full blur-[80px] pointer-events-none"></div>
+	<div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[350px] h-[350px] bg-blue-600/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+	<!-- Card container -->
+	<div class="w-full max-w-md bg-slate-900/85 backdrop-blur-lg border border-slate-800 rounded-2xl shadow-2xl p-8 relative z-10 overflow-hidden">
+		<!-- Accent light effect inside the card -->
+		<div class="absolute -top-16 -right-16 w-32 h-32 bg-indigo-600/20 rounded-full blur-2xl"></div>
+		
+		<div class="text-center mb-8 relative">
+			<img src="{% static 'images/logo-VL.png' %}" class="mx-auto h-16 w-auto" alt="logo"/>
+			<h2 class="text-2xl font-bold text-white mt-4 tracking-tight">Virtual Logistic</h2>
+			<p class="text-slate-400 text-sm mt-1">Zaloguj się do systemu logistycznego</p>
+		</div>
+		
+		{% if messages %}
+			<div class="space-y-3 mb-6">
+				{% for message in messages %}
+					<div class="p-4 rounded-xl text-sm font-medium flex items-center gap-3 {% if message.tags == 'success' %}bg-green-500/10 text-green-400 border border-green-500/20{% elif message.tags == 'warning' or message.tags == 'error' %}bg-red-500/10 text-red-400 border border-red-500/20{% else %}bg-blue-500/10 text-blue-400 border border-blue-500/20{% endif %}">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							{% if message.tags == 'success' %}
+								<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							{% else %}
+								<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+							{% endif %}
+						</svg>
+						<span>{{ message }}</span>
 					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+		
+		<form method="POST" class="space-y-6 relative">
+			{% csrf_token %}
+			<div>
+				<label for="inputEmailAddress" class="block text-sm font-semibold text-slate-300 mb-2">Nazwa użytkownika</label>
+				<input type="text" class="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" id="inputEmailAddress" placeholder="Wpisz nazwę..." name="username" required>
+			</div>
+			<div>
+				<label for="inputChoosePassword" class="block text-sm font-semibold text-slate-300 mb-2">Hasło</label>
+				<div class="relative rounded-xl shadow-sm" id="show_hide_password">
+					<input type="password" class="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" name="password" id="inputChoosePassword" placeholder="Wpisz hasło..." required>
+					<a href="javascript:;" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-white transition-colors">
+						<svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+						</svg>
+					</a>
 				</div>
-				<!--end row-->
 			</div>
-		</div>
-	</div>
-	<!--end wrapper-->
-	<!--start switcher-->
-	<div class="switcher-wrapper">
-		<div class="switcher-btn"> <i class='bx bx-cog bx-spin'></i>
-		</div>
-		<div class="switcher-body">
-			<div class="d-flex align-items-center">
-				<h5 class="mb-0 text-uppercase">Theme Customizer</h5>
-				<button type="button" class="btn-close ms-auto close-switcher" aria-label="Close"></button>
+			<div class="flex items-center justify-between">
+				<label class="flex items-center text-slate-300 text-sm cursor-pointer select-none">
+					<input type="checkbox" id="flexSwitchCheckChecked" class="mr-2 h-4 w-4 bg-slate-800 border-slate-700 rounded text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900" checked>
+					Zapamiętaj mnie
+				</label>
 			</div>
-			<hr/>
-			<p class="mb-0">Gaussian Texture</p>
-			<hr>
-			<ul class="switcher">
-				<li id="theme1"></li>
-				<li id="theme2"></li>
-				<li id="theme3"></li>
-				<li id="theme4"></li>
-				<li id="theme5"></li>
-				<li id="theme6"></li>
-			</ul>
-			<hr>
-			<p class="mb-0">Gradient Background</p>
-			<hr>
-			<ul class="switcher">
-				<li id="theme7"></li>
-				<li id="theme8"></li>
-				<li id="theme9"></li>
-				<li id="theme10"></li>
-				<li id="theme11"></li>
-				<li id="theme12"></li>
-				<li id="theme13"></li>
-				<li id="theme14"></li>
-				<li id="theme15"></li>
-			  </ul>
-		</div>
+			<div>
+				<button type="submit" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+					</svg> Zaloguj się
+				</button>
+			</div>
+		</form>
 	</div>
-	<!--end switcher-->
 
-
-	<!--plugins-->
-	<script src="{% static 'js/jquery.min.js'%}"></script>
-	<!--Password show & hide js -->
+	<!-- scripts -->
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<!-- Password show & hide js -->
 	<script>
 		$(document).ready(function () {
 			$("#show_hide_password a").on('click', function (event) {
 				event.preventDefault();
-				if ($('#show_hide_password input').attr("type") == "text") {
-					$('#show_hide_password input').attr('type', 'password');
-					$('#show_hide_password i').addClass("bx-hide");
-					$('#show_hide_password i').removeClass("bx-show");
-				} else if ($('#show_hide_password input').attr("type") == "password") {
-					$('#show_hide_password input').attr('type', 'text');
-					$('#show_hide_password i').removeClass("bx-hide");
-					$('#show_hide_password i').addClass("bx-show");
+				var input = $('#show_hide_password input');
+				var svg = $('#eye-icon');
+				if (input.attr("type") == "text") {
+					input.attr('type', 'password');
+					svg.html('<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />');
+				} else {
+					input.attr('type', 'text');
+					svg.html('<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />');
 				}
 			});
 		});
 	</script>
-
-	<script>
-	$(".switcher-btn").on("click", function() {
-	$(".switcher-wrapper").toggleClass("switcher-toggled")
-	}), $(".close-switcher").on("click", function() {
-		$(".switcher-wrapper").removeClass("switcher-toggled")
-	}),
-
-
-	$('#theme1').click(theme1);
-	$('#theme2').click(theme2);
-	$('#theme3').click(theme3);
-	$('#theme4').click(theme4);
-	$('#theme5').click(theme5);
-	$('#theme6').click(theme6);
-	$('#theme7').click(theme7);
-	$('#theme8').click(theme8);
-	$('#theme9').click(theme9);
-	$('#theme10').click(theme10);
-	$('#theme11').click(theme11);
-	$('#theme12').click(theme12);
-	$('#theme13').click(theme13);
-	$('#theme14').click(theme14);
-	$('#theme15').click(theme15);
-
-
-	function theme1() {
-	  $('body').attr('class', 'bg-theme bg-theme1');
-	}
-
-	function theme2() {
-	  $('body').attr('class', 'bg-theme bg-theme2');
-	}
-
-	function theme3() {
-	  $('body').attr('class', 'bg-theme bg-theme3');
-	}
-
-	function theme4() {
-	  $('body').attr('class', 'bg-theme bg-theme4');
-	}
-
-	function theme5() {
-	  $('body').attr('class', 'bg-theme bg-theme5');
-	}
-
-	function theme6() {
-	  $('body').attr('class', 'bg-theme bg-theme6');
-	}
-
-	function theme7() {
-	  $('body').attr('class', 'bg-theme bg-theme7');
-	}
-
-	function theme8() {
-	  $('body').attr('class', 'bg-theme bg-theme8');
-	}
-
-	function theme9() {
-	  $('body').attr('class', 'bg-theme bg-theme9');
-	}
-
-	function theme10() {
-	  $('body').attr('class', 'bg-theme bg-theme10');
-	}
-
-	function theme11() {
-	  $('body').attr('class', 'bg-theme bg-theme11');
-	}
-
-	function theme12() {
-	  $('body').attr('class', 'bg-theme bg-theme12');
-	}
-
-	function theme13() {
-	  $('body').attr('class', 'bg-theme bg-theme13');
-	}
-
-	function theme14() {
-	  $('body').attr('class', 'bg-theme bg-theme14');
-	}
-
-	function theme15() {
-	  $('body').attr('class', 'bg-theme bg-theme15');
-	}
-	</script>
-	<!--notification js -->
-	<script src="{% static '/plugins/notifications/js/lobibox.min.js'%}"></script>
-	<script src="{% static '/plugins/notifications/js/notifications.min.js'%}"></script>
-	<script src="{% static '/plugins/notifications/js/notification-custom-script.js'%}"></script>
-	{% if messages %}
-		{% for message in messages %}
-		<script type="text/javascript">
-			$(document).ready(function {{message.tags}}_noti() {
-				Lobibox.notify('{{message.tags}}', {
-					pauseDelayOnHover: true,
-					continueDelayOnInactiveTab: false,
-					position: 'top right',
-					icon: 'bx bx-error',
-					msg: '{{message}}'
-				});
-			});
-		</script>
-		{% endfor %}
-    {% endif %}
 </body>
 
 </html>

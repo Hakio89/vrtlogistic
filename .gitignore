@@ -1,10 +1,9 @@
-media/xiaomi/deliveries/*
-media/xiaomi/parts-catalog/*
-media/xiaomi/waiting-parts/*
-media/users/profile/images*
-media/maitrox*
+media/
 env/
 *.sqlite3
 .env
 newenv/
 staticfiles/
+.venv/
+secrets/
+tailwindcss

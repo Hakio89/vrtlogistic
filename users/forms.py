@@ -20,7 +20,7 @@ class UserProfileForm(forms.ModelForm):
      
     class Meta:
         model = Profile
-        fields = ["workplace", "occupation", "supervisor", "profile_image"]
+        fields = ["workplace", "occupation", "supervisor", "website", "profile_image"]
         
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
@@ -32,7 +32,7 @@ class UserProfileUpdateForm(forms.ModelForm):
      
     class Meta:
         model = Profile
-        fields = ["workplace", "occupation", "supervisor"]
+        fields = ["workplace", "occupation", "supervisor", "website"]
         
     def __init__(self, *args, **kwargs):
         super(UserProfileUpdateForm, self).__init__(*args, **kwargs)

@@ -1,266 +1,234 @@
 <!doctype html>
 {% load static %}
-<html lang="en">
+<html lang="pl">
 
 <head>
-	<!-- Required meta tags -->
+	<script>
+		(function() {
+			const theme = localStorage.getItem('theme') || 'light';
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		})();
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!--favicon-->
 	<link rel="icon" href="{% static '/images/logo-favicon.png' %} " type="image/png" />
-	<!--plugins-->
+	
+	<!-- Plugins CSS -->
 	<link href="{% static '/plugins/vectormap/jquery-jvectormap-2.0.2.css' %}" rel="stylesheet"/>
 	<link href="{% static '/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
 	<link href="{% static '/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
 	<link href="{% static '/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
 	<link href="{% static '/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
-	<!-- loader-->
-	<!--<link href="{% static '/css/pace.min.css'%}" rel="stylesheet" />
-	<script src="{% static '/js/pace.min.js'%}"></script>-->
-	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{% static '/plugins/notifications/css/lobibox.min.css'%}"/>
-	<link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
-	<link href="{% static '/css/bootstrap-extended.css' %}" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-	<link href="{% static '/css/app.css' %}" rel="stylesheet">
-	<link href="{% static '/css/icons.css' %}" rel="stylesheet">
 	
-	<title>{{title}} {{delivery.delivery}}</title>
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+	<!-- Tailwind CSS -->
+	<link href="{% static '/css/vrtlogistic.css' %}?{% now 'U' %}" rel="stylesheet">
+	
+	<title>{% block title %}{% if title %}{{ title }}{% else %}Virtual Logistic{% endif %}{% endblock %}</title>
+	<style>
+		/* Enforce font family for all DataTables elements */
+		.dataTables_wrapper,
+		.dataTables_wrapper .dataTables_info,
+		.dataTables_wrapper .dataTables_paginate,
+		.dataTables_wrapper .dataTables_length,
+		.dataTables_wrapper .dataTables_filter,
+		.dataTables_wrapper select,
+		.dataTables_wrapper input,
+		.dataTables_wrapper .btn {
+			font-family: 'Plus Jakarta Sans', sans-serif !important;
+		}
+	</style>
 </head>
 
-<body class="bg-theme">
-	<!--wrapper-->
-	<div class="wrapper">
-		<!--sidebar wrapper -->
-		<div class="sidebar-wrapper" data-simplebar="true">
-			<div class="sidebar-header">
-				<div>
-					<img src="{% static '/images/logo-VL.png' %}" class="logo-icon" alt="logo icon">
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+	<!-- Wrapper -->
+	<div class="wrapper flex min-h-screen w-full overflow-hidden">
+		
+		<!-- Sidebar -->
+		<aside class="sidebar-wrapper w-64 bg-[#0a0f1d] text-slate-400 border-r border-slate-800 flex flex-col shrink-0 transition-all duration-300 ease-in-out">
+			<div class="sidebar-header h-16 flex items-center justify-between px-5 border-b border-slate-800 shrink-0">
+				<div class="flex items-center gap-3">
+					<img src="{% static '/images/logo-VL.png' %}" class="h-8 w-auto logo-icon" alt="logo icon">
+					<h2 class="logo-text text-white font-bold text-base tracking-tight whitespace-nowrap">Virtual Logistic</h2>
 				</div>
-				<div>
-					<h2 class="logo-text">Virtual Logistic</h2>
-				</div>
-				<div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
+				<div class="toggle-icon ms-auto cursor-pointer text-slate-400 hover:text-white transition-colors hidden md:flex items-center justify-center">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+					</svg>
 				</div>
 			</div>
-			<!--navigation-->
-			{% include 'navbar.html' %}
-			<!--end navigation-->
-		</div>
-		<!--end sidebar wrapper -->
-		<!--start header -->
-		{% include 'header.html' %}
-		<!--end header -->
-		<!--start page wrapper -->
-		<div class="page-wrapper">
-			<div class="page-content">
+			<!-- Navigation -->
+			<div class="flex-1 overflow-y-auto" data-simplebar="true">
+				{% include 'navbar.html' %}
+			</div>
+		</aside>
+		
+		<!-- Right Side Content -->
+		<div class="page-wrapper flex-1 flex flex-col min-h-screen overflow-hidden transition-all duration-300 ease-in-out">
+			<!-- Header -->
+			{% include 'header.html' %}
+			
+			<!-- Page Content -->
+			<main class="page-content flex-grow overflow-y-auto p-6 md:p-8">
 				
-				<!--breadcrumb-->
-				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-					<div class="ps-3">
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb mb-0 p-0">
-								<li class="breadcrumb-item"><a href="{% url 'dashboard'%}"><i class="bx bx-home-alt"></i></a>
-								</li>
-								<li class="breadcrumb-item active" aria-current="page">{{request.path}}</li>
-							</ol>
-						</nav>
-					</div>
-					<!--
-					<div class="ms-auto">
-												<div class="btn-group">
-							<button type="button" class="btn btn-light">Settings</button>
-							<button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
-							</button>
-							<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	<a class="dropdown-item" href="javascript:;">Action</a>
-								<a class="dropdown-item" href="javascript:;">Another action</a>
-								<a class="dropdown-item" href="javascript:;">Something else here</a>
-								<div class="dropdown-divider"></div>	<a class="dropdown-item" href="javascript:;">Separated link</a>
-							</div>
-						</div>						
-					</div>
-					-->
+				<!-- Breadcrumb -->
+				<div class="page-breadcrumb flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+					<nav aria-label="breadcrumb">
+						<ol class="flex items-center space-x-2 text-sm text-slate-500">
+							<li>
+								<a href="{% url 'dashboard'%}" class="hover:text-blue-600 transition-colors flex items-center">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+									</svg>
+								</a>
+							</li>
+							<li class="flex items-center space-x-2">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+								</svg>
+								<span class="text-slate-700 font-medium truncate max-w-xs">{{request.path}}</span>
+							</li>
+						</ol>
+					</nav>
 				</div>
-				{% block content %}
-				{% endblock %}	
-				<!-- place for settings-->
-				<!--end breadcrumb-->
-				<div class="container mb-3">
-					<div class="main-body">							
-										
-					</div>
+				
+				<!-- Main block content -->
+				<div class="content-body space-y-6">
+					{% if messages %}
+						<div class="space-y-3">
+							{% for message in messages %}
+								<div class="p-4 rounded-xl text-sm font-medium flex items-center justify-between gap-3 {% if message.tags == 'success' %}bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20{% elif message.tags == 'warning' or message.tags == 'error' %}bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20{% else %}bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20{% endif %}" role="alert">
+									<div class="flex items-center gap-3">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+											{% if message.tags == 'success' %}
+												<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+											{% else %}
+												<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+											{% endif %}
+										</svg>
+										<span>{{ message }}</span>
+									</div>
+									<button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors focus:outline-none" onclick="this.parentElement.remove();">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+										</svg>
+									</button>
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+
+					{% block content %}
+					{% endblock %}	
 				</div>
-			</div>
-		</div>
-		{% include 'footer.html' %}
-	</div>
-	<!--end wrapper-->
-	<!--start switcher-->
-	<div class="switcher-wrapper">
-		<div class="switcher-btn"> <i class='bx bx-cog bx-spin'></i>
-		</div>
-		<div class="switcher-body">
-			<div class="d-flex align-items-center">
-				<h5 class="mb-0 text-uppercase">Theme Customizer</h5>
-				<button type="button" class="btn-close ms-auto close-switcher" aria-label="Close"></button>
-			</div>
-			<hr/>
-			<p class="mb-0">Gaussian Texture</p>
-			  <hr>
-			  
-			  <ul class="switcher">
-				<li id="theme1"></li>
-				<li id="theme2"></li>
-				<li id="theme3"></li>
-				<li id="theme4"></li>
-				<li id="theme5"></li>
-				<li id="theme6"></li>
-			  </ul>
-               <hr>
-			  <p class="mb-0">Gradient Background</p>
-			  <hr>
-			  
-			  <ul class="switcher">
-				<li id="theme7"></li>
-				<li id="theme8"></li>
-				<li id="theme9"></li>
-				<li id="theme10"></li>
-				<li id="theme11"></li>
-				<li id="theme12"></li>
-				<li id="theme13"></li>
-				<li id="theme14"></li>
-				<li id="theme15"></li>
-			  </ul>
+			</main>
+			
+			<!-- Footer -->
+			{% include 'footer.html' %}
 		</div>
 	</div>
-	<!--end switcher-->
-	<!-- Bootstrap JS -->
+
+	<!-- Scripts -->
 	<script src="{% static '/js/bootstrap.bundle.min.js' %}"></script>
-	<!--notification js -->
+	<!-- Notifications JS -->
 	<script src="{% static '/plugins/notifications/js/lobibox.min.js'%}"></script>
 	<script src="{% static '/plugins/notifications/js/notifications.min.js'%}"></script>
 	<script src="{% static '/plugins/notifications/js/notification-custom-script.js'%}"></script>
-	<!--plugins-->
+	<!-- Plugins JS -->
 	<script src="{% static '/js/jquery.min.js' %}"></script>
 	<script src="{% static '/plugins/simplebar/js/simplebar.min.js' %}"></script>
 	<script src="{% static '/plugins/metismenu/js/metisMenu.min.js' %}"></script>
 	<script src="{% static '/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
 	<script src="{% static '/plugins/chartjs/chart.min.js' %}"></script>
 	<script src="{% static '/plugins/vectormap/jquery-jvectormap-2.0.2.min.js' %}"></script>
-    <script src="{% static '/plugins/vectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+	<script src="{% static '/plugins/vectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
 	<script src="{% static '/plugins/jquery.easy-pie-chart/jquery.easypiechart.min.js' %}"></script>
 	<script src="{% static '/plugins/sparkline-charts/jquery.sparkline.min.js' %}"></script>
 	<script src="{% static '/plugins/jquery-knob/excanvas.js' %}"></script>
 	<script src="{% static '/plugins/jquery-knob/jquery.knob.js' %}"></script>
-	<!-- Data Table-->
+	<!-- Data Tables -->
 	<script src="{% static 'plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 	<script src="{% static 'plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+	
 	<script>
 		$(function() {
 			$(".knob").knob();
 		});
 	</script>
 	<script>
-	  
-		$(document).ready(function() {
-		$('#example').DataTable()
-	  });
-		
-	</script>
-	<script>
-		$(document).ready(function() {
-			var table = $('#example2').DataTable( {
-				lengthChange: true,
-				ordering: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example2_wrapper .col-md-6:eq(0)' );
-		} );
-	</script>	
-	<script>
-		$(document).ready(function() {
-			var table = $('#example3').DataTable( {
-				lengthChange: true,
-				ordering: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example3_wrapper .col-md-6:eq(0)' );
-		} );
-	</script>	
-	<script>
-		$(document).ready(function() {
-			var table = $('#example4').DataTable( {
-				lengthChange: true,
-				ordering: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example4_wrapper .col-md-6:eq(0)' );
-		} );
-	</script>
-	<script>
-		$(document).ready(function() {
-			var table = $('#example5').DataTable( {
-				lengthChange: true,
-				ordering: false,
-				buttons: [ 'copy', 'excel', 'pdf', 'print']
-			} );
-		 
-			table.buttons().container()
-				.appendTo( '#example5_wrapper .col-md-6:eq(0)' );
-		} );
-	</script>
-	<!--
-	<script src="{% static '/js/index.js' %}"></script>
-	-->
-	<!--app JS-->
-	<script src="{% static 'js/app.js' %}"></script>
-	{% if messages %}
-		{% for message in messages %}
-		<script type="text/javascript">
-			$(document).ready(function {{message.tags}}_noti() {
-				Lobibox.notify('{{message.tags}}', {
-					pauseDelayOnHover: true,
-					continueDelayOnInactiveTab: false,
-					position: 'top right',
-					icon: 'bx bx-error',
-					msg: '{{message}}'
-				});
-			});
-		</script>
-		{% endfor %}
-    {% endif %}
-
-	<script>
-		function setTheme(themeId) {
-			// Usuń wszystkie klasy bg-themeX z <body>
-			document.body.className = document.body.className.replace(/\bbg-theme\d+\b/g, '');
-			// Dodaj klasę bg-theme oraz bg-themeX
-			document.body.classList.add('bg-theme', 'bg-' + themeId);
-			// Zapisz wybór w localStorage
-			localStorage.setItem('selectedTheme', themeId);
-		}
-
-		// Obsługa kliknięć na motywy
-		document.querySelectorAll('.switcher li[id^="theme"]').forEach(function(li) {
-			li.addEventListener('click', function() {
-				setTheme(this.id);
-			});
-		});
-
-		// Przy ładowaniu strony ustaw motyw z localStorage
-		document.addEventListener('DOMContentLoaded', function() {
-			var savedTheme = localStorage.getItem('selectedTheme');
-			if (savedTheme) {
-				setTheme(savedTheme);
+		const dtLanguagePl = {
+			"processing": "Przetwarzanie...",
+			"search": "Szukaj:",
+			"lengthMenu": "Pokaż _MENU_ pozycji",
+			"info": "Pokazywanie od _START_ do _END_ z _TOTAL_ pozycji",
+			"infoEmpty": "Pokazywanie od 0 do 0 z 0 pozycji",
+			"infoFiltered": "(filtrowane z _MAX_ wszystkich pozycji)",
+			"loadingRecords": "Wczytywanie...",
+			"zeroRecords": "Nie znaleziono pasujących pozycji",
+			"emptyTable": "Brak danych w tabeli",
+			"paginate": {
+				"first": "Pierwsza",
+				"previous": "Poprzednia",
+				"next": "Następna",
+				"last": "Ostatnia"
 			}
+		};
+
+		$(document).ready(function() {
+			$('#example').DataTable({
+				language: dtLanguagePl
+			});
+		});
+		$(document).ready(function() {
+			var table = $('#example2').DataTable({
+				lengthChange: true,
+				ordering: false,
+				buttons: ['copy', 'excel', 'pdf', 'print'],
+				language: dtLanguagePl
+			});
+			table.buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+		});
+		$(document).ready(function() {
+			var table = $('#example3').DataTable({
+				lengthChange: true,
+				ordering: false,
+				buttons: ['copy', 'excel', 'pdf', 'print'],
+				language: dtLanguagePl
+			});
+			table.buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
+		});
+		$(document).ready(function() {
+			var table = $('#example4').DataTable({
+				lengthChange: true,
+				ordering: false,
+				buttons: ['copy', 'excel', 'pdf', 'print'],
+				language: dtLanguagePl
+			});
+			table.buttons().container().appendTo('#example4_wrapper .col-md-6:eq(0)');
+		});
+		$(document).ready(function() {
+			var table = $('#example5').DataTable({
+				lengthChange: true,
+				ordering: false,
+				buttons: ['copy', 'excel', 'pdf', 'print'],
+				language: dtLanguagePl
+			});
+			table.buttons().container().appendTo('#example5_wrapper .col-md-6:eq(0)');
 		});
 	</script>
+	<!-- App JS -->
+	<script src="{% static 'js/app.js' %}"></script>
+	
+
 </body>
 
 </html>
