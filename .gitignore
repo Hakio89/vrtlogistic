@@ -6,3 +6,4 @@ newenv/
 staticfiles/
 .venv/
 secrets/
+tailwindcss
