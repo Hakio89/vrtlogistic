@@ -55,7 +55,7 @@ services:
       - DB_USER=virtuallogistic_user
       - DB_PASSWORD_FILE=/run/secrets/virtuallogistic_user_pass
     volumes:
-      - ./media:/vrtlogistic/media
+      - ./vrtlogistic/media:/vrtlogistic/vrtlogistic/media
     secrets:
       - virtuallogistic_user_pass
     deploy:
@@ -80,7 +80,7 @@ services:
     volumes:
       - ./proxy/data:/data
       - ./proxy/letsencrypt:/etc/letsencrypt
-      - ./media:/vrtlogistic_media:ro
+      - ./vrtlogistic/media:/vrtlogistic_media:ro
     deploy:
       resources:
         limits:
