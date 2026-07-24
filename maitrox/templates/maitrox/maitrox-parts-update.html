@@ -12,9 +12,11 @@
     </button>
 </a>
 </p>
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase">Update Parts</h6>
-<hr/>
+<div class="relative flex py-5 items-center">
+    <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Aktualizacja części</span>
+    <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+</div>
 <form class="row g-3" method="POST" enctype="multipart/form-data">
     {{form.as_p}}
     {% csrf_token %}

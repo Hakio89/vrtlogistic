@@ -3,14 +3,16 @@
 
 
 {% block content %}
-<hr/>
-<h6 align="center" class="mb-0 text-uppercase" align="center">Do you really want to delete delivery {{delivery.delivery}}???</h6>
-<hr/>
+<div class="relative flex py-5 items-center">
+    <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Czy na pewno chcesz usunąć dostawę {{delivery.delivery}}?</span>
+    <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+</div>
 <form class="row g-3" method="POST">
     {% csrf_token %}
     <div class="col" align="center">
-        <a href="{%url 'maitrox_deliveries'%}"><button type="button" class="btn btn-success px-5">Go back</button></a>
-        <button type="submit" class="btn btn-danger px-5">Delete</button>
+        <a href="{%url 'maitrox_deliveries'%}"><button type="button" class="btn btn-success px-5">Anuluj</button></a>
+        <button type="submit" class="btn btn-danger px-5">Usuń</button>
     </div>
 </form>
 {% endblock %}

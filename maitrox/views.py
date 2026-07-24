@@ -134,8 +134,10 @@ class MaitroxDeliveryCreate(CreateView):
         except TypeError:
                 messages.warning(self.request, 'Plik jest uszkodzony. Pobierz template i wklej dane a następnie wczytaj plik')
                 return redirect('maitrox_delivery_create')
-        except:
-            messages.warning(self.request, 'Coś poszło nie tak. Skontaktuj się z administratorem')
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            messages.warning(self.request, f'Coś poszło nie tak: {str(e)}')
             return redirect('maitrox_delivery_create')
         return super().form_valid(form)        
 

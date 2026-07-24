@@ -4,11 +4,12 @@ FROM python:3.12-slim-bookworm AS builder
 # Instalujemy uv z oficjalnego obrazu
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Narzędzia potrzebne do skompilowania mysqlclient
+# Narzędzia potrzebne do skompilowania mysqlclient oraz biblioteki ODBC
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     pkg-config \
     default-libmysqlclient-dev \
+    unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Ustawiamy katalog roboczy
@@ -42,12 +43,22 @@ FROM python:3.12-slim-bookworm
 
 WORKDIR /vrtlogistic
 
-# Biblioteka libmariadb-dev jest kluczowa dla MySQL!
+# Biblioteki dla MySQL oraz unixodbc
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libmariadb-dev-compat \
     libmariadb-dev \
     gcc \
     pkg-config \
+    curl \
+    gnupg2 \
+    unixodbc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalacja Microsoft ODBC Driver 18 dla SQL Server (wymagany przez pyodbc)
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
+    && echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 \
     && rm -rf /var/lib/apt/lists/*
 
 #1. TWORZYMY UŻYTKOWNIKA I GRUPĘ

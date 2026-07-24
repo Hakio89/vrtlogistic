@@ -37,7 +37,16 @@ SECRET_KEY = env('SECRET_KEY')
 
 
 
-ALLOWED_HOSTS = ['localhost:8000', '127.0.0.1', '192.168.2.142', 'virtuallogistic', 'virtuallogistic.euroccs.local', 'rtlogisitc', 'rtlogistic', 'vrtlogistic']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '192.168.2.142',
+    'virtuallogistic',
+    'virtuallogistic.euroccs.local',
+    'vrtlogistic',
+    'virtuallogistic.local',
+    'virtuallogistic.test',
+]
 
 
 # Application definition
@@ -114,22 +123,17 @@ db_options = {}
 if os.path.exists("/etc/mysql/my.cnf"):
     db_options["read_default_file"] = "/etc/mysql/my.cnf"
 
-"""DATABASES = {
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": db_name,
+        "USER": db_user,
         "HOST": db_host,
         "PORT": 3306,
         "PASSWORD": db_password,
         "OPTIONS": db_options,
     },
-"""
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db.sqlite3",
-    },
+    
     "ccs": {
         "ENGINE": env("CCS_ENGINE"),
         "NAME": env("CCS_NAME"),
@@ -144,8 +148,13 @@ DATABASES = {
     },
 }
 
+DATABASE_ROUTERS = ["vrtlogistic.db_routers.CCSReadOnlyRouter"]
 
 
+""""default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "db.sqlite3",
+    }"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
