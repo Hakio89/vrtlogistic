@@ -7,3 +7,6 @@ staticfiles/
 .venv/
 secrets/
 tailwindcss
+backup.sql
+*.sql
+test_db_connection.py
