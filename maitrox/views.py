@@ -295,7 +295,39 @@ class MaitroxDeliveries(ListView):
     template_name = "maitrox/maitrox-deliveries.html"
     context_object_name = "maitrox"
     extra_context = {"title": "Wszystkie dostawy"}
-    queryset = Maitrox.objects.all().select_related('status', 'creator')
+    
+    def get_queryset(self):
+        limit = self.request.GET.get('limit', '100')
+        qs = Maitrox.objects.all().select_related('status', 'creator').order_by('-date')
+        if limit == 'all':
+            return qs
+        try:
+            return qs[:int(limit)]
+        except ValueError:
+            return qs[:100]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        limit = self.request.GET.get('limit', '100')
+        total_count = Maitrox.objects.count()
+        context['total_count'] = total_count
+        
+        if limit == 'all':
+            context['current_limit'] = 'all'
+            context['next_limit'] = None
+            context['has_more'] = False
+        else:
+            try:
+                curr = int(limit)
+                context['current_limit'] = curr
+                context['next_limit'] = curr + 100
+                context['has_more'] = curr < total_count
+            except ValueError:
+                context['current_limit'] = 100
+                context['next_limit'] = 200
+                context['has_more'] = 100 < total_count
+                
+        return context
 
 
 @method_decorator(login_required, name='dispatch') 

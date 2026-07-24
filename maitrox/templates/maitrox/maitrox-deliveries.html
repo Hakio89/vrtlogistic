@@ -78,6 +78,24 @@
                 </tbody>
             </table>
         </div>
+        
+        {% if has_more %}
+        <div class="text-center mt-4 mb-2 flex justify-center gap-3">
+            <a href="?limit={{ next_limit }}" class="btn btn-primary px-4 radius-30">
+                Pokaż więcej (+100)
+            </a>
+            <a href="?limit=all" class="btn btn-outline-secondary px-4 radius-30">
+                Pokaż wszystkie ({{ total_count }})
+            </a>
+        </div>
+        {% elif current_limit == 'all' or not has_more and total_count > 100 %}
+        <div class="text-center mt-4 mb-2 text-slate-500 text-sm flex justify-center items-center gap-3">
+            <span>Wyświetlasz wszystkie dostawy ({{ total_count }}).</span>
+            <a href="?limit=100" class="btn btn-outline-secondary btn-sm radius-30 px-3">
+                Pokaż tylko pierwsze 100
+            </a>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
