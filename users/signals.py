@@ -22,10 +22,17 @@ def create_profile_on_login(sender, user, request, **kwargs):
 #@receiver(post_save, sender=Profile) - jedna z metod wywoływania sygnałów
 
 def profileCreated(sender, created, instance, **kwargs):
+    if not created:
+        return
+        
     print('Profile created successfully')
     profile = instance
     owner = profile.owner.username
     email = profile.owner.email
+    
+    if not email:
+        print('User has no email address, skipping welcome email.')
+        return
     
     subject = 'Witamy w Virtual Logistic'
     message_text = f'Cześć {owner},\n\
@@ -34,12 +41,15 @@ def profileCreated(sender, created, instance, **kwargs):
         Pozdrawiamy\n\
         Zespół Virtual Logistic'
     
-    send_mail(
-        subject,
-        message_text,
-        settings.EMAIL_HOST_USER,
-        [email],
-        fail_silently=False,
-        )
+    try:
+        send_mail(
+            subject,
+            message_text,
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=True,
+            )
+    except Exception as e:
+        print(f'Failed to send welcome email: {e}')
         
 post_save.connect(profileCreated, sender=Profile, weak=False)
