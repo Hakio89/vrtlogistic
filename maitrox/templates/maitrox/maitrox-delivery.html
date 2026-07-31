@@ -1,18 +1,45 @@
 {% extends 'main.html' %}
 
 {% block content %}
+{% if claimed_parts %}
+<div class="p-4 mb-6 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20" role="alert">
+    <div class="flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div>
+            <span class="font-bold text-base block mb-1 text-red-700 dark:text-red-300">Wykryto części w reklamacji!</span>
+            <span class="text-sm">Następujące części z tej dostawy zostały zgłoszone do reklamacji:</span>
+            <ul class="list-disc list-inside mt-2 text-sm font-semibold space-y-1">
+                {% for cp in claimed_parts %}
+                <li>
+                    Część: <span class="font-mono text-xs bg-red-500/10 px-1.5 py-0.5 rounded">{{ cp.claim_part }}</span> &bull; 
+                    Ilość: <span class="text-slate-700 dark:text-slate-300">{{ cp.qty }}</span> &bull; 
+                    Status: <span class="badge {% if cp.status == 'Waiting' %}bg-warning{% else %}bg-success{% endif %}">{{ cp.status }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <p align="right">
     <a href="{% url 'maitrox_delivery_update' maitrox.delivery%}">
         <button type="button" class="btn btn-light px-5 radius-30 flex items-center gap-1.5 ml-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg> Update
         </button>
     </a>
 </p>
 <div class="relative flex py-5 items-center">
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Informacje o dostawie</span>
+    <span
+        class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Informacje
+        o dostawie</span>
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -21,12 +48,15 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Numer dostawy</p>
-                    <h5 class="text-xl font-bold text-slate-900 leading-tight">{{title.delivery}}</h5>
+                    <h5 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{{title.delivery}}</h5>
                 </div>
                 <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17h14" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17h14" />
                     </svg>
                 </div>
             </div>
@@ -37,11 +67,13 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Numer rozliczenia</p>
-                    <h5 class="text-xl font-bold text-slate-900 leading-tight">{{title.reckoning}}</h5>
+                    <h5 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{{title.reckoning}}</h5>
                 </div>
                 <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
             </div>
@@ -52,11 +84,13 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Biznes</p>
-                    <h5 class="text-xl font-bold text-slate-900 leading-tight">{{title.business}}</h5>
+                    <h5 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{{title.business}}</h5>
                 </div>
                 <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                 </div>
             </div>
@@ -67,11 +101,14 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Ilość pozycji</p>
-                    <h5 class="text-xl font-bold text-slate-900 leading-tight">{{countings.count_pn}}</h5>
+                    <h5 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{{countings.count_pn}}
+                    </h5>
                 </div>
                 <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                 </div>
             </div>
@@ -82,11 +119,13 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Suma części</p>
-                    <h5 class="text-xl font-bold text-slate-900 leading-tight">{{countings.sum_pn}}</h5>
+                    <h5 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{{countings.sum_pn}}</h5>
                 </div>
                 <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                 </div>
             </div>
@@ -97,11 +136,13 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Status</p>
-                    <h5 class="text-xl font-bold text-slate-900 leading-tight">{{title.status}}</h5>
+                    <h5 class="text-xl font-bold text-slate-900 dark:text-white leading-tight">{{title.status}}</h5>
                 </div>
                 <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
             </div>
@@ -110,7 +151,9 @@
 </div>
 <div class="relative flex py-5 items-center">
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Szczegóły dostawy</span>
+    <span
+        class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Szczegóły
+        dostawy</span>
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
 </div>
 <div class="card">
@@ -120,15 +163,15 @@
                 <thead>
                     <th>SO</th>
                     <th>PN</th>
-                    <th>Opis</th>									
-                    <th>Ilość</th>  
+                    <th>Opis</th>
+                    <th>Ilość</th>
                     <th>Magazyn</th>
                     <th>Oczekujące</th>
                 </thead>
                 <tbody>
-                    
+
                     {% for mait in delivery_details %}
-                    <tr>
+                    <tr {% if mait.parts_number in claimed_part_numbers %}class="is-claimed"{% endif %}>
                         <td>{{mait.so_number}}</td>
                         <td>{{mait.parts_number}}</td>
                         <td>{{mait.parts_description}}</td>
@@ -144,13 +187,15 @@
 </div>
 <div class="relative flex py-5 items-center">
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Zamówienia AX</span>
+    <span
+        class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Zamówienia
+        AX</span>
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
 </div>
 <div class="card">
     <div class="card-body">
         {{ ax|safe }}
-        
+
     </div>
 </div>
 {% endblock %}

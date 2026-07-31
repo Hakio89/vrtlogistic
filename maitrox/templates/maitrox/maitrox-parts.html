@@ -3,7 +3,8 @@
 {% block content %}
 <div class="relative flex py-5 items-center">
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Katalog części</span>
+    <span class="flex-shrink mx-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Katalog
+        części</span>
     <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
 </div>
 <div class="card">
@@ -19,7 +20,8 @@
                     {%for parts in parts_table%}
                     <tr>
                         <td>{{parts.parts_number}}</td>
-                        <td>{{parts.parts_description}}</td>
+                        <td style="color: #475569 !important; font-family: 'Plus Jakarta Sans', sans-serif !important;"
+                            class="dark:text-[#94a3b8]!">{{parts.parts_description}}</td>
                         <td>{{parts.warehouse}}</td>
                     </tr>
                     {%endfor%}
