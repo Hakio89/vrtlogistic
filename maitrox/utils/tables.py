@@ -3,14 +3,56 @@ from django_pandas.io import read_frame
 import pandas as pd
 
 
-def open_delivery_file(file):
-        """Read a delivery file only"""
-        delivery = file        
-        delivery = pd.read_excel(delivery,
-                                usecols=['SO Number', 'Parts Number', 'Parts Desciption', 'Qty'])
+def open_delivery_file(file, business=None):
+        """Read a delivery file and format types to be compatible with database columns"""
+        # Read the file without usecols first, so we can dynamically rename columns
+        delivery = pd.read_excel(file)
+        
+        # Clean column names (strip whitespace)
+        delivery.columns = [str(col).strip() for col in delivery.columns]
+        
+        # Map alternative column names if present
+        column_mapping = {
+            'Inbound Order': 'SO Number',
+            'Material Code': 'Parts Number',
+            'Material Name': 'Parts Desciption',
+            'Pending Storage Quantity': 'Qty'
+        }
+        delivery = delivery.rename(columns=column_mapping)
+        
+        # Verify required columns are present
+        required_cols = ['SO Number', 'Parts Number', 'Parts Desciption', 'Qty']
+        missing_cols = [col for col in required_cols if col not in delivery.columns]
+        if missing_cols:
+            raise ValueError(f"Niepoprawny format pliku dostawy. Brakujące kolumny: {', '.join(missing_cols)}")
+            
+        # Select only the required columns
+        delivery = delivery[required_cols]
+        
+        # Clean text columns and handle potential float conversions (e.g., '12345.0' -> '12345')
+        for col in ['SO Number', 'Parts Number', 'Parts Desciption']:
+            delivery[col] = delivery[col].fillna('').astype(str).str.strip()
+            delivery[col] = delivery[col].apply(lambda x: x[:-2] if x.endswith('.0') else x)
+        
+        # If Business is DE_XIAOMI, prepend 'DE_' to 'Parts Number' if not already present
+        if business == 'DE_XIAOMI':
+            delivery['Parts Number'] = delivery['Parts Number'].apply(
+                lambda x: f"DE_{x}" if x and not str(x).startswith('DE_') else x
+            )
+        
+        # Qty must be numeric and cast to integer
+        delivery['Qty'] = pd.to_numeric(delivery['Qty'], errors='coerce').fillna(0).astype(int)
+        
+        # Pivot table to sum quantities
         delivery = delivery.pivot_table(index=["SO Number", "Parts Number", "Parts Desciption"],
                                     values='Qty', aggfunc='sum')          
         delivery = delivery.reset_index()
+        
+        # Ensure clean types post-pivot
+        delivery['SO Number'] = delivery['SO Number'].astype(str)
+        delivery['Parts Number'] = delivery['Parts Number'].astype(str)
+        delivery['Parts Desciption'] = delivery['Parts Desciption'].astype(str)
+        delivery['Qty'] = delivery['Qty'].astype(int)
         
         return delivery
     
@@ -69,14 +111,8 @@ class Table:
         delivery = self.delivery.file
         
         if delivery.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-            delivery = pd.read_excel(delivery,
-                                usecols=['SO Number', 'Parts Number', 'Parts Desciption', 'Qty'], 
-                                dtype={'SO Number' : object, 'Parts Number' : object, 'Parts Desciption' : object, 'Qty' : int})
-            
-            delivery = delivery.pivot_table(index=["SO Number", "Parts Number", "Parts Desciption"],
-                                    values='Qty', aggfunc='sum')            
-            delivery = delivery.reset_index()
-            return delivery
+            business_name = str(self.delivery.business) if self.delivery.business else None
+            return open_delivery_file(delivery, business=business_name)
     
     def read_parts_file(self):
         """Read a parts file only"""

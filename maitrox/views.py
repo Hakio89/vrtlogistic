@@ -69,6 +69,7 @@ class MaitroxView(ListView):
                 return redirect('maitrox')
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
+        
         context = super().get_context_data(**kwargs)
         context["title"] = "Pulpit dostaw"
         
@@ -118,14 +119,15 @@ class MaitroxDeliveryCreate(CreateView):
         try:
             form.save(commit=False)
             if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-                check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
+                business_name = str(form.instance.business) if form.instance.business else None
+                check_file =  open_delivery_file(form.instance.file, business=business_name)['SO Number'].values[0]
                 check_so = form.instance.delivery
                 if check_file == check_so:
                     form.instance.creator = self.request.user
                     connection_string = config('MYSQL_CONNECTOR')
                     engine = create_engine(connection_string)                
                     with engine.connect():
-                        df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
+                        df = open_delivery_file(form.instance.file, business=business_name).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
                     form.save()
                     messages.success(self.request, f'Nowa dostawa {form.instance.delivery} utworzona')
                 else:
@@ -187,14 +189,15 @@ class MaitroxFileUpdate(UpdateView):
             to_be_deleted.file.delete()        
             form.save(commit=False)
             if form.instance.file.name.endswith(('.xlsx', '.xls', '.xlsx', '.xlsm', '.xlsb', '.odf', '.ods', '.odt')):
-                check_file =  open_delivery_file(form.instance.file)['SO Number'].values[0]
+                business_name = str(form.instance.business) if form.instance.business else None
+                check_file =  open_delivery_file(form.instance.file, business=business_name)['SO Number'].values[0]
                 check_so = form.instance.delivery
                 if check_file == check_so:
                     form.instance.creator = self.request.user
                     connection_string = config('MYSQL_CONNECTOR')
                     engine = create_engine(connection_string)                
                     with engine.connect():
-                        df = open_delivery_file(form.instance.file).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
+                        df = open_delivery_file(form.instance.file, business=business_name).to_sql('maitrox_deliverydetails', engine, if_exists='append', index=False)
                     form.save()
                     messages.success(self.request, f'Plik {form.instance.delivery} został zaktualizowany')
                 else:
@@ -269,6 +272,12 @@ class MaitroxDeliveryDetails(DetailView):
                 item.precalculated_warehouse = parts_details_map.get(item.parts_number, 'Brak')
                 item.precalculated_waiting = waiting_map.get(item.parts_number) or 0
                 
+            # Fetch claimed parts for this delivery
+            claimed_parts = list(ClaimParts.objects.filter(claim_part__in=part_numbers))
+            claimed_part_numbers = {cp.claim_part for cp in claimed_parts}
+            ctx['claimed_parts'] = claimed_parts
+            ctx['claimed_part_numbers'] = claimed_part_numbers
+
             ctx['delivery_details'] = delivery_details
             ctx['countings'] = DeliveryDetails.objects.filter(so_number=self.kwargs['pk']).aggregate(
                 count_pn=Count('parts_number'),
