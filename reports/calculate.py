@@ -151,7 +151,7 @@ def checking_enough_stock(
     set_repair_parts = set_repair
     repairs_to_releases = []
     payment_repair = []
-    producers_included = ['ALCATEL', 'SAMSUNG', 'NOTHING', 'TCL', 'QLIVE']
+    producers_included = ['ALCATEL', 'SAMSUNG', 'NOTHING', 'TCL', 'QLIVE', 'HONOR', 'FAIRPHONE']
     for rep in queryset:
         if rep.KodPozycjiTypNaprawy == "Płatna" and rep.Producent in producers_included:
             if int(rep.NrNaprawy) not in payment_repair:

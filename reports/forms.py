@@ -19,6 +19,9 @@ class CCSReportsForm(forms.Form):
     ('TINECO', 'TINECO'),
     ('INDIANA', 'INDIANA'),
     ('REALME', 'REALME'),
+    ('NAVEE', 'NAVEE'),
+    ('HONOR', 'HONOR'),
+    ('FAIRPHONE', 'FAIRPHONE'),
     ]
     
 
